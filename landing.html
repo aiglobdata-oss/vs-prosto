@@ -67,11 +67,19 @@
   .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
   .flags-row { margin-top: 40px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
   .flag-chip {
-    display: flex; align-items: center; gap: 8px; background: #fff;
+    display: flex; align-items: center; gap: 10px; background: #fff;
     border: 1px solid var(--line); border-radius: 14px; padding: 10px 16px; font-weight: 600; font-size: 15px;
     box-shadow: 0 2px 8px rgba(15,23,41,0.04);
   }
-  .flag-chip .em { font-size: 22px; }
+  .flag {
+    width: 26px; height: 18px; border-radius: 3px; flex-shrink: 0;
+    box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.15);
+    display: inline-block; vertical-align: middle;
+  }
+  .flag-fr { background: linear-gradient(to right, #0055A4 0 33.33%, #fff 33.33% 66.66%, #EF4135 66.66% 100%); }
+  .flag-it { background: linear-gradient(to right, #009246 0 33.33%, #fff 33.33% 66.66%, #CE2B37 66.66% 100%); }
+  .flag-es { background: linear-gradient(to bottom, #AA151B 0 25%, #F1BF00 25% 75%, #AA151B 75% 100%); }
+  .flag-bg { background: linear-gradient(to bottom, #fff 0 33.33%, #00966E 33.33% 66.66%, #D62612 66.66% 100%); }
 
   /* PRICE BANNER */
   .price-banner { background: var(--ink); color: #fff; padding: 28px 0; }
@@ -174,13 +182,13 @@
     <p class="sub">Франция, Италия, Испания, Болгария. Одна фиксированная цена за запись — для любой страны.</p>
     <div class="hero-cta">
       <a href="#cta" class="btn btn-primary btn-lg">Я хочу запись</a>
-      <a href="#centers" class="btn btn-ghost btn-lg">Я визовый центр</a>
+      <a href="centers.html" class="btn btn-ghost btn-lg">Я визовый центр →</a>
     </div>
     <div class="flags-row">
-      <div class="flag-chip"><span class="em">🇫🇷</span> Франция</div>
-      <div class="flag-chip"><span class="em">🇮🇹</span> Италия</div>
-      <div class="flag-chip"><span class="em">🇪🇸</span> Испания</div>
-      <div class="flag-chip"><span class="em">🇧🇬</span> Болгария</div>
+      <div class="flag-chip"><span class="flag flag-fr"></span> Франция</div>
+      <div class="flag-chip"><span class="flag flag-it"></span> Италия</div>
+      <div class="flag-chip"><span class="flag flag-es"></span> Испания</div>
+      <div class="flag-chip"><span class="flag flag-bg"></span> Болгария</div>
     </div>
   </div>
 </section>
