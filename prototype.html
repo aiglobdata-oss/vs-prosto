@@ -40,22 +40,18 @@
     margin-top: 12px;
   }
 
-  /* PHONE */
+  /* APP SCREEN — без рамки телефона, как реальное приложение */
   .phone {
-    width: 340px;
-    background: #fff;
-    border-radius: 40px;
-    border: 9px solid #1a1a2e;
+    width: 100%;
+    max-width: 380px;
+    background: #fafbfc;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 25px 60px rgba(15,23,41,0.22);
-  }
-  .status-bar {
-    background: #1a1a2e; color: #fff;
-    font-size: 12px; padding: 10px 22px;
-    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 12px 40px rgba(15,23,41,0.10);
+    border: 1px solid var(--line);
   }
   .screen-body {
-    padding: 20px; min-height: 580px; background: #fafbfc;
+    padding: 24px 20px 28px; min-height: 600px; background: #fafbfc;
     display: none;
   }
   .screen-body.active { display: block; animation: fadeIn .3s ease; }
@@ -118,6 +114,8 @@
     color: var(--ink); font-family: inherit;
   }
   .q-input:focus { outline: none; border-color: var(--indigo); background: #fff; }
+  .q-input.invalid { border-color: #dc2626; background: #fef2f2; }
+  .q-error { font-size: 12px; color: #dc2626; margin: 8px 0 0; min-height: 16px; font-weight: 500; }
   .btn-row { display: flex; gap: 8px; }
   .btn-row .back {
     flex: 1; padding: 13px; border-radius: 12px; border: 1.5px solid #d0d4dd;
@@ -294,8 +292,6 @@
   </div>
 
   <div class="phone">
-    <div class="status-bar"><span id="clock">9:41</span><span>•••</span></div>
-
     <!-- SCREEN 1 — country -->
     <div class="screen-body active" data-screen="1">
       <p class="screen-title">Куда хочешь<br>поехать?</p>
@@ -332,6 +328,7 @@
         <p class="q-step" id="q-step">Вопрос 1 из 8</p>
         <p class="q-text" id="q-text">Как вас зовут?</p>
         <input class="q-input" id="q-input" type="text" placeholder="" autocomplete="off" />
+        <p class="q-error" id="q-error"></p>
       </div>
       <div class="btn-row">
         <button class="back" id="q-back">← Назад</button>
@@ -441,15 +438,91 @@
   };
 
   const questions = [
-    { text: "Как вас зовут?", placeholder: "Иванов Иван Иванович" },
-    { text: "Дата рождения?", placeholder: "01.01.1990" },
-    { text: "Серия и номер паспорта?", placeholder: "1234 567890" },
-    { text: "Цель поездки?", placeholder: "Туризм" },
-    { text: "Желаемые даты поездки?", placeholder: "Июль — август 2026" },
-    { text: "Город проживания?", placeholder: "Москва" },
-    { text: "Номер телефона?", placeholder: "+7 999 123 45 67" },
-    { text: "Email?", placeholder: "ivan@mail.ru" },
+    { text: "Как вас зовут?", placeholder: "Иванов Иван Иванович", type: "name", inputmode: "text", autocap: "words" },
+    { text: "Дата рождения?", placeholder: "12.01.1982", type: "date", inputmode: "numeric", maxlength: 10 },
+    { text: "Серия и номер паспорта?", placeholder: "1234 567890", type: "passport", inputmode: "numeric", maxlength: 11 },
+    { text: "Цель поездки?", placeholder: "Туризм", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Желаемые даты поездки?", placeholder: "Июль — август 2026", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Город проживания?", placeholder: "Москва", type: "city", inputmode: "text", autocap: "words" },
+    { text: "Номер телефона?", placeholder: "+7 (999) 123-45-67", type: "phone", inputmode: "tel", maxlength: 18 },
+    { text: "Email?", placeholder: "name@mail.ru", type: "email", inputmode: "email", autocap: "none" },
   ];
+
+  // VALIDATION + MASKING
+  function validate(type, value) {
+    const v = (value || '').trim();
+    if (!v) return { ok: false, error: 'Заполни поле' };
+    switch (type) {
+      case 'name': {
+        if (!/^[А-Яа-яЁё\s\-]+$/.test(v)) return { ok: false, error: 'Только русские буквы' };
+        const words = v.split(/\s+/).filter(Boolean);
+        if (words.length < 2) return { ok: false, error: 'Укажи фамилию и имя' };
+        return { ok: true };
+      }
+      case 'city': {
+        if (!/^[А-Яа-яЁё\s\-]+$/.test(v)) return { ok: false, error: 'Только русские буквы' };
+        return { ok: true };
+      }
+      case 'date': {
+        if (!/^\d{2}\.\d{2}\.\d{4}$/.test(v)) return { ok: false, error: 'Формат: 12.01.1982' };
+        const [d, m, y] = v.split('.').map(Number);
+        if (m < 1 || m > 12) return { ok: false, error: 'Неверный месяц' };
+        if (d < 1 || d > 31) return { ok: false, error: 'Неверный день' };
+        if (y < 1925 || y > 2015) return { ok: false, error: 'Проверь год' };
+        return { ok: true };
+      }
+      case 'passport': {
+        if (!/^\d{4}\s\d{6}$/.test(v)) return { ok: false, error: 'Формат: 1234 567890' };
+        return { ok: true };
+      }
+      case 'phone': {
+        const digits = v.replace(/\D/g, '');
+        if (digits.length !== 11 || !digits.startsWith('7')) {
+          return { ok: false, error: 'Формат: +7 и 10 цифр' };
+        }
+        return { ok: true };
+      }
+      case 'email': {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return { ok: false, error: 'Например: name@mail.ru' };
+        return { ok: true };
+      }
+      default: return { ok: true };
+    }
+  }
+
+  function mask(type, value) {
+    switch (type) {
+      case 'date': {
+        const d = value.replace(/\D/g, '').slice(0, 8);
+        if (d.length <= 2) return d;
+        if (d.length <= 4) return d.slice(0, 2) + '.' + d.slice(2);
+        return d.slice(0, 2) + '.' + d.slice(2, 4) + '.' + d.slice(4);
+      }
+      case 'passport': {
+        const d = value.replace(/\D/g, '').slice(0, 10);
+        if (d.length <= 4) return d;
+        return d.slice(0, 4) + ' ' + d.slice(4);
+      }
+      case 'phone': {
+        let d = value.replace(/\D/g, '');
+        if (d.startsWith('8')) d = '7' + d.slice(1);
+        if (!d.startsWith('7')) d = '7' + d;
+        d = d.slice(0, 11);
+        let out = '+7';
+        if (d.length > 1) out += ' (' + d.slice(1, 4);
+        if (d.length >= 4) out += ')';
+        if (d.length > 4) out += ' ' + d.slice(4, 7);
+        if (d.length > 7) out += '-' + d.slice(7, 9);
+        if (d.length > 9) out += '-' + d.slice(9, 11);
+        return out;
+      }
+      case 'name':
+      case 'city': {
+        return value.replace(/[^А-Яа-яЁё\s\-]/g, '');
+      }
+      default: return value;
+    }
+  }
 
   function showScreen(n) {
     state.step = n;
@@ -492,8 +565,17 @@
     document.getElementById('q-text').textContent = q.text;
     const input = document.getElementById('q-input');
     input.placeholder = q.placeholder;
-    input.value = state.answers[i] || '';
-    input.focus();
+    input.value = state.answers[i] || (q.type === 'phone' ? '+7 ' : '');
+    input.classList.remove('invalid');
+    document.getElementById('q-error').textContent = '';
+
+    // type-specific attributes
+    input.setAttribute('inputmode', q.inputmode || 'text');
+    input.setAttribute('autocapitalize', q.autocap || 'none');
+    if (q.maxlength) input.setAttribute('maxlength', q.maxlength); else input.removeAttribute('maxlength');
+    input.type = (q.type === 'email') ? 'email' : 'text';
+
+    setTimeout(() => input.focus(), 50);
 
     const dots = document.getElementById('progress-dots');
     dots.innerHTML = '';
@@ -503,28 +585,48 @@
       dots.appendChild(d);
     });
 
-    document.getElementById('q-next').disabled = !input.value.trim();
+    updateNextButton();
     document.getElementById('q-next').textContent = (i === questions.length - 1) ? 'Готово →' : 'Далее →';
   }
 
+  function updateNextButton() {
+    const q = questions[state.currentQ];
+    const v = document.getElementById('q-input').value.trim();
+    const result = validate(q.type, v);
+    document.getElementById('q-next').disabled = !result.ok;
+  }
+
   document.getElementById('q-input').addEventListener('input', e => {
-    document.getElementById('q-next').disabled = !e.target.value.trim();
+    const q = questions[state.currentQ];
+    const masked = mask(q.type, e.target.value);
+    if (masked !== e.target.value) {
+      e.target.value = masked;
+    }
+    document.getElementById('q-input').classList.remove('invalid');
+    document.getElementById('q-error').textContent = '';
+    updateNextButton();
   });
   document.getElementById('q-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.value.trim()) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
       document.getElementById('q-next').click();
     }
   });
 
   document.getElementById('q-next').addEventListener('click', () => {
+    const q = questions[state.currentQ];
     const v = document.getElementById('q-input').value.trim();
-    if (!v) return;
+    const result = validate(q.type, v);
+    if (!result.ok) {
+      document.getElementById('q-input').classList.add('invalid');
+      document.getElementById('q-error').textContent = result.error;
+      return;
+    }
     state.answers[state.currentQ] = v;
     if (state.currentQ < questions.length - 1) {
       state.currentQ++;
       renderQuestion();
     } else {
-      // done with questionnaire
       showScreen(3);
     }
   });
@@ -673,15 +775,16 @@
     showScreen(1);
   }
 
-  // clock
-  function tickClock() {
-    const d = new Date();
-    const hh = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-    document.getElementById('clock').textContent = `${hh}:${mm}`;
-  }
-  tickClock();
-  setInterval(tickClock, 30000);
+  // URL param ?country=fr|it|es|bg — pre-select and auto-advance to questionnaire
+  (function handleCountryParam() {
+    const params = new URLSearchParams(window.location.search);
+    const c = (params.get('country') || '').toLowerCase();
+    if (!['fr', 'it', 'es', 'bg'].includes(c)) return;
+    const card = document.querySelector(`.country-card[data-country="${c}"]`);
+    if (!card) return;
+    card.click();
+    setTimeout(() => document.getElementById('goto-q').click(), 150);
+  })();
 </script>
 
 </body>

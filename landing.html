@@ -70,6 +70,16 @@
     display: flex; align-items: center; gap: 10px; background: #fff;
     border: 1px solid var(--line); border-radius: 14px; padding: 10px 16px; font-weight: 600; font-size: 15px;
     box-shadow: 0 2px 8px rgba(15,23,41,0.04);
+    cursor: pointer; transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+    font-family: inherit; color: var(--ink);
+  }
+  .flag-chip:hover {
+    transform: translateY(-3px); border-color: var(--indigo);
+    box-shadow: 0 8px 22px rgba(79,70,229,0.18);
+  }
+  .flags-hint {
+    margin-top: 14px; font-size: 13px; color: var(--muted);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
   }
   .flag {
     width: 26px; height: 18px; border-radius: 3px; flex-shrink: 0;
@@ -253,15 +263,13 @@
       <a href="#cta" class="btn btn-primary btn-lg">Я хочу запись</a>
       <a href="centers.html" class="btn btn-ghost btn-lg">Я визовый центр →</a>
     </div>
-    <div style="margin-top: 18px;">
-      <button class="try-link" onclick="openDemo()">▶ Попробовать приложение прямо сейчас</button>
-    </div>
     <div class="flags-row">
-      <div class="flag-chip"><span class="flag flag-fr"></span> Франция</div>
-      <div class="flag-chip"><span class="flag flag-it"></span> Италия</div>
-      <div class="flag-chip"><span class="flag flag-es"></span> Испания</div>
-      <div class="flag-chip"><span class="flag flag-bg"></span> Болгария</div>
+      <button class="flag-chip" onclick="openDemo('fr')"><span class="flag flag-fr"></span> Франция</button>
+      <button class="flag-chip" onclick="openDemo('it')"><span class="flag flag-it"></span> Италия</button>
+      <button class="flag-chip" onclick="openDemo('es')"><span class="flag flag-es"></span> Испания</button>
+      <button class="flag-chip" onclick="openDemo('bg')"><span class="flag flag-bg"></span> Болгария</button>
     </div>
+    <p class="flags-hint">👆 Кликни любую страну — попробуй приложение</p>
   </div>
 </section>
 
@@ -339,19 +347,6 @@
   </div>
 </section>
 
-<!-- TRY IT -->
-<section class="block" id="try" style="text-align: center;">
-  <div class="wrap">
-    <div class="try-card">
-      <div class="try-emoji">📱</div>
-      <h2>Не на словах, а руками</h2>
-      <p class="try-desc">Пройди весь путь — от выбора страны до брони слота. Прямо здесь, прямо сейчас. 30 секунд.</p>
-      <button class="btn btn-primary btn-lg try-btn-big" onclick="openDemo()">▶ Запустить прототип</button>
-      <div class="try-keys">или нажми <kbd>P</kbd> на клавиатуре</div>
-    </div>
-  </div>
-</section>
-
 <!-- PRICING / AUDIENCE -->
 <section class="block" id="pricing">
   <div class="wrap">
@@ -417,10 +412,11 @@
 </div>
 
 <script>
-  function openDemo() {
+  function openDemo(country) {
     const overlay = document.getElementById('demoOverlay');
     const frame = document.getElementById('demoFrame');
-    if (!frame.src) frame.src = 'prototype.html';
+    const src = country ? `prototype.html?country=${country}` : 'prototype.html';
+    frame.src = src;
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
