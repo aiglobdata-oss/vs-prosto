@@ -135,22 +135,26 @@
   .feature p { color: var(--muted); font-size: 16px; }
 
   /* PRICING */
-  .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 820px; margin: 0 auto; }
-  .price-card { border: 1.5px solid var(--line); border-radius: 22px; padding: 36px; background: #fff; }
+  .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; align-items: stretch; }
+  .price-card { border: 1.5px solid var(--line); border-radius: 22px; padding: 30px 26px; background: #fff; display: flex; flex-direction: column; }
   .price-card.featured { border-color: var(--green); box-shadow: 0 16px 48px rgba(22,163,74,0.14); position: relative; }
   .price-card.featured::before {
     content: "Рекомендуем"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
     background: var(--green); color: #fff; font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 999px;
   }
-  .price-card h3 { font-size: 24px; margin-bottom: 6px; letter-spacing: -0.02em; }
-  .price-card .price-desc { color: var(--muted); font-size: 15px; margin-bottom: 18px; }
-  .price-card .price { font-size: 36px; font-weight: 800; margin: 12px 0 4px; letter-spacing: -0.02em; }
+  .price-card h3 { font-size: 22px; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .price-card .price-desc { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+  .price-card .price { font-size: 30px; font-weight: 800; margin: 12px 0 4px; letter-spacing: -0.02em; }
+  .price-card .per-slot {
+    background: var(--green-light); color: #157a47; font-size: 12px; font-weight: 700;
+    padding: 5px 10px; border-radius: 999px; display: inline-block; margin-bottom: 16px;
+  }
   .price-card .price small { font-size: 16px; font-weight: 600; color: var(--muted); }
   .price-card .price-note { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
   .price-list { list-style: none; margin-bottom: 28px; }
   .price-list li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; font-size: 15px; }
   .price-list li::before { content: "✓"; color: var(--green); font-weight: 800; flex-shrink: 0; }
-  .price-card .btn { width: 100%; text-align: center; }
+  .price-card .btn { width: 100%; text-align: center; margin-top: auto; }
 
   /* CTA */
   .cta-final { background: var(--ink); color: #fff; border-radius: 28px; padding: 64px 40px; text-align: center; margin: 0 24px; }
@@ -167,7 +171,8 @@
     .hero h1 { font-size: 36px; }
     .hero-grid { grid-template-columns: 1fr; gap: 32px; }
     .nav-links a:not(.btn) { display: none; }
-    .pains, .features, .price-grid { grid-template-columns: 1fr; }
+    .pains, .features { grid-template-columns: 1fr; }
+    .price-grid { grid-template-columns: 1fr; max-width: 480px; }
     .section-head h2 { font-size: 28px; }
     .cta-final h2 { font-size: 26px; }
     .hero-stats { gap: 20px; }
@@ -373,32 +378,46 @@
       <div class="price-card">
         <h3>Старт</h3>
         <div class="price-desc">Для центров с небольшим потоком</div>
-        <div class="price">5 000 ₽ <small>/ месяц</small></div>
-        <div class="price-note">Включено 10 записей в месяц</div>
+        <div class="price">50 000 ₽ <small>/ месяц</small></div>
+        <span class="per-slot">5 000 ₽ за запись</span>
         <ul class="price-list">
           <li>Доступ к ленте слотов 4 стран</li>
-          <li>До 10 записей в месяц</li>
-          <li>Дашборд и история</li>
-          <li>Докупка сверх квоты — 3 000 ₽</li>
+          <li><b>10 записей</b> в месяц включены</li>
+          <li>Дашборд и история заявок</li>
+          <li>Докупка сверх квоты — 5 000 ₽</li>
         </ul>
         <a href="#cta" class="btn btn-ghost">Подключить</a>
       </div>
       <div class="price-card featured">
         <h3>Бизнес</h3>
         <div class="price-desc">Для центров с постоянным потоком</div>
-        <div class="price">15 000 ₽ <small>/ месяц</small></div>
-        <div class="price-note">Включено 50 записей в месяц</div>
+        <div class="price">225 000 ₽ <small>/ месяц</small></div>
+        <span class="per-slot">4 500 ₽ за запись · экономия 10%</span>
         <ul class="price-list">
           <li>Всё из тарифа «Старт»</li>
-          <li>До 50 записей в месяц</li>
-          <li>Массовая загрузка клиентов</li>
-          <li>Докупка сверх квоты — 2 500 ₽</li>
+          <li><b>50 записей</b> в месяц включены</li>
+          <li>Массовая загрузка клиентов файлом</li>
+          <li>Докупка сверх квоты — 4 500 ₽</li>
           <li>Приоритетная поддержка</li>
         </ul>
         <a href="#cta" class="btn btn-primary">Подключить</a>
       </div>
+      <div class="price-card">
+        <h3>Премиум</h3>
+        <div class="price-desc">Для крупных центров и сетей</div>
+        <div class="price">400 000 ₽ <small>/ месяц</small></div>
+        <span class="per-slot">4 000 ₽ за запись · экономия 20%</span>
+        <ul class="price-list">
+          <li>Всё из тарифа «Бизнес»</li>
+          <li><b>100 записей</b> в месяц включены</li>
+          <li>Персональный менеджер</li>
+          <li>API-доступ для интеграции</li>
+          <li>Докупка сверх квоты — 4 000 ₽</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost">Подключить</a>
+      </div>
     </div>
-    <p style="text-align: center; margin-top: 28px; color: var(--muted); font-size: 14px;">Нужно больше 50 записей? <a href="#cta" style="color: var(--green); font-weight: 600;">Обсудим индивидуальный тариф</a></p>
+    <p style="text-align: center; margin-top: 28px; color: var(--muted); font-size: 14px;">Нужно больше 100 записей в месяц? <a href="#cta" style="color: var(--green); font-weight: 600;">Обсудим индивидуальный тариф</a></p>
   </div>
 </section>
 

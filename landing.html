@@ -35,6 +35,32 @@
     border-bottom: 1px solid var(--line);
   }
   .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+
+  /* TICKER — бегущая строка */
+  .ticker {
+    background: var(--ink); color: #fff;
+    overflow: hidden; position: relative;
+    padding: 12px 0; border-bottom: 1px solid #2a3142;
+  }
+  .ticker-track {
+    display: flex; gap: 0;
+    animation: tickerScroll 38s linear infinite;
+    width: max-content;
+  }
+  .ticker-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 32px; font-size: 14px; font-weight: 500;
+    white-space: nowrap; color: #e5e7eb;
+  }
+  .ticker-item::after {
+    content: '•'; margin-left: 32px; color: #4f46e5; font-size: 18px;
+  }
+  .ticker-item .em { font-size: 16px; }
+  @keyframes tickerScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
   .logo { font-weight: 700; font-size: 19px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
   .logo .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--indigo); display: inline-block; }
   .nav-links { display: flex; gap: 28px; align-items: center; }
@@ -162,10 +188,25 @@
     .steps { grid-template-columns: 1fr 1fr; }
     .section-head h2 { font-size: 30px; }
     .cta-final h2 { font-size: 28px; }
+    /* Большие кликабельные карточки флагов на планшете */
+    .flags-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .flag-chip {
+      flex-direction: column; gap: 10px; padding: 18px 12px;
+      font-size: 16px; border-radius: 16px; justify-content: center;
+    }
+    .flag-chip .flag { width: 48px; height: 32px; border-radius: 5px; }
+    .flags-hint { font-size: 14px; margin-top: 18px; }
   }
   @media (max-width: 480px) {
     .steps { grid-template-columns: 1fr; }
     .hero h1 { font-size: 32px; }
+    .ticker-item { font-size: 13px; padding: 0 22px; }
+    .ticker-item::after { margin-left: 22px; }
+    /* Ещё крупнее на телефоне */
+    .flag-chip {
+      padding: 22px 12px; font-size: 17px;
+    }
+    .flag-chip .flag { width: 56px; height: 38px; border-radius: 6px; }
   }
 
   /* TRY-LINK in hero */
@@ -253,14 +294,32 @@
   </div>
 </header>
 
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ticker-item"><span class="em">⚡</span> Мониторинг слотов 24/7</div>
+    <div class="ticker-item"><span class="em">💰</span> Платишь только за результат</div>
+    <div class="ticker-item"><span class="em">🏷️</span> Одна цена для всех 4 стран</div>
+    <div class="ticker-item"><span class="em">🤖</span> Не нужно искать ботов по странам</div>
+    <div class="ticker-item"><span class="em">🔔</span> Уведомление в момент слота</div>
+    <div class="ticker-item"><span class="em">📋</span> Готовый пакет документов</div>
+    <!-- дубль для бесшовной прокрутки -->
+    <div class="ticker-item"><span class="em">⚡</span> Мониторинг слотов 24/7</div>
+    <div class="ticker-item"><span class="em">💰</span> Платишь только за результат</div>
+    <div class="ticker-item"><span class="em">🏷️</span> Одна цена для всех 4 стран</div>
+    <div class="ticker-item"><span class="em">🤖</span> Не нужно искать ботов по странам</div>
+    <div class="ticker-item"><span class="em">🔔</span> Уведомление в момент слота</div>
+    <div class="ticker-item"><span class="em">📋</span> Готовый пакет документов</div>
+  </div>
+</div>
+
 <!-- HERO -->
 <section class="hero">
   <div class="wrap">
-    <div class="pill">⚡ Мониторинг слотов 24/7</div>
     <h1>Слоты в консульства —<br>без <span class="accent">бессонных ночей</span> у монитора</h1>
     <p class="sub">Франция, Италия, Испания, Болгария. Одна фиксированная цена за запись — для любой страны.</p>
     <div class="hero-cta">
-      <a href="#cta" class="btn btn-primary btn-lg">Я хочу запись</a>
+      <a href="#cta" class="btn btn-primary btn-lg">Найти мне слот</a>
       <a href="centers.html" class="btn btn-ghost btn-lg">Я визовый центр →</a>
     </div>
     <div class="flags-row">
@@ -367,12 +426,12 @@
           <li>Мониторинг окон 24/7</li>
           <li>Готовый пакет документов</li>
         </ul>
-        <a href="#cta" class="btn btn-primary">Я хочу запись</a>
+        <a href="#cta" class="btn btn-primary">Найти мне слот</a>
       </div>
       <div class="aud-card" id="centers">
         <span class="aud-tag center">Для визовых центров</span>
         <h3>Подписка + квота</h3>
-        <div class="price">от 5 000 ₽ <small>/ месяц</small></div>
+        <div class="price">от 50 000 ₽ <small>/ месяц</small></div>
         <div class="price-note">Доступ к агрегатору и квота записей.</div>
         <ul class="aud-list">
           <li>Лента слотов в реальном времени по всем странам</li>
