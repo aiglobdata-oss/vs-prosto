@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisaSlot для визовых центров — лента слотов и автоматизация записи в консульства</title>
+<style>
+  :root {
+    --indigo: #4f46e5;
+    --indigo-dark: #4338ca;
+    --indigo-light: #eef2ff;
+    --green: #16a34a;
+    --green-light: #e7f8ee;
+    --ink: #0f1729;
+    --muted: #5b6478;
+    --line: #e6e8ee;
+    --bg: #ffffff;
+    --bg-soft: #f7f8fb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-weight: 700; font-size: 19px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink); }
+  .logo .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--indigo); display: inline-block; }
+  .logo .sub-tag { font-size: 12px; font-weight: 600; background: var(--green-light); color: #157a47; padding: 3px 8px; border-radius: 6px; margin-left: 4px; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 500; }
+  .nav-links a:hover { color: var(--ink); }
+  .btn {
+    display: inline-block; border: none; cursor: pointer; text-decoration: none;
+    font-weight: 600; font-size: 15px; border-radius: 12px; padding: 12px 22px;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--indigo); color: #fff; box-shadow: 0 6px 20px rgba(79,70,229,0.28); }
+  .btn-ghost { background: #fff; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn-lg { padding: 15px 30px; font-size: 16px; }
+
+  /* HERO */
+  .hero { padding: 80px 0 64px; background:
+    radial-gradient(60% 50% at 50% 0%, var(--green-light) 0%, rgba(231,248,238,0) 70%); }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green-light); color: #157a47;
+    font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: 48px; line-height: 1.08; letter-spacing: -0.03em; font-weight: 800; margin-bottom: 20px;
+  }
+  .hero h1 .accent { color: var(--green); }
+  .hero p.sub { font-size: 19px; color: var(--muted); margin-bottom: 32px; }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-stats { display: flex; gap: 32px; margin-top: 36px; }
+  .stat .num { font-size: 28px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+  .stat .lbl { font-size: 13px; color: var(--muted); }
+
+  /* DASHBOARD MOCKUP */
+  .dash-mock {
+    background: #fff; border-radius: 18px; border: 1px solid var(--line);
+    box-shadow: 0 20px 60px rgba(15,23,41,0.08); overflow: hidden;
+  }
+  .dash-top {
+    background: var(--ink); color: #fff; padding: 14px 18px;
+    display: flex; align-items: center; gap: 8px; font-size: 13px;
+  }
+  .dash-top .dots { display: flex; gap: 5px; }
+  .dash-top .dots span { width: 11px; height: 11px; border-radius: 50%; background: #444a5e; display: inline-block; }
+  .dash-top .title { margin-left: 12px; opacity: 0.85; font-weight: 500; }
+  .dash-body { padding: 20px; }
+  .dash-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .metric { background: var(--bg-soft); border-radius: 12px; padding: 12px 14px; }
+  .metric .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; font-weight: 600; }
+  .metric .val { font-size: 22px; font-weight: 700; }
+  .metric .val.green { color: var(--green); }
+  .metric .val.indigo { color: var(--indigo); }
+  .slot-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; background: var(--bg-soft); border-radius: 10px; margin-bottom: 8px;
+  }
+  .slot-l { display: flex; align-items: center; gap: 12px; }
+  .slot-flag { font-size: 22px; }
+  .slot-info .country { font-weight: 600; font-size: 14px; }
+  .slot-info .meta { font-size: 12px; color: var(--muted); }
+  .slot-badge { background: var(--green); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+  .slot-badge.pending { background: #fbbf24; color: #6b3f00; }
+
+  /* SECTION */
+  section.block { padding: 80px 0; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+  .section-head .eyebrow { color: var(--green); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .section-head h2 { font-size: 38px; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 14px; }
+  .section-head p { font-size: 18px; color: var(--muted); }
+
+  /* PAIN POINTS */
+  .pains { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .pain {
+    background: #fff; border: 1.5px solid var(--line); border-radius: 16px; padding: 24px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .pain .x { color: #dc2626; font-size: 22px; flex-shrink: 0; font-weight: 800; }
+  .pain h4 { font-size: 17px; margin-bottom: 4px; }
+  .pain p { color: var(--muted); font-size: 15px; }
+
+  /* FEATURES */
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .feature {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: 18px; padding: 28px;
+  }
+  .feature .ico {
+    width: 48px; height: 48px; border-radius: 12px; background: var(--green-light);
+    display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px;
+  }
+  .feature h3 { font-size: 19px; margin-bottom: 8px; }
+  .feature p { color: var(--muted); font-size: 16px; }
+
+  /* PRICING */
+  .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 820px; margin: 0 auto; }
+  .price-card { border: 1.5px solid var(--line); border-radius: 22px; padding: 36px; background: #fff; }
+  .price-card.featured { border-color: var(--green); box-shadow: 0 16px 48px rgba(22,163,74,0.14); position: relative; }
+  .price-card.featured::before {
+    content: "Рекомендуем"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: #fff; font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 999px;
+  }
+  .price-card h3 { font-size: 24px; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .price-card .price-desc { color: var(--muted); font-size: 15px; margin-bottom: 18px; }
+  .price-card .price { font-size: 36px; font-weight: 800; margin: 12px 0 4px; letter-spacing: -0.02em; }
+  .price-card .price small { font-size: 16px; font-weight: 600; color: var(--muted); }
+  .price-card .price-note { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+  .price-list { list-style: none; margin-bottom: 28px; }
+  .price-list li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; font-size: 15px; }
+  .price-list li::before { content: "✓"; color: var(--green); font-weight: 800; flex-shrink: 0; }
+  .price-card .btn { width: 100%; text-align: center; }
+
+  /* CTA */
+  .cta-final { background: var(--ink); color: #fff; border-radius: 28px; padding: 64px 40px; text-align: center; margin: 0 24px; }
+  .cta-final h2 { font-size: 36px; letter-spacing: -0.02em; margin-bottom: 14px; max-width: 640px; margin-left: auto; margin-right: auto; }
+  .cta-final p { font-size: 18px; opacity: 0.85; max-width: 540px; margin: 0 auto 32px; }
+  .cta-final .btn-primary { background: var(--green); color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+
+  /* FOOTER */
+  footer { padding: 48px 0 64px; border-top: 1px solid var(--line); margin-top: 80px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .foot .muted { color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 820px) {
+    .hero h1 { font-size: 36px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+    .nav-links a:not(.btn) { display: none; }
+    .pains, .features, .price-grid { grid-template-columns: 1fr; }
+    .section-head h2 { font-size: 28px; }
+    .cta-final h2 { font-size: 26px; }
+    .hero-stats { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap nav">
+    <a href="landing.html" class="logo"><span class="dot"></span>VisaSlot <span class="sub-tag">для центров</span></a>
+    <nav class="nav-links">
+      <a href="#how">Возможности</a>
+      <a href="#pricing">Тарифы</a>
+      <a href="landing.html">Для физлиц</a>
+      <a href="#cta" class="btn btn-primary">Подключить центр</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="pill">🏢 B2B-доступ к агрегатору</div>
+      <h1>Перестаньте платить за каждого бота — <span class="accent">подписка покрывает всё</span></h1>
+      <p class="sub">Лента свободных слотов по Франции, Италии, Испании и Болгарии — в одном кабинете. Массовая загрузка клиентов и предсказуемая стоимость на месяц вперёд.</p>
+      <div class="hero-cta">
+        <a href="#cta" class="btn btn-primary btn-lg">Подключить центр</a>
+        <a href="#how" class="btn btn-ghost btn-lg">Как это работает</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="num">4</div>
+          <div class="lbl">страны на старте</div>
+        </div>
+        <div class="stat">
+          <div class="num">24/7</div>
+          <div class="lbl">мониторинг слотов</div>
+        </div>
+        <div class="stat">
+          <div class="num">∞</div>
+          <div class="lbl">клиентов в кабинете</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard mockup -->
+    <div class="dash-mock">
+      <div class="dash-top">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="title">Кабинет визового центра</div>
+      </div>
+      <div class="dash-body">
+        <div class="dash-row">
+          <div class="metric">
+            <div class="lbl">Заявки</div>
+            <div class="val indigo">47</div>
+          </div>
+          <div class="metric">
+            <div class="lbl">Слоты</div>
+            <div class="val green">12</div>
+          </div>
+          <div class="metric">
+            <div class="lbl">Квота</div>
+            <div class="val">38/50</div>
+          </div>
+        </div>
+        <div style="font-size: 12px; font-weight: 600; color: var(--muted); margin: 16px 0 10px; text-transform: uppercase; letter-spacing: 0.04em;">Лента слотов</div>
+        <div class="slot-row">
+          <div class="slot-l">
+            <span class="slot-flag">🇫🇷</span>
+            <div class="slot-info">
+              <div class="country">Франция · Москва</div>
+              <div class="meta">14 июля, 10:30</div>
+            </div>
+          </div>
+          <span class="slot-badge">свободен</span>
+        </div>
+        <div class="slot-row">
+          <div class="slot-l">
+            <span class="slot-flag">🇮🇹</span>
+            <div class="slot-info">
+              <div class="country">Италия · СПб</div>
+              <div class="meta">18 июля, 14:00</div>
+            </div>
+          </div>
+          <span class="slot-badge">свободен</span>
+        </div>
+        <div class="slot-row">
+          <div class="slot-l">
+            <span class="slot-flag">🇪🇸</span>
+            <div class="slot-info">
+              <div class="country">Испания · Москва</div>
+              <div class="meta">22 июля, 11:15</div>
+            </div>
+          </div>
+          <span class="slot-badge pending">забронирован</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section class="block">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Знакомо?</div>
+      <h2>Как сейчас работают визовые центры</h2>
+      <p>Скорее всего, эти проблемы у вас тоже есть.</p>
+    </div>
+    <div class="pains">
+      <div class="pain">
+        <span class="x">✕</span>
+        <div>
+          <h4>Покупаете ботов по отдельности</h4>
+          <p>Один бот для Франции, другой для Италии, третий для Испании. Каждый со своей ценой и риском бана.</p>
+        </div>
+      </div>
+      <div class="pain">
+        <span class="x">✕</span>
+        <div>
+          <h4>Платите $50+ за каждый слот</h4>
+          <p>На каждом клиенте съедается маржа. И цена скачет от страны к стране — невозможно планировать.</p>
+        </div>
+      </div>
+      <div class="pain">
+        <span class="x">✕</span>
+        <div>
+          <h4>Каждого клиента ведёте вручную</h4>
+          <p>Нет одного места, где видно все заявки. Менеджеры теряются в чатах, таблицах и пропусках.</p>
+        </div>
+      </div>
+      <div class="pain">
+        <span class="x">✕</span>
+        <div>
+          <h4>Слоты ловите по ночам</h4>
+          <p>Слоты появляются в произвольное время. Чтобы успеть — нужно сидеть за монитором или платить дороже.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="block" id="how" style="background: var(--bg-soft);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Что в кабинете</div>
+      <h2>Один кабинет вместо десятка ботов</h2>
+      <p>Всё, что нужно центру для работы с записью — в одном окне.</p>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <div class="ico">📊</div>
+        <h3>Дашборд заявок</h3>
+        <p>Все активные клиенты, найденные слоты и остаток квоты по подписке — на одном экране. Менеджер видит статус каждой заявки.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">📥</div>
+        <h3>Массовая загрузка клиентов</h3>
+        <p>Загружаете список заявителей файлом — для каждого свои параметры поиска (страна, даты, город). Не нужно вводить вручную.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">⚡</div>
+        <h3>Лента слотов в реальном времени</h3>
+        <p>Все свободные окна по 4 странам в одной ленте. Фильтры по стране, городу и датам. Видите всё, что появляется на рынке.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">💳</div>
+        <h3>Биллинг и история</h3>
+        <p>Статус подписки, история платежей, докупка отдельных записей сверх квоты по сниженной цене. Прозрачно для бухгалтерии.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="block" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Тарифы</div>
+      <h2>Подписка + квота записей</h2>
+      <p>Платите фиксированно в месяц, а не за каждого клиента в три раза дороже.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <h3>Старт</h3>
+        <div class="price-desc">Для центров с небольшим потоком</div>
+        <div class="price">5 000 ₽ <small>/ месяц</small></div>
+        <div class="price-note">Включено 10 записей в месяц</div>
+        <ul class="price-list">
+          <li>Доступ к ленте слотов 4 стран</li>
+          <li>До 10 записей в месяц</li>
+          <li>Дашборд и история</li>
+          <li>Докупка сверх квоты — 3 000 ₽</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost">Подключить</a>
+      </div>
+      <div class="price-card featured">
+        <h3>Бизнес</h3>
+        <div class="price-desc">Для центров с постоянным потоком</div>
+        <div class="price">15 000 ₽ <small>/ месяц</small></div>
+        <div class="price-note">Включено 50 записей в месяц</div>
+        <ul class="price-list">
+          <li>Всё из тарифа «Старт»</li>
+          <li>До 50 записей в месяц</li>
+          <li>Массовая загрузка клиентов</li>
+          <li>Докупка сверх квоты — 2 500 ₽</li>
+          <li>Приоритетная поддержка</li>
+        </ul>
+        <a href="#cta" class="btn btn-primary">Подключить</a>
+      </div>
+    </div>
+    <p style="text-align: center; margin-top: 28px; color: var(--muted); font-size: 14px;">Нужно больше 50 записей? <a href="#cta" style="color: var(--green); font-weight: 600;">Обсудим индивидуальный тариф</a></p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="block" id="cta" style="padding-top: 0;">
+  <div class="cta-final">
+    <h2>Подключите центр в числе первых</h2>
+    <p>Запускаемся с визовых центров. Первые партнёры получат приоритетные условия и фиксированные цены на год.</p>
+    <a href="mailto:partners@visaslot.ru" class="btn btn-primary btn-lg">Оставить заявку</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot">
+    <a href="landing.html" class="logo"><span class="dot"></span>VisaSlot</a>
+    <div class="muted">© 2026 VisaSlot. Сервис уведомлений о свободных слотах.</div>
+  </div>
+</footer>
+
+</body>
+</html>

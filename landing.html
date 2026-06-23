@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisaSlot — слоты в консульства без бессонных ночей</title>
+<style>
+  :root {
+    --indigo: #4f46e5;
+    --indigo-dark: #4338ca;
+    --indigo-light: #eef2ff;
+    --green: #16a34a;
+    --ink: #0f1729;
+    --muted: #5b6478;
+    --line: #e6e8ee;
+    --bg: #ffffff;
+    --bg-soft: #f7f8fb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* HEADER */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-weight: 700; font-size: 19px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+  .logo .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--indigo); display: inline-block; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 500; }
+  .nav-links a:hover { color: var(--ink); }
+  .btn {
+    display: inline-block; border: none; cursor: pointer; text-decoration: none;
+    font-weight: 600; font-size: 15px; border-radius: 12px; padding: 12px 22px;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--indigo); color: #fff; box-shadow: 0 6px 20px rgba(79,70,229,0.28); }
+  .btn-ghost { background: #fff; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn-lg { padding: 15px 30px; font-size: 16px; }
+
+  /* HERO */
+  .hero { padding: 80px 0 64px; text-align: center; background:
+    radial-gradient(60% 50% at 50% 0%, #eef2ff 0%, rgba(238,242,255,0) 70%); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--indigo-light); color: var(--indigo-dark);
+    font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: 52px; line-height: 1.08; letter-spacing: -0.03em; font-weight: 800;
+    max-width: 760px; margin: 0 auto 20px;
+  }
+  .hero h1 .accent { color: var(--indigo); }
+  .hero p.sub { font-size: 20px; color: var(--muted); max-width: 600px; margin: 0 auto 36px; }
+  .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .flags-row { margin-top: 40px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .flag-chip {
+    display: flex; align-items: center; gap: 8px; background: #fff;
+    border: 1px solid var(--line); border-radius: 14px; padding: 10px 16px; font-weight: 600; font-size: 15px;
+    box-shadow: 0 2px 8px rgba(15,23,41,0.04);
+  }
+  .flag-chip .em { font-size: 22px; }
+
+  /* PRICE BANNER */
+  .price-banner { background: var(--ink); color: #fff; padding: 28px 0; }
+  .price-banner .wrap { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; text-align: center; }
+  .price-banner .big { font-size: 30px; font-weight: 800; }
+  .price-banner .big span { color: #a5b4fc; }
+  .price-banner .small { color: #cbd2e0; font-size: 16px; }
+
+  /* SECTION */
+  section.block { padding: 80px 0; }
+  .section-head { text-align: center; max-width: 620px; margin: 0 auto 52px; }
+  .section-head .eyebrow { color: var(--indigo); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .section-head h2 { font-size: 38px; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 14px; }
+  .section-head p { font-size: 18px; color: var(--muted); }
+
+  /* FEATURES */
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .feature {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: 18px; padding: 28px;
+  }
+  .feature .ico {
+    width: 48px; height: 48px; border-radius: 12px; background: var(--indigo-light);
+    display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px;
+  }
+  .feature h3 { font-size: 19px; margin-bottom: 8px; }
+  .feature p { color: var(--muted); font-size: 16px; }
+
+  /* HOW IT WORKS */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; counter-reset: step; }
+  .step { text-align: left; }
+  .step .num {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--indigo); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; margin-bottom: 16px;
+  }
+  .step h3 { font-size: 18px; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: 15px; }
+
+  /* AUDIENCE CARDS */
+  .aud-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .aud-card { border: 1.5px solid var(--line); border-radius: 22px; padding: 36px; background: #fff; }
+  .aud-card.featured { border-color: var(--indigo); box-shadow: 0 16px 48px rgba(79,70,229,0.14); }
+  .aud-tag { display: inline-block; font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 8px; margin-bottom: 18px; }
+  .aud-tag.people { background: var(--indigo-light); color: var(--indigo-dark); }
+  .aud-tag.center { background: #e7f8ee; color: #157a47; }
+  .aud-card h3 { font-size: 26px; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .aud-card .price { font-size: 40px; font-weight: 800; margin: 16px 0 4px; }
+  .aud-card .price small { font-size: 17px; font-weight: 600; color: var(--muted); }
+  .aud-card .price-note { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+  .aud-list { list-style: none; margin-bottom: 28px; }
+  .aud-list li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; font-size: 16px; }
+  .aud-list li::before { content: "✓"; color: var(--green); font-weight: 800; flex-shrink: 0; }
+  .aud-card .btn { width: 100%; text-align: center; }
+
+  /* CTA */
+  .cta-final { background: var(--indigo); color: #fff; border-radius: 28px; padding: 64px 40px; text-align: center; margin: 0 24px; }
+  .cta-final h2 { font-size: 38px; letter-spacing: -0.02em; margin-bottom: 14px; max-width: 640px; margin-left: auto; margin-right: auto; }
+  .cta-final p { font-size: 19px; opacity: 0.9; max-width: 540px; margin: 0 auto 32px; }
+  .cta-final .btn-primary { background: #fff; color: var(--indigo); box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+
+  /* FOOTER */
+  footer { padding: 48px 0 64px; border-top: 1px solid var(--line); margin-top: 80px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .foot .muted { color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 820px) {
+    .hero h1 { font-size: 38px; }
+    .hero p.sub { font-size: 18px; }
+    .nav-links a:not(.btn) { display: none; }
+    .features, .aud-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .section-head h2 { font-size: 30px; }
+    .cta-final h2 { font-size: 28px; }
+  }
+  @media (max-width: 480px) {
+    .steps { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap nav">
+    <div class="logo"><span class="dot"></span>VisaSlot</div>
+    <nav class="nav-links">
+      <a href="#how">Как это работает</a>
+      <a href="#pricing">Цена</a>
+      <a href="centers.html">Для центров →</a>
+      <a href="#cta" class="btn btn-primary">Оставить заявку</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="pill">⚡ Мониторинг слотов 24/7</div>
+    <h1>Слоты в консульства —<br>без <span class="accent">бессонных ночей</span> у монитора</h1>
+    <p class="sub">Франция, Италия, Испания, Болгария. Одна фиксированная цена за запись — для любой страны.</p>
+    <div class="hero-cta">
+      <a href="#cta" class="btn btn-primary btn-lg">Я хочу запись</a>
+      <a href="#centers" class="btn btn-ghost btn-lg">Я визовый центр</a>
+    </div>
+    <div class="flags-row">
+      <div class="flag-chip"><span class="em">🇫🇷</span> Франция</div>
+      <div class="flag-chip"><span class="em">🇮🇹</span> Италия</div>
+      <div class="flag-chip"><span class="em">🇪🇸</span> Испания</div>
+      <div class="flag-chip"><span class="em">🇧🇬</span> Болгария</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICE BANNER -->
+<div class="price-banner">
+  <div class="wrap">
+    <div class="big">5 000 ₽ <span>за любую страну</span></div>
+    <div class="small">Никаких сюрпризов. Одна цена для всех направлений.</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="block" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Почему мы</div>
+      <h2>Приходишь и подаёшь</h2>
+      <p>Мы берём на себя самое сложное — поиск свободного окна. Тебе остаётся только прийти.</p>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <div class="ico">🏷️</div>
+        <h3>Единая цена для всех стран</h3>
+        <p>Конкуренты берут по-разному за каждую страну. У нас одна фиксированная цена — никаких сюрпризов.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">🔄</div>
+        <h3>Автоматический мониторинг 24/7</h3>
+        <p>Система круглосуточно следит за свободными окнами во всех консульствах. Без участия человека.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">🔔</div>
+        <h3>Уведомление в момент слота</h3>
+        <p>Как только появляется подходящее окно — ты узнаёшь об этом первым и закрепляешь запись.</p>
+      </div>
+      <div class="feature">
+        <div class="ico">📋</div>
+        <h3>Готовый пакет документов</h3>
+        <p>Заполняешь данные один раз. Документы готовы заранее — приходишь и подаёшь без суеты.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="block" id="how" style="background: var(--bg-soft);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Как это работает</div>
+      <h2>Четыре простых шага</h2>
+      <p>Настолько просто, что разберётся каждый.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Выбери страну</h3>
+        <p>Франция, Италия, Испания или Болгария — один тап.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Ответь на вопросы</h3>
+        <p>6–8 простых вопросов о тебе и поездке. Прямо в приложении.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Загрузи документы</h3>
+        <p>Файлом или голосом — система распознает сама.</p>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <h3>Получи слот</h3>
+        <p>Мы найдём окно и уведомим. Платишь только за результат.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING / AUDIENCE -->
+<section class="block" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Тарифы</div>
+      <h2>Для людей и для центров</h2>
+      <p>Платишь за результат, а не за подписку, которая может не пригодиться.</p>
+    </div>
+    <div class="aud-grid">
+      <div class="aud-card featured">
+        <span class="aud-tag people">Для обычных людей</span>
+        <h3>Оплата за результат</h3>
+        <div class="price">5 000 ₽ <small>/ запись</small></div>
+        <div class="price-note">Одинаково для всех стран. Без подписки.</div>
+        <ul class="aud-list">
+          <li>Платишь только когда слот найден</li>
+          <li>Единая цена для Франции, Италии, Испании, Болгарии</li>
+          <li>Мониторинг окон 24/7</li>
+          <li>Готовый пакет документов</li>
+        </ul>
+        <a href="#cta" class="btn btn-primary">Я хочу запись</a>
+      </div>
+      <div class="aud-card" id="centers">
+        <span class="aud-tag center">Для визовых центров</span>
+        <h3>Подписка + квота</h3>
+        <div class="price">от 5 000 ₽ <small>/ месяц</small></div>
+        <div class="price-note">Доступ к агрегатору и квота записей.</div>
+        <ul class="aud-list">
+          <li>Лента слотов в реальном времени по всем странам</li>
+          <li>Массовая загрузка клиентов списком</li>
+          <li>Дашборд заявок и остатка квоты</li>
+          <li>Докупка записей сверх квоты по сниженной цене</li>
+        </ul>
+        <a href="centers.html" class="btn btn-ghost">Подробнее для центров →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="block" id="cta" style="padding-top: 0;">
+  <div class="cta-final">
+    <h2>Оставьте заявку — подключим вас первыми</h2>
+    <p>Как только направление откроется, вы узнаете об этом раньше всех. Никаких бессонных ночей у монитора.</p>
+    <a href="mailto:hello@visaslot.ru" class="btn btn-primary btn-lg">Оставить заявку</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot">
+    <div class="logo"><span class="dot"></span>VisaSlot</div>
+    <div class="muted">© 2026 VisaSlot. Сервис уведомлений о свободных слотах.</div>
+  </div>
+</footer>
+
+</body>
+</html>

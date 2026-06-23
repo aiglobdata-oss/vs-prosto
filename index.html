@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisaSlot — все материалы проекта</title>
+<style>
+  :root {
+    --indigo: #4f46e5;
+    --green: #16a34a;
+    --ink: #0f1729;
+    --muted: #5b6478;
+    --line: #e6e8ee;
+    --bg-soft: #f7f8fb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg-soft);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 48px 24px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  .header { margin-bottom: 40px; }
+  .header .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--indigo); vertical-align: middle; margin-right: 10px; }
+  .header h1 { font-size: 34px; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .header p { font-size: 17px; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 28px;
+    text-decoration: none; color: var(--ink); display: block;
+    transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(15,23,41,0.08); border-color: var(--indigo); }
+  .card .tag {
+    display: inline-block; font-size: 12px; font-weight: 700; padding: 5px 11px;
+    border-radius: 999px; margin-bottom: 14px; letter-spacing: 0.02em;
+  }
+  .tag-people { background: #eef2ff; color: #3730a3; }
+  .tag-center { background: #e7f8ee; color: #157a47; }
+  .tag-doc { background: #fef3c7; color: #92400e; }
+  .tag-mock { background: #fce7f3; color: #9d174d; }
+  .card h3 { font-size: 20px; margin-bottom: 6px; letter-spacing: -0.01em; }
+  .card p { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+  .card .arrow { color: var(--indigo); font-weight: 600; font-size: 15px; }
+  .card.disabled { opacity: 0.55; cursor: not-allowed; }
+  .card.disabled:hover { transform: none; box-shadow: none; border-color: var(--line); }
+  .card.disabled .arrow { color: var(--muted); }
+  .section-h {
+    font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.06em; margin: 36px 0 14px;
+  }
+  .note {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px;
+    color: var(--muted); font-size: 14px;
+  }
+  .note b { color: var(--ink); }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <h1><span class="dot"></span>VisaSlot</h1>
+    <p>Все материалы проекта в одном месте. Кликай на карточку — откроется в этой же вкладке.</p>
+  </div>
+
+  <div class="section-h">Лендинги — готово</div>
+  <div class="grid">
+    <a href="landing.html" class="card">
+      <span class="tag tag-people">Для физлиц</span>
+      <h3>Главный лендинг</h3>
+      <p>Лендинг для конечных пользователей. Фиксированная цена 5 000 ₽ за запись в любую страну.</p>
+      <span class="arrow">Открыть →</span>
+    </a>
+    <a href="centers.html" class="card">
+      <span class="tag tag-center">Для центров</span>
+      <h3>B2B-лендинг</h3>
+      <p>Лендинг для визовых центров. Подписка + квота записей, дашборд, массовая загрузка клиентов.</p>
+      <span class="arrow">Открыть →</span>
+    </a>
+  </div>
+
+  <div class="section-h">Документация</div>
+  <div class="grid">
+    <a href="visa_aggregator-1.docx" class="card">
+      <span class="tag tag-doc">DOCX</span>
+      <h3>Проектный документ</h3>
+      <p>Концепция, архитектура, схема БД, дорожная карта, текст лендинга. Версия 1.0.</p>
+      <span class="arrow">Скачать →</span>
+    </a>
+    <div class="card disabled">
+      <span class="tag tag-mock">Скоро</span>
+      <h3>Мокапы приложения</h3>
+      <p>5 экранов мобильного приложения: страна → опросник → документы → ожидание → слот.</p>
+      <span class="arrow">В работе</span>
+    </div>
+  </div>
+
+  <div class="section-h">Следующие шаги</div>
+  <div class="grid">
+    <div class="card disabled">
+      <span class="tag tag-center">Этап 2</span>
+      <h3>Кабинет визового центра</h3>
+      <p>Полноценный дашборд: заявки, лента слотов, фильтры, биллинг, массовая загрузка.</p>
+      <span class="arrow">В работе</span>
+    </div>
+    <div class="card disabled">
+      <span class="tag tag-people">Этап 4</span>
+      <h3>Мобильное приложение</h3>
+      <p>5 экранов для физлиц. React Native или Flutter. После запуска кабинета и платежей.</p>
+      <span class="arrow">В работе</span>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top: 32px;">
+    <b>Как пользоваться:</b> файл лежит в папке <code style="background: var(--bg-soft); padding: 2px 6px; border-radius: 4px;">Рабочий стол\VAV\Агрегатор по визам\</code>. Открой <b>index.html</b> двойным кликом — это твоя точка входа. Отсюда можно перейти на любую страницу проекта.
+  </div>
+
+</div>
+</body>
+</html>
