@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisaSlot — кликабельный прототип</title>
+<style>
+  :root {
+    --indigo: #4f46e5;
+    --indigo-dark: #4338ca;
+    --indigo-light: #eef2ff;
+    --green: #16a34a;
+    --ink: #0f1729;
+    --muted: #5b6478;
+    --line: #e6e8ee;
+    --bg-soft: #f7f8fb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); background: var(--bg-soft); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 16px;
+  }
+  .crumbs {
+    align-self: stretch; max-width: 1100px; margin: 0 auto 18px;
+    font-size: 14px; color: var(--muted);
+  }
+  .crumbs a { color: var(--indigo); text-decoration: none; }
+  .crumbs a:hover { text-decoration: underline; }
+  .head {
+    max-width: 600px; text-align: center; margin: 0 auto 28px;
+  }
+  .head h1 { font-size: 26px; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .head p { font-size: 15px; color: var(--muted); }
+  .head .tip {
+    display: inline-block; background: var(--indigo-light); color: var(--indigo-dark);
+    padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    margin-top: 12px;
+  }
+
+  /* PHONE */
+  .phone {
+    width: 340px;
+    background: #fff;
+    border-radius: 40px;
+    border: 9px solid #1a1a2e;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(15,23,41,0.22);
+  }
+  .status-bar {
+    background: #1a1a2e; color: #fff;
+    font-size: 12px; padding: 10px 22px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .screen-body {
+    padding: 20px; min-height: 580px; background: #fafbfc;
+    display: none;
+  }
+  .screen-body.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .screen-title { font-size: 22px; font-weight: 700; margin: 0 0 4px; line-height: 1.2; letter-spacing: -0.01em; }
+  .screen-sub { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
+
+  /* FLAGS */
+  .flag { width: 32px; height: 22px; border-radius: 4px; flex-shrink: 0; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.18); display: inline-block; }
+  .flag-lg { width: 56px; height: 38px; border-radius: 6px; }
+  .flag-sm { width: 22px; height: 15px; border-radius: 3px; }
+  .flag-fr { background: linear-gradient(to right, #0055A4 0 33.33%, #fff 33.33% 66.66%, #EF4135 66.66% 100%); }
+  .flag-it { background: linear-gradient(to right, #009246 0 33.33%, #fff 33.33% 66.66%, #CE2B37 66.66% 100%); }
+  .flag-es { background: linear-gradient(to bottom, #AA151B 0 25%, #F1BF00 25% 75%, #AA151B 75% 100%); }
+  .flag-bg { background: linear-gradient(to bottom, #fff 0 33.33%, #00966E 33.33% 66.66%, #D62612 66.66% 100%); }
+
+  /* SCREEN 1 — country */
+  .country-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .country-card {
+    background: #fff; border-radius: 16px;
+    border: 1.5px solid var(--line); padding: 18px 10px 14px;
+    text-align: center; display: flex; flex-direction: column; align-items: center;
+    cursor: pointer; transition: all .15s ease;
+  }
+  .country-card:hover { border-color: #b6b9c5; transform: translateY(-2px); }
+  .country-card.active { border-color: var(--indigo); background: var(--indigo-light); }
+  .country-card .flag { margin-bottom: 10px; }
+  .country-name { font-size: 14px; font-weight: 600; margin: 0 0 2px; }
+  .country-sys { font-size: 10px; color: var(--muted); }
+
+  .btn-primary {
+    width: 100%; background: var(--indigo); color: #fff; border: none;
+    border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 600;
+    cursor: pointer; margin-top: 6px; transition: all .15s ease;
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--indigo-dark); }
+  .btn-primary:disabled { background: #b6b9c5; cursor: not-allowed; }
+
+  /* SCREEN 2 — questionnaire */
+  .progress-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #d0d4dd; transition: all .2s ease; }
+  .dot.active { background: var(--indigo); width: 24px; border-radius: 4px; }
+  .dot.done { background: var(--green); }
+  .question-card {
+    background: #fff; border-radius: 20px; border: 1.5px solid var(--line);
+    padding: 22px 18px; margin-bottom: 14px; min-height: 180px;
+  }
+  .q-step {
+    font-size: 11px; color: var(--indigo); font-weight: 700; margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .q-text { font-size: 18px; font-weight: 600; margin: 0 0 18px; line-height: 1.3; }
+  .q-input {
+    width: 100%; border: 1.5px solid #d0d4dd; border-radius: 12px;
+    padding: 12px 14px; font-size: 14px; background: #f5f7fb; box-sizing: border-box;
+    color: var(--ink); font-family: inherit;
+  }
+  .q-input:focus { outline: none; border-color: var(--indigo); background: #fff; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn-row .back {
+    flex: 1; padding: 13px; border-radius: 12px; border: 1.5px solid #d0d4dd;
+    background: #fff; color: var(--muted); font-size: 14px; cursor: pointer;
+    font-weight: 500;
+  }
+  .btn-row .back:hover { background: #f5f7fb; }
+  .btn-row .next {
+    flex: 2; padding: 13px; border-radius: 12px; background: var(--indigo);
+    color: #fff; font-size: 14px; border: none; cursor: pointer; font-weight: 600;
+  }
+  .btn-row .next:hover { background: var(--indigo-dark); }
+  .btn-row .next:disabled { background: #b6b9c5; cursor: not-allowed; }
+
+  /* SCREEN 3 — documents */
+  .doc-zone {
+    background: #fff; border: 2px dashed #c5cad6; border-radius: 16px;
+    padding: 30px 14px; text-align: center; margin-bottom: 12px;
+    cursor: pointer; transition: all .15s ease;
+  }
+  .doc-zone:hover { border-color: var(--indigo); background: #fbfcff; }
+  .doc-icon {
+    width: 46px; height: 46px; border-radius: 50%; background: var(--indigo-light);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
+  }
+  .doc-icon svg { width: 22px; height: 22px; stroke: var(--indigo); }
+  .doc-text { font-size: 14px; font-weight: 500; margin: 0 0 4px; }
+  .doc-hint { font-size: 11px; color: var(--muted); margin: 0; }
+
+  .uploaded-file {
+    background: #fff; border-radius: 12px; border: 1px solid var(--line);
+    padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    animation: slideIn .25s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .file-thumb { width: 34px; height: 34px; background: var(--indigo-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .file-thumb svg { width: 18px; height: 18px; stroke: var(--indigo); }
+  .file-name { font-size: 13px; font-weight: 600; margin: 0 0 1px; }
+  .file-meta { font-size: 11px; color: var(--green); margin: 0; font-weight: 500; }
+
+  .divider-or {
+    display: flex; align-items: center; gap: 10px;
+    margin: 16px 0 10px; color: var(--muted); font-size: 12px;
+  }
+  .divider-or::before, .divider-or::after {
+    content: ''; flex: 1; height: 1px; background: var(--line);
+  }
+  .voice-btn {
+    width: 100%; border: 1.5px solid #d0d4dd; border-radius: 14px; padding: 13px;
+    font-size: 14px; background: #fff; display: flex; align-items: center;
+    justify-content: center; gap: 8px; cursor: pointer; font-weight: 500;
+    color: var(--ink); margin-bottom: 14px;
+  }
+  .voice-btn:hover { background: #f5f7fb; }
+  .voice-btn.recording { background: #fee; border-color: #fca5a5; color: #b91c1c; }
+  .voice-btn svg { width: 18px; height: 18px; stroke: var(--indigo); }
+  .voice-btn.recording svg { stroke: #b91c1c; }
+
+  /* SCREEN 4 — waiting */
+  .wait-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 340px; text-align: center;
+  }
+  .spinner-ring {
+    width: 78px; height: 78px; border-radius: 50%;
+    border: 5px solid #e5e7eb; border-top-color: var(--indigo);
+    margin: 0 auto 22px;
+    animation: spin 1.2s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .wait-main { font-size: 18px; font-weight: 600; margin: 0 0 8px; line-height: 1.3; }
+  .wait-hint { font-size: 12px; color: var(--muted); margin: 0 0 22px; line-height: 1.5; }
+  .last-check {
+    background: #fff; border-radius: 12px; border: 1px solid var(--line);
+    padding: 10px 14px; font-size: 12px; color: var(--muted);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .last-check svg { width: 13px; height: 13px; stroke: var(--muted); }
+  .params-card {
+    margin-top: 16px; background: #fff; border-radius: 14px;
+    border: 1px solid var(--line); padding: 12px 14px;
+  }
+  .params-card .lbl { font-size: 12px; font-weight: 600; margin: 0 0 3px; }
+  .params-card .val { font-size: 11px; color: var(--muted); margin: 0; }
+  .demo-skip {
+    margin-top: 14px; background: #fff; border: 1px dashed #c5cad6;
+    color: var(--muted); font-size: 11px; padding: 10px;
+    border-radius: 10px; cursor: pointer; width: 100%;
+  }
+  .demo-skip:hover { background: #f5f7fb; }
+
+  /* SCREEN 5 — slot found */
+  .slot-card {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 20px; padding: 20px; color: #fff; margin-bottom: 16px;
+    animation: pop .35s ease;
+  }
+  @keyframes pop {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .slot-badge {
+    background: rgba(255,255,255,0.2); border-radius: 8px;
+    padding: 5px 10px; font-size: 11px; display: inline-flex;
+    align-items: center; gap: 7px; margin-bottom: 14px; font-weight: 500;
+  }
+  .slot-country { font-size: 17px; font-weight: 700; margin: 0 0 3px; }
+  .slot-center { font-size: 12px; opacity: 0.85; margin: 0 0 16px; }
+  .slot-datetime { display: flex; gap: 10px; }
+  .slot-dt-item { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 14px; flex: 1; text-align: center; }
+  .slot-dt-label { font-size: 10px; opacity: 0.85; margin-bottom: 4px; font-weight: 600; }
+  .slot-dt-val { font-size: 16px; font-weight: 700; }
+  .pay-btn {
+    width: 100%; background: var(--green); color: #fff; border: none;
+    border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all .15s ease;
+  }
+  .pay-btn:hover { background: #15803d; }
+  .pay-note { text-align: center; font-size: 11px; color: var(--muted); margin: 10px 0 0; }
+
+  /* SCREEN 6 — success */
+  .success-wrap {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 460px; text-align: center;
+  }
+  .success-circle {
+    width: 92px; height: 92px; border-radius: 50%; background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    animation: pop .4s ease;
+  }
+  .success-circle svg { width: 50px; height: 50px; stroke: #fff; stroke-width: 3; }
+  .success-title { font-size: 22px; font-weight: 700; margin: 0 0 8px; }
+  .success-text { font-size: 14px; color: var(--muted); margin: 0 0 24px; line-height: 1.5; }
+  .ticket-card {
+    background: #fff; border-radius: 14px; border: 1.5px solid var(--green);
+    padding: 16px; width: 100%; text-align: left;
+  }
+  .ticket-card .label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .ticket-card .info { font-size: 13px; line-height: 1.7; }
+  .ticket-card .info b { font-weight: 700; }
+
+  /* CONTROLS — devbar under phone */
+  .controls {
+    margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  }
+  .controls .ctrl-btn {
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 14px; font-size: 13px; cursor: pointer; color: var(--muted); font-weight: 500;
+  }
+  .controls .ctrl-btn:hover { background: #f5f7fb; color: var(--ink); }
+  .step-indicator {
+    font-size: 13px; color: var(--muted); margin-top: 14px;
+  }
+  .step-indicator b { color: var(--ink); }
+
+  @media (max-width: 480px) {
+    .phone { width: 100%; max-width: 340px; }
+    .head h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="crumbs"><a href="index.html">← Все материалы</a></div>
+
+  <div class="head">
+    <h1>Кликабельный прототип</h1>
+    <p>Тыкай кнопки внутри телефона — пройди весь путь от выбора страны до брони слота.</p>
+    <div class="tip">💡 Совет: жми «Выбрать Францию» в первом экране</div>
+  </div>
+
+  <div class="phone">
+    <div class="status-bar"><span id="clock">9:41</span><span>•••</span></div>
+
+    <!-- SCREEN 1 — country -->
+    <div class="screen-body active" data-screen="1">
+      <p class="screen-title">Куда хочешь<br>поехать?</p>
+      <p class="screen-sub">Выбери страну, мы найдём слот</p>
+      <div class="country-grid">
+        <div class="country-card" data-country="fr" data-name="Франция" data-sys="VFS Global">
+          <span class="flag flag-lg flag-fr"></span>
+          <p class="country-name">Франция</p>
+          <p class="country-sys">VFS Global</p>
+        </div>
+        <div class="country-card" data-country="it" data-name="Италия" data-sys="VFS / Almaviva">
+          <span class="flag flag-lg flag-it"></span>
+          <p class="country-name">Италия</p>
+          <p class="country-sys">VFS / Almaviva</p>
+        </div>
+        <div class="country-card" data-country="es" data-name="Испания" data-sys="BLS International">
+          <span class="flag flag-lg flag-es"></span>
+          <p class="country-name">Испания</p>
+          <p class="country-sys">BLS International</p>
+        </div>
+        <div class="country-card" data-country="bg" data-name="Болгария" data-sys="VFS Global">
+          <span class="flag flag-lg flag-bg"></span>
+          <p class="country-name">Болгария</p>
+          <p class="country-sys">VFS Global</p>
+        </div>
+      </div>
+      <button class="btn-primary" id="goto-q" disabled>Сначала выбери страну</button>
+    </div>
+
+    <!-- SCREEN 2 — questionnaire -->
+    <div class="screen-body" data-screen="2">
+      <div class="progress-dots" id="progress-dots"></div>
+      <div class="question-card">
+        <p class="q-step" id="q-step">Вопрос 1 из 8</p>
+        <p class="q-text" id="q-text">Как вас зовут?</p>
+        <input class="q-input" id="q-input" type="text" placeholder="" autocomplete="off" />
+      </div>
+      <div class="btn-row">
+        <button class="back" id="q-back">← Назад</button>
+        <button class="next" id="q-next" disabled>Далее →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3 — documents -->
+    <div class="screen-body" data-screen="3">
+      <p class="screen-title">Загрузи документы</p>
+      <p class="screen-sub">Паспорт, фото, страховка</p>
+      <div class="doc-zone" id="doc-zone">
+        <div class="doc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <p class="doc-text">Нажми или перетащи файлы</p>
+        <p class="doc-hint">PDF, JPG, PNG — до 10 МБ</p>
+      </div>
+      <div id="uploaded-list"></div>
+      <div class="divider-or">или наговори голосом</div>
+      <button class="voice-btn" id="voice-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+        <span id="voice-text">Записать голосовое</span>
+      </button>
+      <button class="btn-primary" id="goto-wait" disabled>Загрузи хотя бы один документ</button>
+    </div>
+
+    <!-- SCREEN 4 — waiting -->
+    <div class="screen-body" data-screen="4">
+      <div class="wait-wrap">
+        <div class="spinner-ring"></div>
+        <p class="wait-main" id="wait-main">Ищем свободные слоты<br>во Францию</p>
+        <p class="wait-hint">Мониторим VFS Global 24/7.<br>Уведомим как только появится место.</p>
+        <div class="last-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="last-check-text">Последняя проверка: только что</span>
+        </div>
+      </div>
+      <div class="params-card">
+        <p class="lbl">Ваши параметры</p>
+        <p class="val" id="wait-params">Франция · Туристическая виза · июль–август 2026 · Москва</p>
+      </div>
+      <button class="demo-skip" id="skip-wait">⚡ Демо: симулировать находку слота</button>
+    </div>
+
+    <!-- SCREEN 5 — slot found -->
+    <div class="screen-body" data-screen="5">
+      <p class="screen-title">Слот найден!</p>
+      <p class="screen-sub">Забронируй — пока никто не занял</p>
+      <div class="slot-card">
+        <span class="slot-badge"><span class="flag flag-sm" id="slot-flag"></span> <span id="slot-country-name">Франция</span> · <span id="slot-sys">VFS Global</span></span>
+        <p class="slot-country">Визовый центр Москва</p>
+        <p class="slot-center">Ул. Садовая-Кудринская, 3</p>
+        <div class="slot-datetime">
+          <div class="slot-dt-item">
+            <p class="slot-dt-label">ДАТА</p>
+            <p class="slot-dt-val">14 июля</p>
+          </div>
+          <div class="slot-dt-item">
+            <p class="slot-dt-label">ВРЕМЯ</p>
+            <p class="slot-dt-val">10:30</p>
+          </div>
+        </div>
+      </div>
+      <button class="pay-btn" id="pay-btn">Получить запись — 5 000 ₽</button>
+      <p class="pay-note">Фиксированная цена · Одинаково для всех стран</p>
+    </div>
+
+    <!-- SCREEN 6 — success -->
+    <div class="screen-body" data-screen="6">
+      <div class="success-wrap">
+        <div class="success-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p class="success-title">Запись закреплена</p>
+        <p class="success-text">Подтверждение отправлено на email.<br>Приходи с готовыми документами.</p>
+        <div class="ticket-card">
+          <div class="label">Ваша запись</div>
+          <div class="info">
+            <b id="success-country">Франция</b> · <span id="success-sys">VFS Global</span><br>
+            Визовый центр Москва<br>
+            <b>14 июля, 10:30</b>
+          </div>
+        </div>
+        <button class="btn-primary" style="margin-top: 20px;" id="restart-btn">Пройти заново</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="step-indicator">Шаг <b id="step-num">1</b> из 6</div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="prev-btn">← Назад</button>
+    <button class="ctrl-btn" id="reset-btn">↻ Сначала</button>
+    <button class="ctrl-btn" id="next-btn">Вперёд →</button>
+  </div>
+
+<script>
+  const state = {
+    step: 1,
+    country: null,
+    answers: [],
+    currentQ: 0,
+    files: [],
+    voice: null,
+  };
+
+  const questions = [
+    { text: "Как вас зовут?", placeholder: "Иванов Иван Иванович" },
+    { text: "Дата рождения?", placeholder: "01.01.1990" },
+    { text: "Серия и номер паспорта?", placeholder: "1234 567890" },
+    { text: "Цель поездки?", placeholder: "Туризм" },
+    { text: "Желаемые даты поездки?", placeholder: "Июль — август 2026" },
+    { text: "Город проживания?", placeholder: "Москва" },
+    { text: "Номер телефона?", placeholder: "+7 999 123 45 67" },
+    { text: "Email?", placeholder: "ivan@mail.ru" },
+  ];
+
+  function showScreen(n) {
+    state.step = n;
+    document.querySelectorAll('.screen-body').forEach(s => s.classList.remove('active'));
+    document.querySelector(`[data-screen="${n}"]`).classList.add('active');
+    document.getElementById('step-num').textContent = n;
+    document.getElementById('prev-btn').disabled = n === 1;
+    document.getElementById('next-btn').disabled = n === 6;
+  }
+
+  // SCREEN 1 — country selection
+  document.querySelectorAll('.country-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.country-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      state.country = {
+        code: card.dataset.country,
+        name: card.dataset.name,
+        sys: card.dataset.sys,
+      };
+      const btn = document.getElementById('goto-q');
+      btn.disabled = false;
+      btn.textContent = `Выбрать ${state.country.name} →`;
+    });
+  });
+
+  document.getElementById('goto-q').addEventListener('click', () => {
+    if (!state.country) return;
+    state.currentQ = 0;
+    state.answers = [];
+    renderQuestion();
+    showScreen(2);
+  });
+
+  // SCREEN 2 — questionnaire
+  function renderQuestion() {
+    const i = state.currentQ;
+    const q = questions[i];
+    document.getElementById('q-step').textContent = `Вопрос ${i + 1} из ${questions.length}`;
+    document.getElementById('q-text').textContent = q.text;
+    const input = document.getElementById('q-input');
+    input.placeholder = q.placeholder;
+    input.value = state.answers[i] || '';
+    input.focus();
+
+    const dots = document.getElementById('progress-dots');
+    dots.innerHTML = '';
+    questions.forEach((_, idx) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (idx === i ? ' active' : (idx < i ? ' done' : ''));
+      dots.appendChild(d);
+    });
+
+    document.getElementById('q-next').disabled = !input.value.trim();
+    document.getElementById('q-next').textContent = (i === questions.length - 1) ? 'Готово →' : 'Далее →';
+  }
+
+  document.getElementById('q-input').addEventListener('input', e => {
+    document.getElementById('q-next').disabled = !e.target.value.trim();
+  });
+  document.getElementById('q-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.value.trim()) {
+      document.getElementById('q-next').click();
+    }
+  });
+
+  document.getElementById('q-next').addEventListener('click', () => {
+    const v = document.getElementById('q-input').value.trim();
+    if (!v) return;
+    state.answers[state.currentQ] = v;
+    if (state.currentQ < questions.length - 1) {
+      state.currentQ++;
+      renderQuestion();
+    } else {
+      // done with questionnaire
+      showScreen(3);
+    }
+  });
+
+  document.getElementById('q-back').addEventListener('click', () => {
+    if (state.currentQ > 0) {
+      state.currentQ--;
+      renderQuestion();
+    } else {
+      showScreen(1);
+    }
+  });
+
+  // SCREEN 3 — documents
+  const fakeFiles = [
+    { name: 'pasport_scan.jpg', size: '2.4 МБ' },
+    { name: 'foto_3x4.jpg', size: '1.1 МБ' },
+    { name: 'strahovka.pdf', size: '350 КБ' },
+  ];
+  document.getElementById('doc-zone').addEventListener('click', () => {
+    if (state.files.length >= fakeFiles.length) return;
+    state.files.push(fakeFiles[state.files.length]);
+    renderFiles();
+  });
+  function renderFiles() {
+    const list = document.getElementById('uploaded-list');
+    list.innerHTML = '';
+    state.files.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'uploaded-file';
+      div.innerHTML = `
+        <div class="file-thumb">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div>
+          <p class="file-name">${f.name}</p>
+          <p class="file-meta">${f.size} · загружен ✓</p>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+    updateGotoWait();
+  }
+  let voiceTimer = null;
+  document.getElementById('voice-btn').addEventListener('click', () => {
+    const btn = document.getElementById('voice-btn');
+    const txt = document.getElementById('voice-text');
+    if (btn.classList.contains('recording')) {
+      btn.classList.remove('recording');
+      txt.textContent = 'Голосовое записано ✓';
+      state.voice = 'recorded';
+      clearTimeout(voiceTimer);
+      updateGotoWait();
+    } else if (state.voice === 'recorded') {
+      // re-record
+      state.voice = null;
+      txt.textContent = 'Записать голосовое';
+      updateGotoWait();
+    } else {
+      btn.classList.add('recording');
+      txt.textContent = '● Идёт запись… (нажми чтобы остановить)';
+      voiceTimer = setTimeout(() => {
+        btn.classList.remove('recording');
+        txt.textContent = 'Голосовое записано ✓';
+        state.voice = 'recorded';
+        updateGotoWait();
+      }, 8000);
+    }
+  });
+
+  function updateGotoWait() {
+    const btn = document.getElementById('goto-wait');
+    if (state.files.length > 0 || state.voice) {
+      btn.disabled = false;
+      btn.textContent = 'Готово, ищи слот →';
+    } else {
+      btn.disabled = true;
+      btn.textContent = 'Загрузи хотя бы один документ';
+    }
+  }
+
+  document.getElementById('goto-wait').addEventListener('click', () => {
+    // set waiting screen with country
+    document.getElementById('wait-main').innerHTML = `Ищем свободные слоты<br>в ${countryAcc(state.country.name)}`;
+    document.getElementById('wait-params').textContent = `${state.country.name} · ${state.answers[3] || 'Туризм'} · ${state.answers[4] || 'июль–август 2026'} · ${state.answers[5] || 'Москва'}`;
+    showScreen(4);
+    // auto-progress after 6 seconds
+    waitTimer = setTimeout(() => showSlot(), 6000);
+  });
+
+  function countryAcc(n) {
+    const map = { 'Франция': 'Францию', 'Италия': 'Италию', 'Испания': 'Испанию', 'Болгария': 'Болгарию' };
+    return map[n] || n;
+  }
+
+  // SCREEN 4 — waiting
+  let waitTimer = null;
+  document.getElementById('skip-wait').addEventListener('click', () => {
+    clearTimeout(waitTimer);
+    showSlot();
+  });
+
+  function showSlot() {
+    if (!state.country) return;
+    document.getElementById('slot-flag').className = 'flag flag-sm flag-' + state.country.code;
+    document.getElementById('slot-country-name').textContent = state.country.name;
+    document.getElementById('slot-sys').textContent = state.country.sys;
+    showScreen(5);
+  }
+
+  // SCREEN 5 — pay
+  document.getElementById('pay-btn').addEventListener('click', () => {
+    document.getElementById('success-country').textContent = state.country.name;
+    document.getElementById('success-sys').textContent = state.country.sys;
+    showScreen(6);
+  });
+
+  // SCREEN 6 — restart
+  document.getElementById('restart-btn').addEventListener('click', resetAll);
+
+  // CONTROLS
+  document.getElementById('reset-btn').addEventListener('click', resetAll);
+  document.getElementById('prev-btn').addEventListener('click', () => {
+    if (state.step > 1) showScreen(state.step - 1);
+  });
+  document.getElementById('next-btn').addEventListener('click', () => {
+    if (state.step < 6) showScreen(state.step + 1);
+  });
+
+  function resetAll() {
+    clearTimeout(waitTimer);
+    clearTimeout(voiceTimer);
+    state.country = null;
+    state.answers = [];
+    state.currentQ = 0;
+    state.files = [];
+    state.voice = null;
+    document.querySelectorAll('.country-card').forEach(c => c.classList.remove('active'));
+    const btn = document.getElementById('goto-q');
+    btn.disabled = true;
+    btn.textContent = 'Сначала выбери страну';
+    document.getElementById('uploaded-list').innerHTML = '';
+    document.getElementById('voice-text').textContent = 'Записать голосовое';
+    document.getElementById('voice-btn').classList.remove('recording');
+    updateGotoWait();
+    showScreen(1);
+  }
+
+  // clock
+  function tickClock() {
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    document.getElementById('clock').textContent = `${hh}:${mm}`;
+  }
+  tickClock();
+  setInterval(tickClock, 30000);
+</script>
+
+</body>
+</html>
