@@ -10,6 +10,8 @@
     --indigo-dark: #4338ca;
     --indigo-light: #eef2ff;
     --green: #16a34a;
+    --green-light: #dcfce7;
+    --amber: #f59e0b;
     --ink: #0f1729;
     --muted: #5b6478;
     --line: #e6e8ee;
@@ -29,9 +31,7 @@
   }
   .crumbs a { color: var(--indigo); text-decoration: none; }
   .crumbs a:hover { text-decoration: underline; }
-  .head {
-    max-width: 600px; text-align: center; margin: 0 auto 28px;
-  }
+  .head { max-width: 600px; text-align: center; margin: 0 auto 28px; }
   .head h1 { font-size: 26px; letter-spacing: -0.02em; margin-bottom: 8px; }
   .head p { font-size: 15px; color: var(--muted); }
   .head .tip {
@@ -40,7 +40,7 @@
     margin-top: 12px;
   }
 
-  /* APP SCREEN — без рамки телефона, как реальное приложение */
+  /* APP SCREEN — без рамки телефона */
   .phone {
     width: 100%;
     max-width: 380px;
@@ -90,9 +90,18 @@
     width: 100%; background: var(--indigo); color: #fff; border: none;
     border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 600;
     cursor: pointer; margin-top: 6px; transition: all .15s ease;
+    font-family: inherit;
   }
   .btn-primary:hover:not(:disabled) { background: var(--indigo-dark); }
   .btn-primary:disabled { background: #b6b9c5; cursor: not-allowed; }
+
+  .btn-outline {
+    width: 100%; background: #fff; color: var(--ink);
+    border: 1.5px solid var(--line); border-radius: 14px; padding: 14px;
+    font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px;
+    transition: all .15s ease; font-family: inherit;
+  }
+  .btn-outline:hover { background: var(--bg-soft); border-color: #b6b9c5; }
 
   /* SCREEN 2 — questionnaire */
   .progress-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
@@ -101,182 +110,170 @@
   .dot.done { background: var(--green); }
   .question-card {
     background: #fff; border-radius: 20px; border: 1.5px solid var(--line);
-    padding: 22px 18px; margin-bottom: 14px; min-height: 180px;
+    padding: 22px 18px; margin-bottom: 14px; min-height: 190px;
   }
   .q-step {
     font-size: 11px; color: var(--indigo); font-weight: 700; margin-bottom: 8px;
     text-transform: uppercase; letter-spacing: 0.05em;
   }
   .q-text { font-size: 18px; font-weight: 600; margin: 0 0 18px; line-height: 1.3; }
+  .q-input-wrap { position: relative; }
   .q-input {
     width: 100%; border: 1.5px solid #d0d4dd; border-radius: 12px;
-    padding: 12px 14px; font-size: 14px; background: #f5f7fb; box-sizing: border-box;
+    padding: 12px 50px 12px 14px; font-size: 14px; background: #f5f7fb; box-sizing: border-box;
     color: var(--ink); font-family: inherit;
   }
   .q-input:focus { outline: none; border-color: var(--indigo); background: #fff; }
   .q-input.invalid { border-color: #dc2626; background: #fef2f2; }
+  .mic-btn {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--indigo-light); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+  }
+  .mic-btn:hover { background: #c7d2fe; }
+  .mic-btn svg { width: 18px; height: 18px; stroke: var(--indigo); }
+  .mic-btn.recording { background: #fee2e2; animation: pulseMic 1.2s ease infinite; }
+  .mic-btn.recording svg { stroke: #dc2626; }
+  @keyframes pulseMic {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
+  }
   .q-error { font-size: 12px; color: #dc2626; margin: 8px 0 0; min-height: 16px; font-weight: 500; }
   .btn-row { display: flex; gap: 8px; }
   .btn-row .back {
     flex: 1; padding: 13px; border-radius: 12px; border: 1.5px solid #d0d4dd;
     background: #fff; color: var(--muted); font-size: 14px; cursor: pointer;
-    font-weight: 500;
+    font-weight: 500; font-family: inherit;
   }
   .btn-row .back:hover { background: #f5f7fb; }
   .btn-row .next {
     flex: 2; padding: 13px; border-radius: 12px; background: var(--indigo);
     color: #fff; font-size: 14px; border: none; cursor: pointer; font-weight: 600;
+    font-family: inherit;
   }
   .btn-row .next:hover { background: var(--indigo-dark); }
   .btn-row .next:disabled { background: #b6b9c5; cursor: not-allowed; }
 
-  /* SCREEN 3 — documents */
-  .doc-zone {
-    background: #fff; border: 2px dashed #c5cad6; border-radius: 16px;
-    padding: 30px 14px; text-align: center; margin-bottom: 12px;
-    cursor: pointer; transition: all .15s ease;
-  }
-  .doc-zone:hover { border-color: var(--indigo); background: #fbfcff; }
-  .doc-icon {
-    width: 46px; height: 46px; border-radius: 50%; background: var(--indigo-light);
-    display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
-  }
-  .doc-icon svg { width: 22px; height: 22px; stroke: var(--indigo); }
-  .doc-text { font-size: 14px; font-weight: 500; margin: 0 0 4px; }
-  .doc-hint { font-size: 11px; color: var(--muted); margin: 0; }
-
-  .uploaded-file {
-    background: #fff; border-radius: 12px; border: 1px solid var(--line);
-    padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
-    animation: slideIn .25s ease;
-  }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-6px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  .file-thumb { width: 34px; height: 34px; background: var(--indigo-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .file-thumb svg { width: 18px; height: 18px; stroke: var(--indigo); }
-  .file-name { font-size: 13px; font-weight: 600; margin: 0 0 1px; }
-  .file-meta { font-size: 11px; color: var(--green); margin: 0; font-weight: 500; }
-
-  .divider-or {
-    display: flex; align-items: center; gap: 10px;
-    margin: 16px 0 10px; color: var(--muted); font-size: 12px;
-  }
-  .divider-or::before, .divider-or::after {
-    content: ''; flex: 1; height: 1px; background: var(--line);
-  }
-  .voice-btn {
-    width: 100%; border: 1.5px solid #d0d4dd; border-radius: 14px; padding: 13px;
-    font-size: 14px; background: #fff; display: flex; align-items: center;
-    justify-content: center; gap: 8px; cursor: pointer; font-weight: 500;
-    color: var(--ink); margin-bottom: 14px;
-  }
-  .voice-btn:hover { background: #f5f7fb; }
-  .voice-btn.recording { background: #fee; border-color: #fca5a5; color: #b91c1c; }
-  .voice-btn svg { width: 18px; height: 18px; stroke: var(--indigo); }
-  .voice-btn.recording svg { stroke: #b91c1c; }
-
-  /* SCREEN 4 — waiting */
-  .wait-wrap {
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; min-height: 340px; text-align: center;
-  }
-  .spinner-ring {
-    width: 78px; height: 78px; border-radius: 50%;
-    border: 5px solid #e5e7eb; border-top-color: var(--indigo);
-    margin: 0 auto 22px;
-    animation: spin 1.2s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .wait-main { font-size: 18px; font-weight: 600; margin: 0 0 8px; line-height: 1.3; }
-  .wait-hint { font-size: 12px; color: var(--muted); margin: 0 0 22px; line-height: 1.5; }
-  .last-check {
-    background: #fff; border-radius: 12px; border: 1px solid var(--line);
-    padding: 10px 14px; font-size: 12px; color: var(--muted);
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .last-check svg { width: 13px; height: 13px; stroke: var(--muted); }
-  .params-card {
-    margin-top: 16px; background: #fff; border-radius: 14px;
-    border: 1px solid var(--line); padding: 12px 14px;
-  }
-  .params-card .lbl { font-size: 12px; font-weight: 600; margin: 0 0 3px; }
-  .params-card .val { font-size: 11px; color: var(--muted); margin: 0; }
-  .demo-skip {
-    margin-top: 14px; background: #fff; border: 1px dashed #c5cad6;
-    color: var(--muted); font-size: 11px; padding: 10px;
-    border-radius: 10px; cursor: pointer; width: 100%;
-  }
-  .demo-skip:hover { background: #f5f7fb; }
-
-  /* SCREEN 5 — slot found */
-  .slot-card {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    border-radius: 20px; padding: 20px; color: #fff; margin-bottom: 16px;
-    animation: pop .35s ease;
-  }
-  @keyframes pop {
-    0% { transform: scale(0.95); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-  .slot-badge {
-    background: rgba(255,255,255,0.2); border-radius: 8px;
-    padding: 5px 10px; font-size: 11px; display: inline-flex;
-    align-items: center; gap: 7px; margin-bottom: 14px; font-weight: 500;
-  }
-  .slot-country { font-size: 17px; font-weight: 700; margin: 0 0 3px; }
-  .slot-center { font-size: 12px; opacity: 0.85; margin: 0 0 16px; }
-  .slot-datetime { display: flex; gap: 10px; }
-  .slot-dt-item { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 14px; flex: 1; text-align: center; }
-  .slot-dt-label { font-size: 10px; opacity: 0.85; margin-bottom: 4px; font-weight: 600; }
-  .slot-dt-val { font-size: 16px; font-weight: 700; }
-  .pay-btn {
-    width: 100%; background: var(--green); color: #fff; border: none;
-    border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700;
-    cursor: pointer; transition: all .15s ease;
-  }
-  .pay-btn:hover { background: #15803d; }
-  .pay-note { text-align: center; font-size: 11px; color: var(--muted); margin: 10px 0 0; }
-
-  /* SCREEN 6 — success */
-  .success-wrap {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 460px; text-align: center;
-  }
-  .success-circle {
-    width: 92px; height: 92px; border-radius: 50%; background: var(--green);
+  /* SCREEN 3 — final choice (2 buttons) */
+  .final-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 24px; }
+  .final-check {
+    width: 72px; height: 72px; border-radius: 50%; background: var(--green-light);
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 24px;
-    animation: pop .4s ease;
+    margin: 0 auto 18px;
   }
-  .success-circle svg { width: 50px; height: 50px; stroke: #fff; stroke-width: 3; }
-  .success-title { font-size: 22px; font-weight: 700; margin: 0 0 8px; }
-  .success-text { font-size: 14px; color: var(--muted); margin: 0 0 24px; line-height: 1.5; }
-  .ticket-card {
-    background: #fff; border-radius: 14px; border: 1.5px solid var(--green);
-    padding: 16px; width: 100%; text-align: left;
+  .final-check svg { width: 40px; height: 40px; stroke: var(--green); stroke-width: 3; }
+  .final-title { font-size: 22px; font-weight: 700; margin: 0 0 6px; }
+  .final-text { font-size: 13px; color: var(--muted); margin: 0 0 24px; line-height: 1.5; }
+  .final-summary {
+    background: #fff; border-radius: 14px; border: 1px solid var(--line);
+    padding: 14px; width: 100%; margin-bottom: 22px; text-align: left;
   }
-  .ticket-card .label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
-  .ticket-card .info { font-size: 13px; line-height: 1.7; }
-  .ticket-card .info b { font-weight: 700; }
+  .final-summary p { font-size: 12px; color: var(--muted); margin: 0 0 4px; font-weight: 600; }
+  .final-summary .val { font-size: 13px; color: var(--ink); font-weight: 500; }
+  .btn-gradient {
+    width: 100%; background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #fff; border: none; border-radius: 14px; padding: 16px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 8px 24px rgba(79,70,229,0.32);
+    font-family: inherit; transition: all .15s ease;
+  }
+  .btn-gradient:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(79,70,229,0.4); }
+  .cross-sell {
+    width: 100%; background: #fff7ed; color: #92400e;
+    border: 1.5px solid #fed7aa; border-radius: 14px; padding: 14px;
+    font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: inherit; transition: all .15s ease; text-decoration: none;
+  }
+  .cross-sell:hover { background: #ffedd5; border-color: #fdba74; }
+  .cross-sell svg { width: 18px; height: 18px; }
 
-  /* CONTROLS — devbar under phone */
-  .controls {
-    margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  /* SCREEN 4 — chat */
+  .chat-header {
+    display: flex; align-items: center; gap: 10px; padding: 0 0 14px;
+    border-bottom: 1px solid var(--line); margin-bottom: 14px;
   }
+  .chat-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 14px;
+  }
+  .chat-name { font-size: 14px; font-weight: 600; margin: 0; }
+  .chat-status { font-size: 11px; color: var(--green); margin: 0; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .chat-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .chat-body {
+    min-height: 320px;
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.4; animation: msgIn .3s ease; }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg.bot { background: #fff; border: 1px solid var(--line); align-self: flex-start; border-bottom-left-radius: 4px; color: var(--ink); }
+  .msg.user { background: var(--indigo); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg.bot b { color: var(--indigo); }
+  .msg-time { font-size: 10px; color: var(--muted); margin-top: 3px; }
+  .msg ul { margin: 6px 0 0; padding-left: 18px; }
+  .msg li { margin: 3px 0; }
+  .choice-row { display: flex; gap: 8px; align-self: flex-start; flex-wrap: wrap; }
+  .choice-btn {
+    background: #fff; border: 1.5px solid var(--indigo); color: var(--indigo);
+    padding: 10px 16px; border-radius: 22px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all .15s ease;
+  }
+  .choice-btn:hover { background: var(--indigo); color: #fff; }
+  .chat-input-row {
+    display: flex; align-items: center; gap: 6px;
+    background: #fff; border: 1.5px solid var(--line); border-radius: 22px;
+    padding: 4px 6px 4px 12px;
+  }
+  .chat-input-row input {
+    flex: 1; border: none; outline: none; font-size: 13px; padding: 8px 4px;
+    background: transparent; color: var(--ink); font-family: inherit;
+  }
+  .chat-icon-btn {
+    width: 34px; height: 34px; border-radius: 50%; border: none;
+    background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+  }
+  .chat-icon-btn:hover { background: var(--bg-soft); }
+  .chat-icon-btn svg { width: 16px; height: 16px; stroke: var(--muted); }
+  .chat-icon-btn.mic.recording { background: #fee2e2; }
+  .chat-icon-btn.mic.recording svg { stroke: #dc2626; }
+  .chat-send {
+    width: 36px; height: 36px; border-radius: 50%; border: none;
+    background: var(--indigo); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .chat-send svg { width: 16px; height: 16px; stroke: #fff; fill: #fff; }
+  .chat-send:disabled { background: #b6b9c5; cursor: not-allowed; }
+
+  /* SCREEN 5 — center placeholder */
+  .center-wrap {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 460px; text-align: center; padding: 20px;
+  }
+  .center-icon { font-size: 56px; margin-bottom: 16px; }
+  .center-title { font-size: 20px; font-weight: 700; margin: 0 0 8px; }
+  .center-text { font-size: 14px; color: var(--muted); margin: 0 0 24px; line-height: 1.5; }
+
+  /* CONTROLS */
+  .controls { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
   .controls .ctrl-btn {
     background: #fff; border: 1px solid var(--line); border-radius: 10px;
     padding: 8px 14px; font-size: 13px; cursor: pointer; color: var(--muted); font-weight: 500;
+    font-family: inherit;
   }
   .controls .ctrl-btn:hover { background: #f5f7fb; color: var(--ink); }
-  .step-indicator {
-    font-size: 13px; color: var(--muted); margin-top: 14px;
-  }
+  .step-indicator { font-size: 13px; color: var(--muted); margin-top: 14px; }
   .step-indicator b { color: var(--ink); }
 
   @media (max-width: 480px) {
-    .phone { width: 100%; max-width: 340px; }
+    .phone { width: 100%; max-width: 380px; }
     .head h1 { font-size: 22px; }
   }
 </style>
@@ -287,8 +284,8 @@
 
   <div class="head">
     <h1>Кликабельный прототип</h1>
-    <p>Тыкай кнопки внутри телефона — пройди весь путь от выбора страны до брони слота.</p>
-    <div class="tip">💡 Совет: жми «Выбрать Францию» в первом экране</div>
+    <p>Тыкай кнопки внутри телефона — пройди весь путь от выбора страны до брони.</p>
+    <div class="tip">💡 Совет: жми «Выбрать Францию» в первом экране · 🎤 можно отвечать голосом</div>
   </div>
 
   <div class="phone">
@@ -327,7 +324,12 @@
       <div class="question-card">
         <p class="q-step" id="q-step">Вопрос 1 из 8</p>
         <p class="q-text" id="q-text">Как вас зовут?</p>
-        <input class="q-input" id="q-input" type="text" placeholder="" autocomplete="off" />
+        <div class="q-input-wrap">
+          <input class="q-input" id="q-input" type="text" placeholder="" autocomplete="off" />
+          <button class="mic-btn" id="mic-btn" type="button" title="Наговорить ответ">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+          </button>
+        </div>
         <p class="q-error" id="q-error"></p>
       </div>
       <div class="btn-row">
@@ -336,90 +338,65 @@
       </div>
     </div>
 
-    <!-- SCREEN 3 — documents -->
+    <!-- SCREEN 3 — final 2 buttons -->
     <div class="screen-body" data-screen="3">
-      <p class="screen-title">Загрузи документы</p>
-      <p class="screen-sub">Паспорт, фото, страховка</p>
-      <div class="doc-zone" id="doc-zone">
-        <div class="doc-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        </div>
-        <p class="doc-text">Нажми или перетащи файлы</p>
-        <p class="doc-hint">PDF, JPG, PNG — до 10 МБ</p>
-      </div>
-      <div id="uploaded-list"></div>
-      <div class="divider-or">или наговори голосом</div>
-      <button class="voice-btn" id="voice-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
-        <span id="voice-text">Записать голосовое</span>
-      </button>
-      <button class="btn-primary" id="goto-wait" disabled>Загрузи хотя бы один документ</button>
-    </div>
-
-    <!-- SCREEN 4 — waiting -->
-    <div class="screen-body" data-screen="4">
-      <div class="wait-wrap">
-        <div class="spinner-ring"></div>
-        <p class="wait-main" id="wait-main">Ищем свободные слоты<br>во Францию</p>
-        <p class="wait-hint">Мониторим VFS Global 24/7.<br>Уведомим как только появится место.</p>
-        <div class="last-check">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span id="last-check-text">Последняя проверка: только что</span>
-        </div>
-      </div>
-      <div class="params-card">
-        <p class="lbl">Ваши параметры</p>
-        <p class="val" id="wait-params">Франция · Туристическая виза · июль–август 2026 · Москва</p>
-      </div>
-      <button class="demo-skip" id="skip-wait">⚡ Демо: симулировать находку слота</button>
-    </div>
-
-    <!-- SCREEN 5 — slot found -->
-    <div class="screen-body" data-screen="5">
-      <p class="screen-title">Слот найден!</p>
-      <p class="screen-sub">Забронируй — пока никто не занял</p>
-      <div class="slot-card">
-        <span class="slot-badge"><span class="flag flag-sm" id="slot-flag"></span> <span id="slot-country-name">Франция</span> · <span id="slot-sys">VFS Global</span></span>
-        <p class="slot-country">Визовый центр Москва</p>
-        <p class="slot-center">Ул. Садовая-Кудринская, 3</p>
-        <div class="slot-datetime">
-          <div class="slot-dt-item">
-            <p class="slot-dt-label">ДАТА</p>
-            <p class="slot-dt-val">14 июля</p>
-          </div>
-          <div class="slot-dt-item">
-            <p class="slot-dt-label">ВРЕМЯ</p>
-            <p class="slot-dt-val">10:30</p>
-          </div>
-        </div>
-      </div>
-      <button class="pay-btn" id="pay-btn">Получить запись — 5 000 ₽</button>
-      <p class="pay-note">Фиксированная цена · Одинаково для всех стран</p>
-    </div>
-
-    <!-- SCREEN 6 — success -->
-    <div class="screen-body" data-screen="6">
-      <div class="success-wrap">
-        <div class="success-circle">
+      <div class="final-wrap">
+        <div class="final-check">
           <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <p class="success-title">Запись закреплена</p>
-        <p class="success-text">Подтверждение отправлено на email.<br>Приходи с готовыми документами.</p>
-        <div class="ticket-card">
-          <div class="label">Ваша запись</div>
-          <div class="info">
-            <b id="success-country">Франция</b> · <span id="success-sys">VFS Global</span><br>
-            Визовый центр Москва<br>
-            <b>14 июля, 10:30</b>
-          </div>
+        <p class="final-title">Анкета заполнена ✓</p>
+        <p class="final-text">Все данные собраны.<br>Что дальше?</p>
+        <div class="final-summary">
+          <p>Куда едешь</p>
+          <div class="val" id="summary-country">Франция · VFS Global</div>
         </div>
-        <button class="btn-primary" style="margin-top: 20px;" id="restart-btn">Пройти заново</button>
+        <button class="btn-gradient" id="goto-chat">Оформить визу →</button>
+        <a class="cross-sell" href="landing.html#cards">
+          <span>💳</span>
+          <span>Не забудь оформить карту<br>для оплаты за границей</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- SCREEN 4 — chat -->
+    <div class="screen-body" data-screen="4">
+      <div class="chat-header">
+        <div class="chat-avatar">VS</div>
+        <div>
+          <p class="chat-name">VisaSlot · Поддержка</p>
+          <p class="chat-status">в сети</p>
+        </div>
+      </div>
+      <div class="chat-body" id="chat-body">
+        <!-- сообщения будут добавляться сюда динамически -->
+      </div>
+      <div class="chat-input-row">
+        <button class="chat-icon-btn" id="chat-attach" type="button" title="Прикрепить файл">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <input type="text" id="chat-input" placeholder="Напиши сообщение..." />
+        <button class="chat-icon-btn mic" id="chat-mic" type="button" title="Записать голосовое">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+        </button>
+        <button class="chat-send" id="chat-send" type="button" title="Отправить">
+          <svg viewBox="0 0 24 24"><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 5 — В Визовом центре placeholder -->
+    <div class="screen-body" data-screen="5">
+      <div class="center-wrap">
+        <div class="center-icon">🏢</div>
+        <p class="center-title">Запись в визовый центр</p>
+        <p class="center-text">Этот сценарий пока в разработке.<br>Скоро здесь появится подбор удобного слота и онлайн-запись.</p>
+        <button class="btn-outline" onclick="showScreen(4)">← Вернуться к чату</button>
       </div>
     </div>
 
   </div>
 
-  <div class="step-indicator">Шаг <b id="step-num">1</b> из 6</div>
+  <div class="step-indicator">Шаг <b id="step-num">1</b> из 5</div>
 
   <div class="controls">
     <button class="ctrl-btn" id="prev-btn">← Назад</button>
@@ -433,19 +410,18 @@
     country: null,
     answers: [],
     currentQ: 0,
-    files: [],
-    voice: null,
+    chatMode: null, // 'self' | 'center'
   };
 
   const questions = [
     { text: "Как вас зовут?", placeholder: "Иванов Иван Иванович", type: "name", inputmode: "text", autocap: "words" },
     { text: "Дата рождения?", placeholder: "12.01.1982", type: "date", inputmode: "numeric", maxlength: 10 },
-    { text: "Серия и номер паспорта?", placeholder: "1234 567890", type: "passport", inputmode: "numeric", maxlength: 11 },
-    { text: "Цель поездки?", placeholder: "Туризм", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Цель поездки?", placeholder: "Туризм / работа / учёба", type: "text", inputmode: "text", autocap: "sentences" },
     { text: "Желаемые даты поездки?", placeholder: "Июль — август 2026", type: "text", inputmode: "text", autocap: "sentences" },
-    { text: "Город проживания?", placeholder: "Москва", type: "city", inputmode: "text", autocap: "words" },
-    { text: "Номер телефона?", placeholder: "+7 (999) 123-45-67", type: "phone", inputmode: "tel", maxlength: 18 },
-    { text: "Email?", placeholder: "name@mail.ru", type: "email", inputmode: "email", autocap: "none" },
+    { text: "Сколько человек поедет?", placeholder: "Например: 2 взрослых + 1 ребёнок", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Город проживания и прописки?", placeholder: "Москва, Тверская 12", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Паспорт 5-летний или 10-летний?", placeholder: "5 или 10", type: "passport_years", inputmode: "numeric", maxlength: 2 },
+    { text: "Номер телефона для связи?", placeholder: "+7 (999) 123-45-67", type: "phone", inputmode: "tel", maxlength: 18 },
   ];
 
   // VALIDATION + MASKING
@@ -459,10 +435,6 @@
         if (words.length < 2) return { ok: false, error: 'Укажи фамилию и имя' };
         return { ok: true };
       }
-      case 'city': {
-        if (!/^[А-Яа-яЁё\s\-]+$/.test(v)) return { ok: false, error: 'Только русские буквы' };
-        return { ok: true };
-      }
       case 'date': {
         if (!/^\d{2}\.\d{2}\.\d{4}$/.test(v)) return { ok: false, error: 'Формат: 12.01.1982' };
         const [d, m, y] = v.split('.').map(Number);
@@ -471,8 +443,9 @@
         if (y < 1925 || y > 2015) return { ok: false, error: 'Проверь год' };
         return { ok: true };
       }
-      case 'passport': {
-        if (!/^\d{4}\s\d{6}$/.test(v)) return { ok: false, error: 'Формат: 1234 567890' };
+      case 'passport_years': {
+        const n = parseInt(v, 10);
+        if (n !== 5 && n !== 10) return { ok: false, error: 'Введи 5 или 10' };
         return { ok: true };
       }
       case 'phone': {
@@ -480,10 +453,6 @@
         if (digits.length !== 11 || !digits.startsWith('7')) {
           return { ok: false, error: 'Формат: +7 и 10 цифр' };
         }
-        return { ok: true };
-      }
-      case 'email': {
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return { ok: false, error: 'Например: name@mail.ru' };
         return { ok: true };
       }
       default: return { ok: true };
@@ -498,11 +467,6 @@
         if (d.length <= 4) return d.slice(0, 2) + '.' + d.slice(2);
         return d.slice(0, 2) + '.' + d.slice(2, 4) + '.' + d.slice(4);
       }
-      case 'passport': {
-        const d = value.replace(/\D/g, '').slice(0, 10);
-        if (d.length <= 4) return d;
-        return d.slice(0, 4) + ' ' + d.slice(4);
-      }
       case 'phone': {
         let d = value.replace(/\D/g, '');
         if (d.startsWith('8')) d = '7' + d.slice(1);
@@ -516,21 +480,21 @@
         if (d.length > 9) out += '-' + d.slice(9, 11);
         return out;
       }
-      case 'name':
-      case 'city': {
-        return value.replace(/[^А-Яа-яЁё\s\-]/g, '');
-      }
+      case 'passport_years': return value.replace(/\D/g, '').slice(0, 2);
+      case 'name': return value.replace(/[^А-Яа-яЁё\s\-]/g, '');
       default: return value;
     }
   }
 
+  // SCREEN NAV
   function showScreen(n) {
     state.step = n;
     document.querySelectorAll('.screen-body').forEach(s => s.classList.remove('active'));
-    document.querySelector(`[data-screen="${n}"]`).classList.add('active');
+    const el = document.querySelector(`[data-screen="${n}"]`);
+    if (el) el.classList.add('active');
     document.getElementById('step-num').textContent = n;
     document.getElementById('prev-btn').disabled = n === 1;
-    document.getElementById('next-btn').disabled = n === 6;
+    document.getElementById('next-btn').disabled = n === 5;
   }
 
   // SCREEN 1 — country selection
@@ -568,13 +532,10 @@
     input.value = state.answers[i] || (q.type === 'phone' ? '+7 ' : '');
     input.classList.remove('invalid');
     document.getElementById('q-error').textContent = '';
-
-    // type-specific attributes
     input.setAttribute('inputmode', q.inputmode || 'text');
     input.setAttribute('autocapitalize', q.autocap || 'none');
     if (q.maxlength) input.setAttribute('maxlength', q.maxlength); else input.removeAttribute('maxlength');
-    input.type = (q.type === 'email') ? 'email' : 'text';
-
+    input.type = 'text';
     setTimeout(() => input.focus(), 50);
 
     const dots = document.getElementById('progress-dots');
@@ -584,7 +545,6 @@
       d.className = 'dot' + (idx === i ? ' active' : (idx < i ? ' done' : ''));
       dots.appendChild(d);
     });
-
     updateNextButton();
     document.getElementById('q-next').textContent = (i === questions.length - 1) ? 'Готово →' : 'Далее →';
   }
@@ -599,9 +559,7 @@
   document.getElementById('q-input').addEventListener('input', e => {
     const q = questions[state.currentQ];
     const masked = mask(q.type, e.target.value);
-    if (masked !== e.target.value) {
-      e.target.value = masked;
-    }
+    if (masked !== e.target.value) e.target.value = masked;
     document.getElementById('q-input').classList.remove('invalid');
     document.getElementById('q-error').textContent = '';
     updateNextButton();
@@ -612,7 +570,6 @@
       document.getElementById('q-next').click();
     }
   });
-
   document.getElementById('q-next').addEventListener('click', () => {
     const q = questions[state.currentQ];
     const v = document.getElementById('q-input').value.trim();
@@ -627,10 +584,11 @@
       state.currentQ++;
       renderQuestion();
     } else {
+      // last question done → go to final choice screen
+      document.getElementById('summary-country').textContent = `${state.country.name} · ${state.country.sys}`;
       showScreen(3);
     }
   });
-
   document.getElementById('q-back').addEventListener('click', () => {
     if (state.currentQ > 0) {
       state.currentQ--;
@@ -640,112 +598,184 @@
     }
   });
 
-  // SCREEN 3 — documents
-  const fakeFiles = [
-    { name: 'pasport_scan.jpg', size: '2.4 МБ' },
-    { name: 'foto_3x4.jpg', size: '1.1 МБ' },
-    { name: 'strahovka.pdf', size: '350 КБ' },
-  ];
-  document.getElementById('doc-zone').addEventListener('click', () => {
-    if (state.files.length >= fakeFiles.length) return;
-    state.files.push(fakeFiles[state.files.length]);
-    renderFiles();
-  });
-  function renderFiles() {
-    const list = document.getElementById('uploaded-list');
-    list.innerHTML = '';
-    state.files.forEach(f => {
-      const div = document.createElement('div');
-      div.className = 'uploaded-file';
-      div.innerHTML = `
-        <div class="file-thumb">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
-        <div>
-          <p class="file-name">${f.name}</p>
-          <p class="file-meta">${f.size} · загружен ✓</p>
-        </div>
-      `;
-      list.appendChild(div);
+  // VOICE — Web Speech API
+  let recognition = null;
+  let activeMicTarget = null; // either q-input or chat-input
+  function initSpeech() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return null;
+    const r = new SR();
+    r.lang = 'ru-RU';
+    r.continuous = false;
+    r.interimResults = true;
+    return r;
+  }
+
+  function bindMic(micBtn, inputEl, onResult) {
+    micBtn.addEventListener('click', () => {
+      if (!recognition) recognition = initSpeech();
+      if (!recognition) {
+        alert('Голосовой ввод не поддерживается в этом браузере. Попробуй Chrome или Edge.');
+        return;
+      }
+      if (micBtn.classList.contains('recording')) {
+        recognition.stop();
+        return;
+      }
+      activeMicTarget = inputEl;
+      micBtn.classList.add('recording');
+      try {
+        recognition.start();
+      } catch (e) {
+        micBtn.classList.remove('recording');
+      }
+      recognition.onresult = (event) => {
+        let text = '';
+        for (let i = 0; i < event.results.length; i++) {
+          text += event.results[i][0].transcript;
+        }
+        inputEl.value = text;
+        inputEl.dispatchEvent(new Event('input'));
+        if (onResult) onResult(text);
+      };
+      recognition.onend = () => {
+        micBtn.classList.remove('recording');
+      };
+      recognition.onerror = () => {
+        micBtn.classList.remove('recording');
+      };
     });
-    updateGotoWait();
   }
-  let voiceTimer = null;
-  document.getElementById('voice-btn').addEventListener('click', () => {
-    const btn = document.getElementById('voice-btn');
-    const txt = document.getElementById('voice-text');
-    if (btn.classList.contains('recording')) {
-      btn.classList.remove('recording');
-      txt.textContent = 'Голосовое записано ✓';
-      state.voice = 'recorded';
-      clearTimeout(voiceTimer);
-      updateGotoWait();
-    } else if (state.voice === 'recorded') {
-      // re-record
-      state.voice = null;
-      txt.textContent = 'Записать голосовое';
-      updateGotoWait();
-    } else {
-      btn.classList.add('recording');
-      txt.textContent = '● Идёт запись… (нажми чтобы остановить)';
-      voiceTimer = setTimeout(() => {
-        btn.classList.remove('recording');
-        txt.textContent = 'Голосовое записано ✓';
-        state.voice = 'recorded';
-        updateGotoWait();
-      }, 8000);
-    }
-  });
+  bindMic(document.getElementById('mic-btn'), document.getElementById('q-input'));
 
-  function updateGotoWait() {
-    const btn = document.getElementById('goto-wait');
-    if (state.files.length > 0 || state.voice) {
-      btn.disabled = false;
-      btn.textContent = 'Готово, ищи слот →';
-    } else {
-      btn.disabled = true;
-      btn.textContent = 'Загрузи хотя бы один документ';
-    }
-  }
-
-  document.getElementById('goto-wait').addEventListener('click', () => {
-    // set waiting screen with country
-    document.getElementById('wait-main').innerHTML = `Ищем свободные слоты<br>в ${countryAcc(state.country.name)}`;
-    document.getElementById('wait-params').textContent = `${state.country.name} · ${state.answers[3] || 'Туризм'} · ${state.answers[4] || 'июль–август 2026'} · ${state.answers[5] || 'Москва'}`;
+  // SCREEN 3 — go to chat
+  document.getElementById('goto-chat').addEventListener('click', () => {
     showScreen(4);
-    // auto-progress after 6 seconds
-    waitTimer = setTimeout(() => showSlot(), 6000);
+    if (document.getElementById('chat-body').children.length === 0) {
+      initChat();
+    }
   });
 
+  // SCREEN 4 — CHAT
+  function initChat() {
+    const body = document.getElementById('chat-body');
+    body.innerHTML = '';
+    addBotMsg(`Здравствуй, ${getFirstName()}! 👋<br>Анкета на визу <b>${countryAcc(state.country.name)}</b> уже заполнена — все данные у нас.`);
+    setTimeout(() => {
+      addBotMsg(`Как ты хочешь подавать документы?`);
+      addChoices();
+    }, 700);
+  }
+
+  function getFirstName() {
+    const name = state.answers[0] || '';
+    const parts = name.split(/\s+/).filter(Boolean);
+    return parts.length >= 2 ? parts[1] : (parts[0] || 'друг');
+  }
   function countryAcc(n) {
-    const map = { 'Франция': 'Францию', 'Италия': 'Италию', 'Испания': 'Испанию', 'Болгария': 'Болгарию' };
+    const map = { 'Франция': 'во Францию', 'Италия': 'в Италию', 'Испания': 'в Испанию', 'Болгария': 'в Болгарию' };
     return map[n] || n;
   }
 
-  // SCREEN 4 — waiting
-  let waitTimer = null;
-  document.getElementById('skip-wait').addEventListener('click', () => {
-    clearTimeout(waitTimer);
-    showSlot();
-  });
-
-  function showSlot() {
-    if (!state.country) return;
-    document.getElementById('slot-flag').className = 'flag flag-sm flag-' + state.country.code;
-    document.getElementById('slot-country-name').textContent = state.country.name;
-    document.getElementById('slot-sys').textContent = state.country.sys;
-    showScreen(5);
+  function addBotMsg(html) {
+    const body = document.getElementById('chat-body');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.innerHTML = html;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+  function addUserMsg(text) {
+    const body = document.getElementById('chat-body');
+    const div = document.createElement('div');
+    div.className = 'msg user';
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+  function addChoices() {
+    const body = document.getElementById('chat-body');
+    const row = document.createElement('div');
+    row.className = 'choice-row';
+    const selfBtn = document.createElement('button');
+    selfBtn.className = 'choice-btn';
+    selfBtn.textContent = 'Самостоятельно';
+    selfBtn.addEventListener('click', () => choosePath('self'));
+    const centerBtn = document.createElement('button');
+    centerBtn.className = 'choice-btn';
+    centerBtn.textContent = 'В Визовом центре';
+    centerBtn.addEventListener('click', () => choosePath('center'));
+    row.appendChild(selfBtn);
+    row.appendChild(centerBtn);
+    body.appendChild(row);
+    body.scrollTop = body.scrollHeight;
   }
 
-  // SCREEN 5 — pay
-  document.getElementById('pay-btn').addEventListener('click', () => {
-    document.getElementById('success-country').textContent = state.country.name;
-    document.getElementById('success-sys').textContent = state.country.sys;
-    showScreen(6);
-  });
+  function choosePath(mode) {
+    state.chatMode = mode;
+    document.querySelectorAll('.choice-row').forEach(r => r.remove());
+    if (mode === 'self') {
+      addUserMsg('Самостоятельно');
+      setTimeout(() => {
+        addBotMsg(`Отлично! Вот что понадобится для визы <b>${countryAcc(state.country.name)}</b>:<br>${getDocsList()}`);
+      }, 500);
+      setTimeout(() => {
+        addBotMsg(`Также пришлю <b>опросный лист консульства</b> ${countryAdj(state.country.name)} — заполни и пришли обратно прямо в чат.<br>Если будут вопросы — пиши, я рядом.`);
+      }, 1600);
+    } else {
+      addUserMsg('В Визовом центре');
+      setTimeout(() => showScreen(5), 600);
+    }
+  }
 
-  // SCREEN 6 — restart
-  document.getElementById('restart-btn').addEventListener('click', resetAll);
+  function countryAdj(n) {
+    const map = { 'Франция': 'Франции', 'Италия': 'Италии', 'Испания': 'Испании', 'Болгария': 'Болгарии' };
+    return map[n] || n;
+  }
+
+  function getDocsList() {
+    const base = [
+      'Загранпаспорт (скан разворота)',
+      'Внутренний паспорт РФ (основная + прописка)',
+      'Фото 3.5×4.5 см, цветное на белом фоне',
+      'Справка с работы (или 2-НДФЛ)',
+      'Выписка из банка за 3 месяца',
+      'Бронь авиабилетов и отеля',
+      'Медицинская страховка на сумму ≥ 30 000 €',
+    ];
+    const extra = {
+      'Франция': ['Анкета на визу C-Schengen', 'Согласие на обработку данных VFS'],
+      'Италия': ['Анкета C-Schengen (Almaviva)', 'Подтверждение цели визита'],
+      'Испания': ['Анкета BLS на испанском', 'Дополнительно — справка о работе на испанском'],
+      'Болгария': ['Анкета на болгарскую визу', 'Копия предыдущих шенгенских виз'],
+    };
+    const all = [...base, ...(extra[state.country.name] || [])];
+    return '<ul>' + all.map(d => `<li>${d}</li>`).join('') + '</ul>';
+  }
+
+  // chat input
+  document.getElementById('chat-send').addEventListener('click', sendChat);
+  document.getElementById('chat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendChat();
+  });
+  function sendChat() {
+    const inp = document.getElementById('chat-input');
+    const text = inp.value.trim();
+    if (!text) return;
+    addUserMsg(text);
+    inp.value = '';
+    setTimeout(() => {
+      addBotMsg('Принял! 👌 Передал визовому специалисту — он скоро ответит.');
+    }, 800);
+  }
+  // chat attach (mock)
+  document.getElementById('chat-attach').addEventListener('click', () => {
+    const fakeFile = ['pasport_scan.jpg', 'spravka.pdf', 'foto_3x4.jpg'][Math.floor(Math.random() * 3)];
+    addUserMsg(`📎 ${fakeFile} (загружен)`);
+    setTimeout(() => addBotMsg('Получил файл, передам специалисту 👍'), 600);
+  });
+  // chat mic
+  bindMic(document.getElementById('chat-mic'), document.getElementById('chat-input'));
 
   // CONTROLS
   document.getElementById('reset-btn').addEventListener('click', resetAll);
@@ -753,29 +783,22 @@
     if (state.step > 1) showScreen(state.step - 1);
   });
   document.getElementById('next-btn').addEventListener('click', () => {
-    if (state.step < 6) showScreen(state.step + 1);
+    if (state.step < 5) showScreen(state.step + 1);
   });
-
   function resetAll() {
-    clearTimeout(waitTimer);
-    clearTimeout(voiceTimer);
     state.country = null;
     state.answers = [];
     state.currentQ = 0;
-    state.files = [];
-    state.voice = null;
+    state.chatMode = null;
     document.querySelectorAll('.country-card').forEach(c => c.classList.remove('active'));
     const btn = document.getElementById('goto-q');
     btn.disabled = true;
     btn.textContent = 'Сначала выбери страну';
-    document.getElementById('uploaded-list').innerHTML = '';
-    document.getElementById('voice-text').textContent = 'Записать голосовое';
-    document.getElementById('voice-btn').classList.remove('recording');
-    updateGotoWait();
+    document.getElementById('chat-body').innerHTML = '';
     showScreen(1);
   }
 
-  // URL param ?country=fr|it|es|bg — pre-select and auto-advance to questionnaire
+  // URL param ?country=fr|it|es|bg
   (function handleCountryParam() {
     const params = new URLSearchParams(window.location.search);
     const c = (params.get('country') || '').toLowerCase();
