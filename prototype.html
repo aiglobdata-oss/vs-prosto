@@ -220,6 +220,10 @@
   .msg-time { font-size: 10px; color: var(--muted); margin-top: 3px; }
   .msg ul { margin: 6px 0 0; padding-left: 18px; }
   .msg li { margin: 3px 0; }
+  @keyframes typingDot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
   .choice-row { display: flex; gap: 8px; align-self: flex-start; flex-wrap: wrap; }
   .choice-btn {
     background: #fff; border: 1.5px solid var(--indigo); color: var(--indigo);
