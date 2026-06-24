@@ -1,0 +1,20 @@
+# Случайные изображения и скриншоты в папке проекта
+*.jfif
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Системные файлы Windows
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# IDE/редакторы
+.vscode/
+.idea/
+
+# Временные
+*.tmp
+*.bak
+~$*
