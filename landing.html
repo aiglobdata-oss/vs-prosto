@@ -766,9 +766,11 @@
     document.body.style.overflow = 'hidden';
   }
   function openCardQuiz() {
-    // Опросник подбора карты — пока заглушка через alert
-    // Когда будет готов card-quiz.html — заменим на iframe модалку
-    alert('Опросник подбора карты — следующий этап. Пока тыкай чипы-фильтры под кнопкой — они уже подсвечивают подходящие карты.');
+    const overlay = document.getElementById('demoOverlay');
+    const frame = document.getElementById('demoFrame');
+    frame.src = 'card-quiz.html';
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
 
   // FILTER CHIPS

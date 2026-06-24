@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisaSlot — подбор карты иностранного банка</title>
+<style>
+  :root {
+    --indigo: #4f46e5;
+    --indigo-dark: #4338ca;
+    --indigo-light: #eef2ff;
+    --blue: #2563eb;
+    --green: #16a34a;
+    --ink: #0f1729;
+    --muted: #5b6478;
+    --line: #e5e7eb;
+    --bg-soft: #f7f8fb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink); background: var(--bg-soft); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; padding: 24px 16px;
+  }
+
+  .modal {
+    width: 100%; max-width: 720px; background: #fff;
+    border-radius: 20px; box-shadow: 0 20px 60px rgba(15,23,41,0.12);
+    overflow: hidden; display: flex; flex-direction: column;
+    min-height: 560px;
+  }
+  .modal-head {
+    padding: 18px 28px; border-bottom: 1px solid var(--line);
+    font-size: 14px; color: var(--muted); font-weight: 500;
+  }
+  .modal-body {
+    padding: 32px 36px; flex: 1; display: flex; flex-direction: column;
+  }
+  .modal-foot {
+    padding: 18px 28px; border-top: 1px solid #f1f3f7;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+
+  /* SCREENS */
+  .screen { display: none; flex-direction: column; flex: 1; animation: fadeIn .25s ease; }
+  .screen.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .q-text {
+    font-size: 26px; font-weight: 600; line-height: 1.2;
+    letter-spacing: -0.01em; margin-bottom: 12px;
+  }
+  .q-hint {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--indigo-light); color: var(--indigo-dark);
+    padding: 5px 12px 5px 8px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; margin-bottom: 24px;
+    width: fit-content;
+  }
+  .q-hint::before {
+    content: ''; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--indigo); color: #fff; flex-shrink: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-position: center; background-repeat: no-repeat; background-size: 11px;
+  }
+
+  /* OPTION CARDS */
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .opt {
+    background: #fff; border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 16px 18px; cursor: pointer; display: flex; align-items: center; gap: 12px;
+    transition: all .15s ease; font-family: inherit;
+    font-size: 14px; font-weight: 500; color: var(--ink); text-align: left;
+  }
+  .opt:hover { border-color: var(--indigo); }
+  .opt.active { border-color: var(--indigo); background: var(--indigo-light); }
+  .checkbox {
+    width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid #cbd5e1;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+  }
+  .opt.active .checkbox {
+    background: var(--indigo); border-color: var(--indigo);
+  }
+  .opt.active .checkbox::after {
+    content: ''; width: 12px; height: 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-position: center; background-repeat: no-repeat; background-size: 12px;
+  }
+
+  /* PROGRESS + NAV */
+  .step-info { font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #d4d8e0; transition: all .2s ease; }
+  .dot.active { background: var(--blue); }
+  .dot.done { background: var(--indigo); }
+
+  .nav-right { display: flex; align-items: center; gap: 14px; }
+  .enter-hint { font-size: 11px; color: var(--muted); }
+  .enter-hint kbd {
+    background: var(--bg-soft); border: 1px solid var(--line); border-radius: 4px;
+    padding: 1px 6px; font-family: ui-monospace, monospace; font-size: 10px; font-weight: 600;
+  }
+  .btn-back {
+    width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--line);
+    background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s ease; font-family: inherit;
+  }
+  .btn-back:hover { background: var(--bg-soft); }
+  .btn-back svg { width: 16px; height: 16px; stroke: var(--ink); }
+  .btn-next {
+    background: #fff; border: 1.5px solid var(--blue); color: var(--blue);
+    padding: 11px 26px; border-radius: 999px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all .15s ease;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-next:hover:not(:disabled) { background: var(--blue); color: #fff; }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* RESULT screen */
+  .result-screen { flex-direction: row; gap: 28px; align-items: stretch; }
+  .result-img {
+    width: 320px; flex-shrink: 0; border-radius: 14px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; padding: 24px; position: relative; overflow: hidden;
+    min-height: 280px;
+  }
+  .result-img.kg {
+    background: linear-gradient(135deg, #E8112D 0%, #b30420 100%);
+  }
+  .result-img.am {
+    background: linear-gradient(135deg, #D90012 0%, #0033A0 50%, #F2A800 100%);
+  }
+  .result-flag {
+    width: 80px; height: 80px; border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.3);
+    margin-bottom: 16px;
+  }
+  .flag-kg-big { background: radial-gradient(circle at center, #FFEF00 0%, #FFEF00 25%, #E8112D 25%, #E8112D 100%); }
+  .flag-am-big { background: linear-gradient(to bottom, #D90012 0 33.33%, #0033A0 33.33% 66.66%, #F2A800 66.66% 100%); }
+  .result-img-title {
+    font-size: 22px; font-weight: 700; line-height: 1.2; text-align: center;
+  }
+  .result-img-sub {
+    font-size: 13px; opacity: 0.85; margin-top: 6px; text-align: center;
+  }
+  .result-info { flex: 1; display: flex; flex-direction: column; }
+  .result-tariff-label { font-size: 13px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
+  .tariff-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .tariff-chip {
+    background: var(--bg-soft); border: 1.5px solid var(--line); color: var(--ink);
+    padding: 8px 16px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all .15s ease;
+  }
+  .tariff-chip:hover { border-color: var(--blue); }
+  .tariff-chip.active { background: var(--indigo-light); border-color: var(--indigo); color: var(--indigo-dark); }
+  .result-features { margin-bottom: 24px; }
+  .result-features p {
+    font-size: 13px; padding: 6px 0; display: flex; align-items: flex-start; gap: 8px;
+  }
+  .result-features p::before {
+    content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0;
+  }
+  .result-bottom {
+    margin-top: auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .promo-link {
+    background: none; border: none; color: var(--blue); font-size: 14px;
+    font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit; padding: 12px 0;
+  }
+  .promo-link:hover { text-decoration: underline; }
+  .pay-btn {
+    background: #fff; border: 1.5px solid var(--blue); color: var(--blue);
+    padding: 13px 24px; border-radius: 999px; font-size: 15px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: all .15s ease;
+    margin-left: auto;
+  }
+  .pay-btn:hover { background: var(--blue); color: #fff; }
+  .pay-btn b { margin-left: 14px; }
+
+  .restart-btn {
+    background: #fff; border: 1px solid var(--line); color: var(--muted);
+    padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: inherit; margin-top: 20px;
+  }
+  .restart-btn:hover { color: var(--ink); background: var(--bg-soft); }
+
+  @media (max-width: 680px) {
+    body { padding: 12px; }
+    .modal-body { padding: 24px 20px; }
+    .options { grid-template-columns: 1fr; }
+    .q-text { font-size: 20px; }
+    .result-screen { flex-direction: column; }
+    .result-img { width: 100%; min-height: 180px; }
+    .modal-foot { flex-wrap: wrap; }
+    .enter-hint { display: none; }
+    .result-bottom .pay-btn { margin-left: 0; width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="modal">
+  <div class="modal-head">Поможем подобрать карту</div>
+  <div class="modal-body" id="modal-body">
+    <!-- screens injected by JS -->
+  </div>
+  <div class="modal-foot" id="modal-foot">
+    <div>
+      <p class="step-info" id="step-info">Шаг 1 из 6</p>
+      <div class="dots" id="dots"></div>
+    </div>
+    <div class="nav-right">
+      <button class="btn-back" id="btn-back" title="Назад" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <div>
+        <button class="btn-next" id="btn-next" disabled>Далее →</button>
+        <p class="enter-hint">или нажмите <kbd>Enter</kbd></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      key: 'goals', text: 'Для каких целей вы планируете использовать карту?', multi: true,
+      options: [
+        { v: 'subscriptions', label: 'Подписки и онлайн покупки' },
+        { v: 'abroad', label: 'Платежи за границей (магазины, рестораны)' },
+        { v: 'travel', label: 'Путешествия (авиабилеты, отели, аренда авто)' },
+        { v: 'swift', label: 'Международные переводы (SWIFT/в валюте)' },
+        { v: 'china', label: 'Оплата в Китае (Alipay / WeChat Pay)' },
+        { v: 'unsure', label: 'Не уверен(а) — помогите подобрать' },
+      ]
+    },
+    {
+      key: 'budget', text: 'Какой бюджет на оформление?', multi: false,
+      options: [
+        { v: 'b20', label: 'До 20 000 ₽' },
+        { v: 'b30', label: 'До 30 000 ₽' },
+        { v: 'b50', label: 'До 50 000 ₽' },
+        { v: 'any', label: 'Стоимость не важна' },
+      ]
+    },
+    {
+      key: 'cardType', text: 'Какая карта нужна?', multi: false,
+      options: [
+        { v: 'virtual', label: 'Виртуальная' },
+        { v: 'plastic', label: 'Пластиковая' },
+        { v: 'any', label: 'Не важно' },
+      ]
+    },
+    {
+      key: 'withdraw', text: 'Нужно ли выводить деньги обратно в Россию?', multi: false,
+      options: [
+        { v: 'fast', label: 'Да, важно быстро (1–3 дня)' },
+        { v: 'slow', label: 'Да, скорость не важна' },
+        { v: 'no', label: 'Нет' },
+      ]
+    },
+    {
+      key: 'pay', text: 'Какая оплата важна?', multi: true,
+      options: [
+        { v: 'apple', label: 'Apple Pay (iPhone)' },
+        { v: 'google', label: 'Google Pay (Android)' },
+        { v: 'alipay', label: 'Alipay / WeChat Pay / PayPal' },
+        { v: 'none', label: 'Не нужно — буду платить картой' },
+      ]
+    },
+    {
+      key: 'speed', text: 'Как быстро вам нужна карта?', multi: false,
+      options: [
+        { v: 's5', label: 'До 5 дней' },
+        { v: 's14', label: 'До 14 дней' },
+        { v: 's30', label: 'До 30 дней' },
+        { v: 'any', label: 'Срок не важен' },
+      ]
+    },
+  ];
+
+  const cards = {
+    am: {
+      flagClass: 'flag-am-big', bgClass: 'am',
+      bank: 'Армения · MasterCard',
+      title: 'Карта Армении<br>с Apple Pay',
+      sub: 'Дистанционно, без визита',
+      tariffs: ['Standard', 'Gold', 'World Elite'],
+      defaultTariff: 'Gold',
+      features: [
+        'Apple Pay / Google Pay из коробки',
+        'Открытие без визита в Армению',
+        'Видео-верификация ~5 минут',
+        'USD или EUR на выбор',
+        'P2P между картами MasterCard',
+      ],
+      price: 30000,
+    },
+    kg: {
+      flagClass: 'flag-kg-big', bgClass: 'kg',
+      bank: 'Кыргызстан · Visa',
+      title: 'Карта Кыргызстана<br>Gold / Platinum',
+      sub: 'Быстрый выпуск 1–7 дней',
+      tariffs: ['Visa Gold/USD', 'Visa Gold/EUR', 'Visa Platinum/USD', 'Visa Platinum/EUR'],
+      defaultTariff: 'Visa Gold/USD',
+      features: [
+        'Выпуск 1–7 дней',
+        'SWIFT USD / EUR / AED / CNY',
+        'Пополнение со Сбера, ВТБ',
+        'Apple Pay и Google Pay',
+        '−50% на вторую карту',
+      ],
+      price: 35000,
+    },
+    bakai: {
+      flagClass: 'flag-kg-big', bgClass: '',
+      bank: 'Бакай Банк · Кыргызия',
+      title: 'Бакай Банк<br>Gold / Platinum / Infinite',
+      sub: 'Lounge Key + низкая комиссия',
+      tariffs: ['Visa Gold', 'Visa Platinum', 'Visa Infinite'],
+      defaultTariff: 'Visa Platinum',
+      features: [
+        'Lounge Key — доступ в бизнес-залы',
+        'Самая низкая комиссия среди КР',
+        'Доп. счета в 6 валютах',
+        'SWIFT входящий и исходящий',
+        'Кредитный BIN для аренды авто',
+      ],
+      price: 40000,
+    },
+    ayil: {
+      flagClass: 'flag-kg-big', bgClass: '',
+      bank: 'Айыл Банк · Кыргызия',
+      title: 'Айыл Банк<br>Gold / Infinite',
+      sub: '14 валют, государственный банк',
+      tariffs: ['Visa Gold', 'Visa Infinite'],
+      defaultTariff: 'Visa Gold',
+      features: [
+        'Счёт в 14 валютах',
+        'DragonPass на Infinite',
+        'Снятие от 0.3% — самое низкое',
+        'Можно открыть с 14 лет',
+        'Без обмена данных с ФНС РФ',
+      ],
+      price: 45000,
+    },
+  };
+
+  const state = {
+    step: 0,
+    answers: {}, // key → array
+  };
+
+  function arrayHas(arr, v) { return Array.isArray(arr) && arr.includes(v); }
+  function getAns(key) { return state.answers[key] || []; }
+
+  function renderQuestion() {
+    const i = state.step;
+    if (i >= questions.length) { renderResult(); return; }
+    const q = questions[i];
+
+    document.getElementById('step-info').textContent = `Шаг ${i + 1} из ${questions.length}`;
+    const dots = document.getElementById('dots');
+    dots.innerHTML = '';
+    questions.forEach((_, idx) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (idx === i ? ' active' : (idx < i ? ' done' : ''));
+      dots.appendChild(d);
+    });
+
+    document.getElementById('btn-back').disabled = (i === 0);
+
+    const next = document.getElementById('btn-next');
+    const isLast = (i === questions.length - 1);
+    next.textContent = isLast ? 'Последний шаг' : 'Далее →';
+
+    const body = document.getElementById('modal-body');
+    body.innerHTML = '';
+    const scr = document.createElement('div');
+    scr.className = 'screen active';
+    scr.innerHTML = `
+      <p class="q-text">${q.text}</p>
+      <p class="q-hint">выберите ${q.multi ? 'один или несколько' : 'один вариант'}</p>
+      <div class="options" id="options"></div>
+    `;
+    body.appendChild(scr);
+
+    const optsEl = scr.querySelector('#options');
+    const selected = getAns(q.key);
+
+    q.options.forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'opt' + (selected.includes(opt.v) ? ' active' : '');
+      b.innerHTML = `<span class="checkbox"></span><span>${opt.label}</span>`;
+      b.addEventListener('click', () => toggleOpt(q, opt.v));
+      optsEl.appendChild(b);
+    });
+
+    updateNextButton();
+  }
+
+  function toggleOpt(q, v) {
+    let arr = getAns(q.key);
+    if (q.multi) {
+      if (arr.includes(v)) arr = arr.filter(x => x !== v);
+      else arr = arr.concat(v);
+    } else {
+      arr = [v];
+    }
+    state.answers[q.key] = arr;
+    renderQuestion();
+  }
+
+  function updateNextButton() {
+    const q = questions[state.step];
+    const arr = getAns(q.key);
+    document.getElementById('btn-next').disabled = arr.length === 0;
+  }
+
+  document.getElementById('btn-back').addEventListener('click', () => {
+    if (state.step > 0) {
+      state.step--;
+      renderQuestion();
+    }
+  });
+  document.getElementById('btn-next').addEventListener('click', () => {
+    const q = questions[state.step];
+    if (!q || getAns(q.key).length === 0) return;
+    state.step++;
+    if (state.step >= questions.length) renderResult();
+    else renderQuestion();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !document.getElementById('btn-next').disabled) {
+      document.getElementById('btn-next').click();
+    }
+  });
+
+  // MATCHING — scoring system
+  function pickCard() {
+    const score = { am: 0, kg: 0, bakai: 0, ayil: 0 };
+    const a = state.answers;
+
+    // Q1 goals
+    const goals = a.goals || [];
+    if (goals.includes('subscriptions')) { score.am += 3; }
+    if (goals.includes('abroad')) { score.am += 2; score.kg += 2; }
+    if (goals.includes('travel')) { score.bakai += 3; score.kg += 1; }
+    if (goals.includes('swift')) { score.bakai += 3; score.ayil += 3; }
+    if (goals.includes('china')) { score.ayil += 3; }
+    if (goals.includes('unsure')) { score.kg += 1; score.am += 1; }
+
+    // Q2 budget (excludes cards over budget)
+    const budget = (a.budget || [])[0];
+    if (budget === 'b20') {
+      // ничего не подходит (минимум 30к Армения)
+      score.am += 2;
+    } else if (budget === 'b30') {
+      score.am += 4;
+    } else if (budget === 'b50') {
+      score.am += 1; score.kg += 3; score.bakai += 3; score.ayil += 2;
+    } else {
+      // any: премиум-варианты
+      score.bakai += 2; score.ayil += 3;
+    }
+
+    // Q3 type
+    const ctype = (a.cardType || [])[0];
+    if (ctype === 'virtual') { score.am += 2; }
+    if (ctype === 'plastic') { score.bakai += 2; score.ayil += 2; score.kg += 2; }
+
+    // Q4 withdraw
+    const w = (a.withdraw || [])[0];
+    if (w === 'fast') { score.ayil += 3; }
+    if (w === 'slow') { score.bakai += 1; score.kg += 1; }
+    if (w === 'no') { score.am += 1; }
+
+    // Q5 pay
+    const pay = a.pay || [];
+    if (pay.includes('apple')) { score.am += 4; }
+    if (pay.includes('google')) { score.am += 2; score.kg += 2; }
+    if (pay.includes('alipay')) { score.ayil += 4; }
+    if (pay.includes('none')) { /* nothing */ }
+
+    // Q6 speed
+    const sp = (a.speed || [])[0];
+    if (sp === 's5') { score.kg += 3; score.am += 1; }
+    if (sp === 's14') { score.am += 3; score.kg += 2; }
+    if (sp === 's30') { score.bakai += 2; score.ayil += 2; }
+
+    // pick max
+    let best = 'kg', bestScore = -1;
+    for (const k in score) {
+      if (score[k] > bestScore) { bestScore = score[k]; best = k; }
+    }
+    return best;
+  }
+
+  function renderResult() {
+    const cardKey = pickCard();
+    const card = cards[cardKey];
+
+    document.getElementById('modal-foot').style.display = 'none';
+    const body = document.getElementById('modal-body');
+    body.innerHTML = '';
+    const scr = document.createElement('div');
+    scr.className = 'screen active result-screen';
+
+    const featsHtml = card.features.map(f => `<p>${f}</p>`).join('');
+    const tariffsHtml = card.tariffs.map((t, idx) => `
+      <button class="tariff-chip${t === card.defaultTariff ? ' active' : ''}">${t}</button>
+    `).join('');
+
+    scr.innerHTML = `
+      <div class="result-img ${card.bgClass}">
+        <div style="display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1;">
+          <div class="result-flag ${card.flagClass}"></div>
+          <p class="result-img-title">${card.title}</p>
+          <p class="result-img-sub">${card.sub}</p>
+        </div>
+      </div>
+      <div class="result-info">
+        <p class="result-tariff-label">Тариф</p>
+        <div class="tariff-chips" id="tariff-chips">${tariffsHtml}</div>
+        <div class="result-features">${featsHtml}</div>
+        <div class="result-bottom">
+          <button class="promo-link">✉ Использовать промокод</button>
+          <button class="pay-btn">Оплатить <b>${card.price.toLocaleString('ru-RU')} ₽</b></button>
+        </div>
+        <button class="restart-btn" onclick="restart()">↻ Пройти заново</button>
+      </div>
+    `;
+    body.appendChild(scr);
+
+    // tariff chips toggle
+    scr.querySelectorAll('.tariff-chip').forEach(c => {
+      c.addEventListener('click', () => {
+        scr.querySelectorAll('.tariff-chip').forEach(x => x.classList.remove('active'));
+        c.classList.add('active');
+      });
+    });
+  }
+
+  function restart() {
+    state.step = 0;
+    state.answers = {};
+    document.getElementById('modal-foot').style.display = '';
+    renderQuestion();
+  }
+
+  // initial render
+  renderQuestion();
+</script>
+
+</body>
+</html>
