@@ -335,6 +335,120 @@
     .filter-chip { font-size: 12px; padding: 8px 14px; }
   }
 
+  /* ===== BANK DETAIL MODAL — премиум тёмно-золотой ===== */
+  .detail-overlay {
+    position: fixed; inset: 0; background: rgba(5, 8, 20, 0.75);
+    display: none; align-items: flex-start; justify-content: center;
+    z-index: 1100; padding: 24px; overflow-y: auto;
+    backdrop-filter: blur(8px);
+  }
+  .detail-overlay.open { display: flex; }
+  .detail-window {
+    width: 100%; max-width: 760px;
+    background: linear-gradient(180deg, #0a1530 0%, #050b1d 100%);
+    border-radius: 22px; position: relative; overflow: hidden;
+    box-shadow: 0 30px 100px rgba(0,0,0,0.6);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    animation: detailIn .3s ease;
+    color: #e6e9f0;
+  }
+  @keyframes detailIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .detail-close {
+    position: absolute; top: 16px; right: 16px; z-index: 10;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; cursor: pointer; font-size: 22px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+  }
+  .detail-close:hover { background: rgba(255,255,255,0.15); }
+
+  /* Hero */
+  .detail-hero {
+    padding: 48px 40px 36px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, rgba(212,175,55,0.10) 0%, transparent 60%);
+  }
+  .detail-hero::after {
+    content: ''; position: absolute; right: -80px; top: -80px;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,175,55,0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .detail-flag-circle {
+    width: 64px; height: 64px; border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(212,175,55,0.3);
+    margin-bottom: 20px;
+  }
+  .detail-bank { color: #d4af37; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; position: relative; z-index: 1; }
+  .detail-title { color: #fff; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 10px; position: relative; z-index: 1; }
+  .detail-subtitle { color: #a0a8bd; font-size: 15px; position: relative; z-index: 1; }
+
+  /* Sections */
+  .detail-body { padding: 0 40px 32px; }
+  .d-section { padding: 28px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+  .d-section:first-child { border-top: none; }
+  .d-section h3 {
+    color: #d4af37; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;
+  }
+  .d-feats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
+  .d-feat { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #cdd2e0; line-height: 1.5; }
+  .d-feat::before {
+    content: '✓'; color: #d4af37; font-weight: 700; flex-shrink: 0;
+    font-size: 14px; margin-top: 1px;
+  }
+  .d-tariff-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .d-tariff {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 14px; padding: 18px 16px;
+  }
+  .d-tariff .name { color: #d4af37; font-size: 14px; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.04em; }
+  .d-tariff .row { font-size: 12px; color: #a0a8bd; padding: 4px 0; display: flex; justify-content: space-between; gap: 8px; }
+  .d-tariff .row b { color: #fff; font-weight: 600; }
+
+  .d-uses { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .d-use { text-align: center; padding: 14px 6px; background: rgba(255,255,255,0.03); border-radius: 12px; }
+  .d-use .ico { font-size: 26px; margin-bottom: 8px; }
+  .d-use .lbl { font-size: 11px; color: #cdd2e0; line-height: 1.3; font-weight: 500; }
+
+  .d-docs-list { display: flex; flex-direction: column; gap: 8px; }
+  .d-doc { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 10px; font-size: 13px; color: #cdd2e0; }
+  .d-doc::before { content: '📄'; font-size: 16px; }
+
+  /* CTA */
+  .detail-foot {
+    padding: 24px 40px;
+    background: linear-gradient(180deg, transparent, rgba(212,175,55,0.06));
+    border-top: 1px solid rgba(212,175,55,0.2);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  .detail-price-row { display: flex; flex-direction: column; gap: 2px; }
+  .detail-price-row .lbl { font-size: 11px; color: #a0a8bd; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .detail-price-row .val { font-size: 26px; color: #d4af37; font-weight: 800; }
+  .detail-price-row .val small { font-size: 13px; color: #a0a8bd; font-weight: 500; margin-left: 6px; }
+  .detail-order-btn {
+    background: linear-gradient(135deg, #d4af37 0%, #f1c75f 100%);
+    color: #0a1530; border: none; padding: 14px 32px; border-radius: 999px;
+    font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit;
+    box-shadow: 0 10px 28px rgba(212,175,55,0.35);
+    transition: all .15s ease;
+  }
+  .detail-order-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(212,175,55,0.5); }
+
+  @media (max-width: 680px) {
+    .detail-overlay { padding: 12px; }
+    .detail-hero { padding: 36px 24px 28px; }
+    .detail-body { padding: 0 24px 20px; }
+    .detail-title { font-size: 22px; }
+    .d-feats { grid-template-columns: 1fr; }
+    .d-tariff-grid { grid-template-columns: 1fr; }
+    .d-uses { grid-template-columns: repeat(2, 1fr); }
+    .detail-foot { padding: 18px 24px; }
+  }
+
   /* TRY-LINK in hero */
   .try-link {
     background: none; border: none; cursor: pointer;
@@ -754,6 +868,29 @@
   </div>
 </footer>
 
+<!-- BANK DETAIL MODAL -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-window">
+    <button class="detail-close" onclick="closeDetail()" aria-label="Закрыть">×</button>
+    <div class="detail-hero">
+      <div class="detail-flag-circle" id="detailFlag"></div>
+      <p class="detail-bank" id="detailBank">Bank</p>
+      <h2 class="detail-title" id="detailTitle">Title</h2>
+      <p class="detail-subtitle" id="detailSubtitle">subtitle</p>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+    <div class="detail-foot">
+      <div class="detail-price-row">
+        <span class="lbl">Стоимость оформления</span>
+        <span class="val" id="detailPrice">— ₽</span>
+      </div>
+      <button class="detail-order-btn" onclick="alert('Спасибо! Заявка отправлена. Менеджер свяжется в течение часа.'); closeDetail();">
+        Оформить карту →
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- DEMO MODAL -->
 <div class="demo-overlay" id="demoOverlay" onclick="if(event.target===this)closeDemo()">
   <div class="demo-window">
@@ -790,6 +927,186 @@
     document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
     applyFilters();
   });
+  // BANK DETAIL DATA
+  const BANK_DETAILS = {
+    kg: {
+      flagClass: 'flag-kg', bank: 'Кыргызстан · Visa', title: 'Карта Кыргызстана<br>Visa Gold / Platinum',
+      subtitle: 'Выпуск 1–7 дней · оплата зарубежных сервисов', price: '20 000 ₽',
+      features: [
+        'SWIFT USD / EUR / AED / CNY',
+        'Переводы Visa / Mastercard',
+        'Пополнение с российских карт',
+        'Кредитный BIN для аренды авто',
+        'Удобное мобильное приложение',
+        '−50% на оформление второй карты',
+        'Apple Pay и Google Pay',
+        'Срок действия — 5 лет',
+      ],
+      tariffs: [
+        { name: 'Безымянные Gold', rows: [['Статус', '<b>В наличии</b>'], ['Активация', '<b>1–2 дня</b>'], ['Тип', '<b>Пластик</b>']] },
+        { name: 'Именная в приложении', rows: [['Срок выпуска', '<b>1 день</b>'], ['Тип', '<b>Виртуальная</b>'], ['Видео-KYC', '<b>Нет</b>']] },
+        { name: 'Именная Platinum', rows: [['Срок выпуска', '<b>3–5 дней</b>'], ['Тип', '<b>Пластик</b>'], ['Лимиты', '<b>Расширенные</b>']] },
+      ],
+      uses: [
+        { ico: '🛒', lbl: 'Онлайн<br>покупки' },
+        { ico: '✈️', lbl: 'Авиабилеты<br>и отели' },
+        { ico: '🚗', lbl: 'Аренда<br>автомобилей' },
+        { ico: '🌍', lbl: 'Зарубежные<br>сервисы' },
+      ],
+      docs: ['Скан загранпаспорта', 'Скан паспорта РФ (основная + прописка)', 'Заполненная анкета'],
+    },
+    bakai: {
+      flagClass: 'flag-kg', bank: 'Бакай Банк · Кыргызия', title: 'Бакай Банк<br>Gold / Platinum / Infinite',
+      subtitle: 'Самая низкая комиссия за обслуживание среди карт КР', price: 'от 25 000 ₽',
+      features: [
+        'Именная Visa — 5 лет действия',
+        'SWIFT входящий и исходящий',
+        'Пополнение из банков РФ',
+        'Снятие в банкоматах — 1%',
+        'Оплата покупок без комиссии',
+        'Привязка к номеру РФ',
+        'Email-информирование',
+        'Официальное оформление',
+        'Вывод денег на российские карты',
+        'Выгодный курс банка',
+        'Отправка карты по всему миру',
+        'Кредитный BIN для аренды авто',
+      ],
+      tariffs: [
+        { name: 'Visa Gold', rows: [['Лимит/день', '<b>$6 000</b>'], ['Обслуживание', '<b>$20/год</b>'], ['Lounge Key', '<b>2 раза/год</b>']] },
+        { name: 'Visa Platinum', rows: [['Лимит/день', '<b>$12 000</b>'], ['Обслуживание', '<b>$100/год</b>'], ['Lounge Key', '<b>2 раза/год</b>']] },
+        { name: 'Visa Infinite', rows: [['Лимит/день', '<b>$20 000 (до $50k)</b>'], ['Обслуживание', '<b>$150/год</b>'], ['Lounge Key', '<b>6 раз/год</b>']] },
+      ],
+      uses: [
+        { ico: '💼', lbl: 'Бизнес-залы<br>аэропортов' },
+        { ico: '🚗', lbl: 'Аренда<br>авто' },
+        { ico: '🌐', lbl: 'Международные<br>переводы' },
+        { ico: '💱', lbl: '6 валют<br>счёта' },
+      ],
+      docs: ['Скан разворота загранпаспорта', 'Скан паспорта РФ (основная + прописка)', 'Нотариальная доверенность по форме банка', 'Заполненная анкета', 'Пересылка доверенности СДЭК или курьером — за наш счёт'],
+    },
+    ayil: {
+      flagClass: 'flag-kg', bank: 'Айыл Банк · Кыргызия', title: 'Айыл Банк<br>Visa Gold / Infinite',
+      subtitle: 'Самый большой функционал · государственный банк', price: '15 000 ₽',
+      features: [
+        'Счёт в 14 валютах',
+        'VISA EUR или USD (или вместе)',
+        'Лучший курс конвертации',
+        'Государственный банк',
+        'Без обмена данных с ФНС РФ',
+        'SMS-информирование',
+        'Пополнение без комиссии',
+        'Пополняется со всех банков РФ',
+        'Вывод на карты РФ',
+        'Снятие наличных 3%',
+        'Самая низкая комиссия на вывод — 0,3%',
+        'Возможность открытия с 14 лет',
+      ],
+      tariffs: [
+        { name: 'Visa Gold', rows: [['Открытие', '<b>$145</b>'], ['Обслуживание', '<b>$50/год</b>'], ['Неснижаемый остаток', '<b>$5</b>']] },
+        { name: 'Visa Infinite', rows: [['Открытие', '<b>$445</b>'], ['Обслуживание', '<b>$150/год</b>'], ['DragonPass', '<b>Включён</b>']] },
+        { name: 'SWIFT', rows: [['RUB → ЕС', '<b>0,35%</b>'], ['CNY → Китай', '<b>0,2%</b>'], ['AED → ОАЭ', '<b>0,5%</b>']] },
+      ],
+      uses: [
+        { ico: '💱', lbl: '14 валют<br>счёта' },
+        { ico: '🐉', lbl: 'DragonPass<br>аэропорты' },
+        { ico: '🏛️', lbl: 'Государ-<br>ственный' },
+        { ico: '👶', lbl: 'С 14 лет<br>можно' },
+      ],
+      docs: ['Скан разворота загранпаспорта', 'Скан паспорта РФ (основная и прописка)', 'Нотариальная доверенность по форме банка', 'Заполненная анкета', 'Пересылка доверенности и анкеты — за наш счёт'],
+    },
+    am: {
+      flagClass: 'flag-am', bank: 'Армения · MasterCard', title: 'Карта Армении<br>с Apple Pay',
+      subtitle: 'Без визита в Армению · видео-верификация ~5 минут', price: '30 000 ₽',
+      features: [
+        'MasterCard Standard / Gold / World Elite',
+        'Полностью дистанционно',
+        'Видео-верификация ~5 минут',
+        'Срок действия 4 года',
+        'Валюта счёта USD или EUR',
+        'Apple Pay / Google Pay',
+        'Бесконтактная PayWave',
+        '3D Secure + SMS 3D Secure',
+        'PUSH-уведомления — бесплатно',
+        'Консьерж-сервис (World / Elite)',
+        'P2P между картами MasterCard',
+        'Пополнение из любого банка РФ',
+      ],
+      tariffs: [
+        { name: 'Standard', rows: [['Обслуживание', '<b>~4 000 ₽/год</b>'], ['Снятие', '<b>2%, мин 3 000 AMD</b>'], ['Лимит/день', '<b>$20 000</b>']] },
+        { name: 'Gold', rows: [['Обслуживание', '<b>~8 000 ₽/год</b>'], ['Снятие', '<b>0%</b>'], ['Лимит/день', '<b>$20 000</b>']] },
+        { name: 'World Elite', rows: [['Обслуживание', '<b>~26 000 ₽/год</b>'], ['Снятие', '<b>0%</b>'], ['Лимит/день', '<b>Без ограничений</b>']] },
+      ],
+      uses: [
+        { ico: '📱', lbl: 'Подписки<br>App Store' },
+        { ico: '🍎', lbl: 'Apple Pay<br>и Google Pay' },
+        { ico: '✈️', lbl: 'Поездки<br>и онлайн' },
+        { ico: '💸', lbl: 'Вывод<br>в РФ' },
+      ],
+      docs: ['Паспорт РФ (фото + прописка)', 'Загранпаспорт', 'Подписанные формы KYC', 'Видео-верификация: звонок с сотрудником банка ~5 минут'],
+    },
+  };
+
+  // Open detail modal
+  function openDetail(key) {
+    const d = BANK_DETAILS[key];
+    if (!d) return;
+    document.getElementById('detailFlag').className = 'detail-flag-circle ' + d.flagClass;
+    document.getElementById('detailBank').textContent = d.bank;
+    document.getElementById('detailTitle').innerHTML = d.title;
+    document.getElementById('detailSubtitle').textContent = d.subtitle;
+    document.getElementById('detailPrice').textContent = d.price;
+
+    const body = document.getElementById('detailBody');
+    body.innerHTML = `
+      <div class="d-section">
+        <h3>Особенности</h3>
+        <div class="d-feats">${d.features.map(f => `<div class="d-feat">${f}</div>`).join('')}</div>
+      </div>
+      <div class="d-section">
+        <h3>Тарифы</h3>
+        <div class="d-tariff-grid">
+          ${d.tariffs.map(t => `
+            <div class="d-tariff">
+              <div class="name">${t.name}</div>
+              ${t.rows.map(r => `<div class="row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="d-section">
+        <h3>Подходит для</h3>
+        <div class="d-uses">
+          ${d.uses.map(u => `<div class="d-use"><div class="ico">${u.ico}</div><div class="lbl">${u.lbl}</div></div>`).join('')}
+        </div>
+      </div>
+      <div class="d-section">
+        <h3>Документы для оформления</h3>
+        <div class="d-docs-list">
+          ${d.docs.map(doc => `<div class="d-doc">${doc}</div>`).join('')}
+        </div>
+      </div>
+    `;
+    document.getElementById('detailOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDetail() {
+    document.getElementById('detailOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDetail();
+  });
+
+  // Wire up "Подробнее" buttons
+  const cardKeys = ['kg', 'bakai', 'ayil', 'am'];
+  document.querySelectorAll('.bank-card').forEach((card, idx) => {
+    const btn = card.querySelector('.bank-more');
+    if (btn && cardKeys[idx]) {
+      btn.addEventListener('click', () => openDetail(cardKeys[idx]));
+    }
+  });
+
   function applyFilters() {
     const active = Array.from(document.querySelectorAll('.filter-chip.active')).map(c => c.dataset.f);
     const cards = document.querySelectorAll('.bank-card');
