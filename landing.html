@@ -76,13 +76,20 @@
     width: max-content;
   }
   .ticker-country {
-    display: flex; align-items: center;
+    display: flex; align-items: center; gap: 10px;
     padding: 0 22px; font-size: 18px; font-weight: 600;
     white-space: nowrap; color: var(--ink);
     letter-spacing: -0.01em;
   }
   .ticker-country::after {
     content: '·'; margin-left: 22px; color: var(--indigo); font-size: 22px; opacity: 0.6;
+  }
+  .ticker-flag {
+    width: 28px; height: 21px;
+    border-radius: 3px; flex-shrink: 0;
+    box-shadow: 0 0 0 0.5px rgba(0,0,0,0.15);
+    object-fit: cover; display: inline-block;
+    vertical-align: middle;
   }
   @keyframes tickerScrollReverse {
     from { transform: translateX(-50%); }
@@ -609,59 +616,7 @@
 
   <!-- Бегущая строка стран — визуально, обратное направление -->
   <div class="ticker-countries">
-    <div class="ticker-countries-track">
-      <span class="ticker-country">Франция</span>
-      <span class="ticker-country">Италия</span>
-      <span class="ticker-country">Испания</span>
-      <span class="ticker-country">Болгария</span>
-      <span class="ticker-country">Великобритания</span>
-      <span class="ticker-country">США</span>
-      <span class="ticker-country">Канада</span>
-      <span class="ticker-country">Индия</span>
-      <span class="ticker-country">Греция</span>
-      <span class="ticker-country">Кипр</span>
-      <span class="ticker-country">Китай</span>
-      <span class="ticker-country">Япония</span>
-      <span class="ticker-country">Южная Корея</span>
-      <span class="ticker-country">Тайланд</span>
-      <span class="ticker-country">Вьетнам</span>
-      <span class="ticker-country">Сингапур</span>
-      <span class="ticker-country">Австралия</span>
-      <span class="ticker-country">Новая Зеландия</span>
-      <span class="ticker-country">Мексика</span>
-      <span class="ticker-country">Саудовская Аравия</span>
-      <span class="ticker-country">Иран</span>
-      <span class="ticker-country">Израиль</span>
-      <span class="ticker-country">Ирландия</span>
-      <span class="ticker-country">Тайвань</span>
-      <span class="ticker-country">Шри-Ланка</span>
-      <!-- дубль -->
-      <span class="ticker-country">Франция</span>
-      <span class="ticker-country">Италия</span>
-      <span class="ticker-country">Испания</span>
-      <span class="ticker-country">Болгария</span>
-      <span class="ticker-country">Великобритания</span>
-      <span class="ticker-country">США</span>
-      <span class="ticker-country">Канада</span>
-      <span class="ticker-country">Индия</span>
-      <span class="ticker-country">Греция</span>
-      <span class="ticker-country">Кипр</span>
-      <span class="ticker-country">Китай</span>
-      <span class="ticker-country">Япония</span>
-      <span class="ticker-country">Южная Корея</span>
-      <span class="ticker-country">Тайланд</span>
-      <span class="ticker-country">Вьетнам</span>
-      <span class="ticker-country">Сингапур</span>
-      <span class="ticker-country">Австралия</span>
-      <span class="ticker-country">Новая Зеландия</span>
-      <span class="ticker-country">Мексика</span>
-      <span class="ticker-country">Саудовская Аравия</span>
-      <span class="ticker-country">Иран</span>
-      <span class="ticker-country">Израиль</span>
-      <span class="ticker-country">Ирландия</span>
-      <span class="ticker-country">Тайвань</span>
-      <span class="ticker-country">Шри-Ланка</span>
-    </div>
+    <div class="ticker-countries-track" id="countriesTrack"></div>
   </div>
 </section>
 
@@ -981,6 +936,28 @@
 </div>
 
 <script>
+  // Бегущая строка стран с флагами
+  (function buildCountryTicker() {
+    const countries = [
+      ['fr', 'Франция'], ['it', 'Италия'], ['es', 'Испания'], ['bg', 'Болгария'],
+      ['gb', 'Великобритания'], ['us', 'США'], ['ca', 'Канада'], ['in', 'Индия'],
+      ['gr', 'Греция'], ['cy', 'Кипр'], ['cn', 'Китай'], ['jp', 'Япония'],
+      ['kr', 'Южная Корея'], ['vn', 'Вьетнам'], ['sg', 'Сингапур'],
+      ['au', 'Австралия'], ['nz', 'Новая Зеландия'], ['mx', 'Мексика'],
+      ['sa', 'Саудовская Аравия'], ['ir', 'Иран'], ['il', 'Израиль'],
+      ['ie', 'Ирландия'], ['tw', 'Тайвань'],
+    ];
+    const track = document.getElementById('countriesTrack');
+    if (!track) return;
+    const buildItem = ([code, name]) => `
+      <span class="ticker-country">
+        <img class="ticker-flag" src="https://flagcdn.com/w40/${code}.png" alt="${name}" loading="lazy" />
+        ${name}
+      </span>`;
+    // Двойной набор для бесшовной прокрутки
+    track.innerHTML = countries.map(buildItem).join('') + countries.map(buildItem).join('');
+  })();
+
   function openDemo(country) {
     const overlay = document.getElementById('demoOverlay');
     const frame = document.getElementById('demoFrame');
