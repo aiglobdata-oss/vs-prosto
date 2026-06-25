@@ -337,6 +337,35 @@
   .ticket-card .info { font-size: 13px; line-height: 1.7; }
   .ticket-card .info b { font-weight: 700; }
 
+  /* SCREEN 8 — inline bank cards */
+  .cards-mini-list { display: flex; flex-direction: column; gap: 10px; }
+  .card-mini {
+    background: #fff; border: 1.5px solid var(--line); border-radius: 14px;
+    overflow: hidden; cursor: pointer; transition: all .15s ease;
+  }
+  .card-mini:hover { transform: translateY(-2px); border-color: var(--indigo); box-shadow: 0 8px 22px rgba(79,70,229,0.18); }
+  .cm-head {
+    padding: 12px 14px; color: #fff; display: flex; align-items: center; gap: 10px;
+  }
+  .cm-flag {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
+  }
+  .flag-kg-pic {
+    background: radial-gradient(circle at center, #FFEF00 0%, #FFEF00 25%, #E8112D 25%, #E8112D 100%);
+  }
+  .flag-am-pic {
+    background: linear-gradient(to bottom, #D90012 0 33.33%, #0033A0 33.33% 66.66%, #F2A800 66.66% 100%);
+  }
+  .cm-bank { font-size: 11px; margin: 0 0 1px; opacity: 0.85; font-weight: 500; }
+  .cm-name { font-size: 14px; font-weight: 700; margin: 0; }
+  .cm-body { padding: 10px 14px 12px; }
+  .cm-feats { font-size: 11px; color: var(--muted); margin: 0 0 8px; line-height: 1.4; }
+  .cm-foot { display: flex; justify-content: space-between; align-items: center; }
+  .cm-price { font-size: 13px; color: var(--ink); }
+  .cm-price b { color: var(--indigo); font-weight: 800; font-size: 15px; }
+  .cm-arrow { color: var(--indigo); font-weight: 700; font-size: 16px; }
+
   /* SCREEN 7 — center placeholder (renamed from 5) */
   .center-wrap {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -374,46 +403,10 @@
   </div>
 
   <div class="phone">
-    <!-- SCREEN 1 — questionnaire (8 questions) -->
-    <div class="screen-body active" data-screen="1">
-      <div class="progress-dots" id="progress-dots"></div>
-      <div class="question-card">
-        <p class="q-step" id="q-step">Вопрос 1 из 8</p>
-        <p class="q-text" id="q-text">Как вас зовут?</p>
-        <div class="q-input-wrap">
-          <input class="q-input" id="q-input" type="text" placeholder="" autocomplete="off" />
-          <button class="mic-btn" id="mic-btn" type="button" title="Наговорить ответ">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
-          </button>
-        </div>
-        <p class="q-error" id="q-error"></p>
-      </div>
-      <div class="btn-row">
-        <button class="back" id="q-back">← Назад</button>
-        <button class="next" id="q-next" disabled>Далее →</button>
-      </div>
-    </div>
-
-    <!-- SCREEN 2 — 2 buttons after questionnaire -->
-    <div class="screen-body" data-screen="2">
-      <div class="final-wrap">
-        <div class="final-check">
-          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <p class="final-title">Анкета заполнена ✓</p>
-        <p class="final-text">Все данные собраны.<br>Что дальше?</p>
-        <button class="btn-gradient" id="goto-slot">Найти мне слот →</button>
-        <a class="cross-sell" href="landing.html#cards" target="_top">
-          <span>💳</span>
-          <span>Не забудь оформить банковскую карту<br>для оплаты за границей</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- SCREEN 3 — country picker -->
-    <div class="screen-body" data-screen="3">
+    <!-- SCREEN 1 — country picker (стартовый для mode=slot) -->
+    <div class="screen-body" data-screen="1">
       <p class="screen-title">Куда хочешь<br>поехать?</p>
-      <p class="screen-sub">Выбери страну — найдём свободный слот</p>
+      <p class="screen-sub" id="country-sub">Выбери страну — затем 8 вопросов</p>
       <div class="country-grid">
         <div class="country-card" data-country="fr" data-name="Франция" data-sys="VFS Global">
           <span class="flag flag-lg flag-fr"></span>
@@ -436,7 +429,43 @@
           <p class="country-sys">VFS Global</p>
         </div>
       </div>
-      <p style="text-align:center; font-size:11px; color:var(--muted); margin-top:10px;">Кликни страну — стартует поиск слота</p>
+      <p style="text-align:center; font-size:11px; color:var(--muted); margin-top:10px;">Доступны только эти 4 страны</p>
+    </div>
+
+    <!-- SCREEN 2 — questionnaire (8 questions) -->
+    <div class="screen-body" data-screen="2">
+      <div class="progress-dots" id="progress-dots"></div>
+      <div class="question-card">
+        <p class="q-step" id="q-step">Вопрос 1 из 8</p>
+        <p class="q-text" id="q-text">Как вас зовут?</p>
+        <div class="q-input-wrap">
+          <input class="q-input" id="q-input" type="text" placeholder="" autocomplete="off" />
+          <button class="mic-btn" id="mic-btn" type="button" title="Наговорить ответ">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+          </button>
+        </div>
+        <p class="q-error" id="q-error"></p>
+      </div>
+      <div class="btn-row">
+        <button class="back" id="q-back">← Назад</button>
+        <button class="next" id="q-next" disabled>Далее →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3 — 2 buttons after questionnaire (mode-dependent) -->
+    <div class="screen-body" data-screen="3">
+      <div class="final-wrap">
+        <div class="final-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p class="final-title">Анкета заполнена ✓</p>
+        <p class="final-text">Все данные собраны.<br>Что дальше?</p>
+        <button class="btn-gradient" id="primary-action">Найти мне слот →</button>
+        <button class="cross-sell" id="goto-cards" style="border:none; cursor:pointer; font-family:inherit;">
+          <span>💳</span>
+          <span>Оформить банковскую карту<br>для оплаты за границей</span>
+        </button>
+      </div>
     </div>
 
     <!-- SCREEN 4 — slot search -->
@@ -525,10 +554,57 @@
       </div>
     </div>
 
+    <!-- SCREEN 8 — банковские карты inline -->
+    <div class="screen-body" data-screen="8">
+      <p class="screen-title">Банковская карта<br>для оплаты за границей</p>
+      <p class="screen-sub">Выбери карту — оформление дистанционно</p>
+      <div class="cards-mini-list" id="cards-mini-list">
+        <div class="card-mini" data-card="kg">
+          <div class="cm-head" style="background: linear-gradient(135deg, #E8112D 0%, #b30420 100%);">
+            <div class="cm-flag flag-kg-pic"></div>
+            <div><p class="cm-bank">Кыргызстан · Visa</p><p class="cm-name">Gold / Platinum</p></div>
+          </div>
+          <div class="cm-body">
+            <p class="cm-feats">Выпуск 1–7 дней · SWIFT · Apple/Google Pay</p>
+            <div class="cm-foot"><span class="cm-price">от <b>20 000 ₽</b></span><span class="cm-arrow">→</span></div>
+          </div>
+        </div>
+        <div class="card-mini" data-card="bakai">
+          <div class="cm-head" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <div class="cm-flag flag-kg-pic"></div>
+            <div><p class="cm-bank">Бакай Банк · Киргизия</p><p class="cm-name">Gold / Platinum / Infinite</p></div>
+          </div>
+          <div class="cm-body">
+            <p class="cm-feats">Lounge Key · Низкая комиссия · SWIFT</p>
+            <div class="cm-foot"><span class="cm-price">от <b>25 000 ₽</b></span><span class="cm-arrow">→</span></div>
+          </div>
+        </div>
+        <div class="card-mini" data-card="ayil">
+          <div class="cm-head" style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%);">
+            <div class="cm-flag flag-kg-pic"></div>
+            <div><p class="cm-bank">Айыл Банк · Киргизия</p><p class="cm-name">Gold / Infinite</p></div>
+          </div>
+          <div class="cm-body">
+            <p class="cm-feats">14 валют · DragonPass · с 14 лет</p>
+            <div class="cm-foot"><span class="cm-price"><b>15 000 ₽</b></span><span class="cm-arrow">→</span></div>
+          </div>
+        </div>
+        <div class="card-mini" data-card="am">
+          <div class="cm-head" style="background: linear-gradient(135deg, #D90012 0%, #0033A0 100%);">
+            <div class="cm-flag flag-am-pic"></div>
+            <div><p class="cm-bank">Армения · MasterCard</p><p class="cm-name">Apple Pay / Standard / Gold</p></div>
+          </div>
+          <div class="cm-body">
+            <p class="cm-feats">Без визита · Видео-верификация ~5 мин</p>
+            <div class="cm-foot"><span class="cm-price"><b>30 000 ₽</b></span><span class="cm-arrow">→</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
-  <div class="step-indicator">Шаг <b id="step-num">1</b> из 7</div>
+  <div class="step-indicator">Шаг <b id="step-num">1</b> из 8</div>
 
   <div class="controls">
     <button class="ctrl-btn" id="prev-btn">← Назад</button>
@@ -537,14 +613,21 @@
   </div>
 
 <script>
+  // mode: 'slot' = выбрал страну, потом 8 Q; 'visa' = сразу 8 Q (Q2 = страна текстом)
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialMode = urlParams.get('mode') === 'visa' ? 'visa' : 'slot';
+
   const state = {
     step: 1,
     country: null,
     answers: [],
     currentQ: 0,
+    mode: initialMode,
+    qDone: false,
   };
 
-  const questions = [
+  // Два набора вопросов
+  const questionsSlot = [
     { text: "Как вас зовут?", placeholder: "Иванов Иван Иванович", type: "name", inputmode: "text", autocap: "words" },
     { text: "Дата рождения?", placeholder: "12.01.1982", type: "date", inputmode: "numeric", maxlength: 10 },
     { text: "Цель поездки?", placeholder: "Туризм / работа / учёба", type: "text", inputmode: "text", autocap: "sentences" },
@@ -554,6 +637,17 @@
     { text: "Паспорт 5-летний или 10-летний?", placeholder: "5 или 10", type: "passport_years", inputmode: "numeric", maxlength: 2 },
     { text: "Номер телефона для связи?", placeholder: "+7 (999) 123-45-67", type: "phone", inputmode: "tel", maxlength: 18 },
   ];
+  const questionsVisa = [
+    { text: "Как вас зовут?", placeholder: "Иванов Иван Иванович", type: "name", inputmode: "text", autocap: "words" },
+    { text: "Какая страна интересует?", placeholder: "Например: Греция, Канада, Япония…", type: "text", inputmode: "text", autocap: "words" },
+    { text: "Дата рождения?", placeholder: "12.01.1982", type: "date", inputmode: "numeric", maxlength: 10 },
+    { text: "Цель поездки?", placeholder: "Туризм / работа / учёба", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Желаемые даты поездки?", placeholder: "Июль — август 2026", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Сколько человек поедет?", placeholder: "Например: 2 взрослых + 1 ребёнок", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Паспорт 5-летний или 10-летний?", placeholder: "5 или 10", type: "passport_years", inputmode: "numeric", maxlength: 2 },
+    { text: "Номер телефона для связи?", placeholder: "+7 (999) 123-45-67", type: "phone", inputmode: "tel", maxlength: 18 },
+  ];
+  const questions = (state.mode === 'visa') ? questionsVisa : questionsSlot;
 
   // VALIDATION + MASKING
   function validate(type, value) {
@@ -625,10 +719,11 @@
     if (el) el.classList.add('active');
     document.getElementById('step-num').textContent = n;
     document.getElementById('prev-btn').disabled = n === 1;
-    document.getElementById('next-btn').disabled = n === 7;
+    document.getElementById('next-btn').disabled = n === 8;
   }
 
-  // SCREEN 3 — country picker (после 8 Q + клика "Найти слот")
+  // SCREEN 1 — country picker
+  // Логика: в slot-mode сначала страна → потом Q, в visa-mode пришли сюда после Q → сразу поиск
   document.querySelectorAll('.country-card').forEach(card => {
     card.addEventListener('click', () => {
       state.country = {
@@ -636,11 +731,18 @@
         name: card.dataset.name,
         sys: card.dataset.sys,
       };
-      startSlotSearch();
+      if (state.qDone) {
+        // visa-mode: Q уже пройден, идём в поиск слота
+        startSlotSearch();
+      } else {
+        // slot-mode: страна выбрана, идём в Q
+        renderQuestion();
+        showScreen(2);
+      }
     });
   });
 
-  // SCREEN 1 — questionnaire (стартовый)
+  // SCREEN 2 — questionnaire
   function renderQuestion() {
     const i = state.currentQ;
     const q = questions[i];
@@ -703,8 +805,18 @@
       state.currentQ++;
       renderQuestion();
     } else {
-      // last question done → screen 2 (2 buttons)
-      showScreen(2);
+      // 8 Q пройдены → переход на экран 3 (2 кнопки)
+      state.qDone = true;
+      // Текст primary-кнопки зависит от mode
+      const primary = document.getElementById('primary-action');
+      if (state.mode === 'slot') {
+        // страну уже выбрали → "Оформить визу за 2 минуты" (запустит поиск)
+        primary.textContent = 'Оформить визу за 2 минуты →';
+      } else {
+        // visa-mode: страну ещё не выбрали → "Найти мне слот" (откроет 4 страны)
+        primary.textContent = 'Найти мне слот →';
+      }
+      showScreen(3);
     }
   });
   document.getElementById('q-back').addEventListener('click', () => {
@@ -765,9 +877,30 @@
   }
   bindMic(document.getElementById('mic-btn'), document.getElementById('q-input'));
 
-  // SCREEN 2 — кнопка "Найти мне слот" → переход на выбор страны
-  document.getElementById('goto-slot').addEventListener('click', () => {
-    showScreen(3);
+  // SCREEN 3 — primary action: для slot-mode сразу поиск, для visa-mode → выбор страны
+  document.getElementById('primary-action').addEventListener('click', () => {
+    if (state.mode === 'slot') {
+      // Страна уже выбрана → стартуем поиск слота
+      startSlotSearch();
+    } else {
+      // visa-mode: страну ещё не выбрали → показать 4 страны
+      document.getElementById('country-sub').textContent = 'Выбери из 4 доступных стран';
+      showScreen(1);
+    }
+  });
+
+  // SCREEN 3 — кнопка "Оформить банковскую карту" → экран с картами
+  document.getElementById('goto-cards').addEventListener('click', () => {
+    showScreen(8);
+  });
+
+  // SCREEN 8 — клик по банковской карте
+  document.querySelectorAll('.card-mini').forEach(card => {
+    card.addEventListener('click', () => {
+      const k = card.dataset.card;
+      const names = { kg: 'Кыргызстан', bakai: 'Бакай Банк', ayil: 'Айыл Банк', am: 'Армения' };
+      alert(`Заявка на оформление карты "${names[k] || k}" принята!\nМенеджер свяжется в течение часа.`);
+    });
   });
 
   // SCREEN 4 — slot search → SCREEN 5 (found)
@@ -911,20 +1044,33 @@
     if (state.step > 1) showScreen(state.step - 1);
   });
   document.getElementById('next-btn').addEventListener('click', () => {
-    if (state.step < 7) showScreen(state.step + 1);
+    if (state.step < 8) showScreen(state.step + 1);
   });
   function resetAll() {
     clearTimeout(slotTimer);
     state.country = null;
     state.answers = [];
     state.currentQ = 0;
+    state.qDone = false;
     document.getElementById('chat-body').innerHTML = '';
+    document.getElementById('country-sub').textContent =
+      state.mode === 'slot' ? 'Выбери страну — затем 8 вопросов' : 'Выбери из 4 доступных стран';
     renderQuestion();
-    showScreen(1);
+    initialShow();
   }
 
-  // Стартовая инициализация — экран 1 = опросник
+  // Стартовая инициализация — экран зависит от mode
+  function initialShow() {
+    if (state.mode === 'slot') {
+      // Сначала выбор страны
+      showScreen(1);
+    } else {
+      // Сразу опросник (Q2 = страна)
+      showScreen(2);
+    }
+  }
   renderQuestion();
+  initialShow();
 </script>
 
 </body>
