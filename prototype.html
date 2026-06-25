@@ -256,7 +256,88 @@
   .chat-send svg { width: 16px; height: 16px; stroke: #fff; fill: #fff; }
   .chat-send:disabled { background: #b6b9c5; cursor: not-allowed; }
 
-  /* SCREEN 5 — center placeholder */
+  /* SCREEN 4 — slot search */
+  .wait-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 340px; text-align: center;
+  }
+  .spinner-ring {
+    width: 76px; height: 76px; border-radius: 50%;
+    border: 5px solid #e5e7eb; border-top-color: var(--indigo);
+    margin: 0 auto 22px; animation: spin 1.2s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .wait-main { font-size: 18px; font-weight: 600; margin: 0 0 8px; line-height: 1.3; }
+  .wait-hint { font-size: 12px; color: var(--muted); margin: 0 0 22px; line-height: 1.5; }
+  .last-check {
+    background: #fff; border-radius: 12px; border: 1px solid var(--line);
+    padding: 9px 14px; font-size: 12px; color: var(--muted);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .params-card {
+    margin-top: 16px; background: #fff; border-radius: 14px;
+    border: 1px solid var(--line); padding: 12px 14px;
+  }
+  .params-card .lbl { font-size: 12px; font-weight: 600; margin: 0 0 3px; }
+  .params-card .val { font-size: 11px; color: var(--muted); margin: 0; }
+  .demo-skip {
+    margin-top: 14px; background: #fff; border: 1px dashed #c5cad6;
+    color: var(--muted); font-size: 11px; padding: 10px;
+    border-radius: 10px; cursor: pointer; width: 100%;
+    font-family: inherit;
+  }
+
+  /* SCREEN 5 — slot found */
+  .slot-card {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 20px; padding: 20px; color: #fff; margin-bottom: 16px;
+    animation: pop .35s ease;
+  }
+  @keyframes pop {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .slot-badge {
+    background: rgba(255,255,255,0.2); border-radius: 8px;
+    padding: 5px 10px; font-size: 11px; display: inline-flex;
+    align-items: center; gap: 7px; margin-bottom: 14px; font-weight: 500;
+  }
+  .slot-country { font-size: 17px; font-weight: 700; margin: 0 0 3px; }
+  .slot-center { font-size: 12px; opacity: 0.85; margin: 0 0 16px; }
+  .slot-datetime { display: flex; gap: 10px; }
+  .slot-dt-item { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 14px; flex: 1; text-align: center; }
+  .slot-dt-label { font-size: 10px; opacity: 0.85; margin-bottom: 4px; font-weight: 600; }
+  .slot-dt-val { font-size: 16px; font-weight: 700; }
+  .pay-btn {
+    width: 100%; background: var(--green); color: #fff; border: none;
+    border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all .15s ease; font-family: inherit;
+  }
+  .pay-btn:hover { background: #15803d; }
+  .pay-note { text-align: center; font-size: 11px; color: var(--muted); margin: 10px 0 0; }
+
+  /* SCREEN 6 — success */
+  .success-wrap {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 420px; text-align: center;
+  }
+  .success-circle {
+    width: 92px; height: 92px; border-radius: 50%; background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px; animation: pop .4s ease;
+  }
+  .success-circle svg { width: 50px; height: 50px; stroke: #fff; stroke-width: 3; }
+  .success-title { font-size: 22px; font-weight: 700; margin: 0 0 8px; }
+  .success-text { font-size: 14px; color: var(--muted); margin: 0 0 24px; line-height: 1.5; }
+  .ticket-card {
+    background: #fff; border-radius: 14px; border: 1.5px solid var(--green);
+    padding: 16px; width: 100%; text-align: left;
+  }
+  .ticket-card .label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .ticket-card .info { font-size: 13px; line-height: 1.7; }
+  .ticket-card .info b { font-weight: 700; }
+
+  /* SCREEN 7 — center placeholder (renamed from 5) */
   .center-wrap {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     min-height: 460px; text-align: center; padding: 20px;
@@ -289,14 +370,50 @@
   <div class="head">
     <h1>Кликабельный прототип</h1>
     <p>Тыкай кнопки внутри телефона — пройди весь путь от выбора страны до брони.</p>
-    <div class="tip">💡 Совет: жми «Выбрать Францию» в первом экране · 🎤 можно отвечать голосом</div>
+    <div class="tip">💡 Сначала ответь на 8 вопросов · 🎤 можно голосом</div>
   </div>
 
   <div class="phone">
-    <!-- SCREEN 1 — country -->
+    <!-- SCREEN 1 — questionnaire (8 questions) -->
     <div class="screen-body active" data-screen="1">
+      <div class="progress-dots" id="progress-dots"></div>
+      <div class="question-card">
+        <p class="q-step" id="q-step">Вопрос 1 из 8</p>
+        <p class="q-text" id="q-text">Как вас зовут?</p>
+        <div class="q-input-wrap">
+          <input class="q-input" id="q-input" type="text" placeholder="" autocomplete="off" />
+          <button class="mic-btn" id="mic-btn" type="button" title="Наговорить ответ">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+          </button>
+        </div>
+        <p class="q-error" id="q-error"></p>
+      </div>
+      <div class="btn-row">
+        <button class="back" id="q-back">← Назад</button>
+        <button class="next" id="q-next" disabled>Далее →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 2 — 2 buttons after questionnaire -->
+    <div class="screen-body" data-screen="2">
+      <div class="final-wrap">
+        <div class="final-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p class="final-title">Анкета заполнена ✓</p>
+        <p class="final-text">Все данные собраны.<br>Что дальше?</p>
+        <button class="btn-gradient" id="goto-slot">Найти мне слот →</button>
+        <a class="cross-sell" href="landing.html#cards" target="_top">
+          <span>💳</span>
+          <span>Не забудь оформить банковскую карту<br>для оплаты за границей</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- SCREEN 3 — country picker -->
+    <div class="screen-body" data-screen="3">
       <p class="screen-title">Куда хочешь<br>поехать?</p>
-      <p class="screen-sub">Выбери страну, мы найдём слот</p>
+      <p class="screen-sub">Выбери страну — найдём свободный слот</p>
       <div class="country-grid">
         <div class="country-card" data-country="fr" data-name="Франция" data-sys="VFS Global">
           <span class="flag flag-lg flag-fr"></span>
@@ -319,55 +436,75 @@
           <p class="country-sys">VFS Global</p>
         </div>
       </div>
-      <button class="btn-primary" id="goto-q" disabled>Сначала выбери страну</button>
+      <p style="text-align:center; font-size:11px; color:var(--muted); margin-top:10px;">Кликни страну — стартует поиск слота</p>
     </div>
 
-    <!-- SCREEN 2 — questionnaire -->
-    <div class="screen-body" data-screen="2">
-      <div class="progress-dots" id="progress-dots"></div>
-      <div class="question-card">
-        <p class="q-step" id="q-step">Вопрос 1 из 8</p>
-        <p class="q-text" id="q-text">Как вас зовут?</p>
-        <div class="q-input-wrap">
-          <input class="q-input" id="q-input" type="text" placeholder="" autocomplete="off" />
-          <button class="mic-btn" id="mic-btn" type="button" title="Наговорить ответ">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
-          </button>
+    <!-- SCREEN 4 — slot search -->
+    <div class="screen-body" data-screen="4">
+      <div class="wait-wrap">
+        <div class="spinner-ring"></div>
+        <p class="wait-main" id="wait-main">Ищем свободные слоты<br>во Францию</p>
+        <p class="wait-hint">Мониторим VFS Global 24/7.<br>Уведомим как только появится место.</p>
+        <div class="last-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;stroke:var(--muted);"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Последняя проверка: только что
         </div>
-        <p class="q-error" id="q-error"></p>
       </div>
-      <div class="btn-row">
-        <button class="back" id="q-back">← Назад</button>
-        <button class="next" id="q-next" disabled>Далее →</button>
+      <div class="params-card">
+        <p class="lbl">Ваши параметры</p>
+        <p class="val" id="wait-params">Франция · Туризм · июль–август 2026 · Москва</p>
       </div>
+      <button class="demo-skip" id="skip-wait">⚡ Демо: симулировать находку слота</button>
     </div>
 
-    <!-- SCREEN 3 — final 2 buttons -->
-    <div class="screen-body" data-screen="3">
-      <div class="final-wrap">
-        <div class="final-check">
+    <!-- SCREEN 5 — slot found + pay -->
+    <div class="screen-body" data-screen="5">
+      <p class="screen-title">Слот найден!</p>
+      <p class="screen-sub">Забронируй — пока никто не занял</p>
+      <div class="slot-card">
+        <span class="slot-badge"><span class="flag flag-sm" id="slot-flag"></span> <span id="slot-country-name">Франция</span> · <span id="slot-sys">VFS Global</span></span>
+        <p class="slot-country">Визовый центр Москва</p>
+        <p class="slot-center">Ул. Садовая-Кудринская, 3</p>
+        <div class="slot-datetime">
+          <div class="slot-dt-item">
+            <p class="slot-dt-label">ДАТА</p>
+            <p class="slot-dt-val">14 июля</p>
+          </div>
+          <div class="slot-dt-item">
+            <p class="slot-dt-label">ВРЕМЯ</p>
+            <p class="slot-dt-val">10:30</p>
+          </div>
+        </div>
+      </div>
+      <button class="pay-btn" id="pay-btn">Получить запись — 5 000 ₽</button>
+      <p class="pay-note">Фиксированная цена · Одинаково для всех стран</p>
+    </div>
+
+    <!-- SCREEN 6 — success -->
+    <div class="screen-body" data-screen="6">
+      <div class="success-wrap">
+        <div class="success-circle">
           <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <p class="final-title">Анкета заполнена ✓</p>
-        <p class="final-text">Все данные собраны.<br>Что дальше?</p>
-        <div class="final-summary">
-          <p>Куда едешь</p>
-          <div class="val" id="summary-country">Франция · VFS Global</div>
+        <p class="success-title">Запись закреплена</p>
+        <p class="success-text">Подтверждение отправлено на телефон.<br>Сейчас откроется чат с консультантом.</p>
+        <div class="ticket-card">
+          <div class="label">Ваша запись</div>
+          <div class="info">
+            <b id="success-country">Франция</b> · <span id="success-sys">VFS Global</span><br>
+            Визовый центр Москва<br>
+            <b>14 июля, 10:30</b>
+          </div>
         </div>
-        <button class="btn-gradient" id="goto-chat">Оформить визу →</button>
-        <a class="cross-sell" href="landing.html#cards">
-          <span>💳</span>
-          <span>Не забудь оформить карту<br>для оплаты за границей</span>
-        </a>
       </div>
     </div>
 
-    <!-- SCREEN 4 — chat -->
-    <div class="screen-body" data-screen="4">
+    <!-- SCREEN 7 — chat (formerly 4) -->
+    <div class="screen-body" data-screen="7">
       <div class="chat-header">
         <div class="chat-avatar">VS</div>
         <div>
-          <p class="chat-name">VisaSlot · Поддержка</p>
+          <p class="chat-name">VisaSlot · Консультант</p>
           <p class="chat-status">в сети</p>
         </div>
       </div>
@@ -388,19 +525,10 @@
       </div>
     </div>
 
-    <!-- SCREEN 5 — В Визовом центре placeholder -->
-    <div class="screen-body" data-screen="5">
-      <div class="center-wrap">
-        <div class="center-icon">🏢</div>
-        <p class="center-title">Запись в визовый центр</p>
-        <p class="center-text">Этот сценарий пока в разработке.<br>Скоро здесь появится подбор удобного слота и онлайн-запись.</p>
-        <button class="btn-outline" onclick="showScreen(4)">← Вернуться к чату</button>
-      </div>
-    </div>
 
   </div>
 
-  <div class="step-indicator">Шаг <b id="step-num">1</b> из 5</div>
+  <div class="step-indicator">Шаг <b id="step-num">1</b> из 7</div>
 
   <div class="controls">
     <button class="ctrl-btn" id="prev-btn">← Назад</button>
@@ -414,7 +542,6 @@
     country: null,
     answers: [],
     currentQ: 0,
-    chatMode: null, // 'self' | 'center'
   };
 
   const questions = [
@@ -498,34 +625,22 @@
     if (el) el.classList.add('active');
     document.getElementById('step-num').textContent = n;
     document.getElementById('prev-btn').disabled = n === 1;
-    document.getElementById('next-btn').disabled = n === 5;
+    document.getElementById('next-btn').disabled = n === 7;
   }
 
-  // SCREEN 1 — country selection
+  // SCREEN 3 — country picker (после 8 Q + клика "Найти слот")
   document.querySelectorAll('.country-card').forEach(card => {
     card.addEventListener('click', () => {
-      document.querySelectorAll('.country-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
       state.country = {
         code: card.dataset.country,
         name: card.dataset.name,
         sys: card.dataset.sys,
       };
-      const btn = document.getElementById('goto-q');
-      btn.disabled = false;
-      btn.textContent = `Выбрать ${state.country.name} →`;
+      startSlotSearch();
     });
   });
 
-  document.getElementById('goto-q').addEventListener('click', () => {
-    if (!state.country) return;
-    state.currentQ = 0;
-    state.answers = [];
-    renderQuestion();
-    showScreen(2);
-  });
-
-  // SCREEN 2 — questionnaire
+  // SCREEN 1 — questionnaire (стартовый)
   function renderQuestion() {
     const i = state.currentQ;
     const q = questions[i];
@@ -588,18 +703,16 @@
       state.currentQ++;
       renderQuestion();
     } else {
-      // last question done → go to final choice screen
-      document.getElementById('summary-country').textContent = `${state.country.name} · ${state.country.sys}`;
-      showScreen(3);
+      // last question done → screen 2 (2 buttons)
+      showScreen(2);
     }
   });
   document.getElementById('q-back').addEventListener('click', () => {
     if (state.currentQ > 0) {
       state.currentQ--;
       renderQuestion();
-    } else {
-      showScreen(1);
     }
+    // на первом вопросе кнопка "Назад" неактивна
   });
 
   // VOICE — Web Speech API
@@ -652,23 +765,69 @@
   }
   bindMic(document.getElementById('mic-btn'), document.getElementById('q-input'));
 
-  // SCREEN 3 — go to chat
-  document.getElementById('goto-chat').addEventListener('click', () => {
-    showScreen(4);
-    if (document.getElementById('chat-body').children.length === 0) {
-      initChat();
-    }
+  // SCREEN 2 — кнопка "Найти мне слот" → переход на выбор страны
+  document.getElementById('goto-slot').addEventListener('click', () => {
+    showScreen(3);
   });
 
-  // SCREEN 4 — CHAT
-  function initChat() {
+  // SCREEN 4 — slot search → SCREEN 5 (found)
+  let slotTimer = null;
+  function startSlotSearch() {
+    const ac = countryAcc(state.country.name);
+    document.getElementById('wait-main').innerHTML = `Ищем свободные слоты<br>${ac}`;
+    const ans = state.answers;
+    document.getElementById('wait-params').textContent =
+      `${state.country.name} · ${ans[2] || 'Туризм'} · ${ans[3] || 'июль–август'} · ${ans[5] || 'Москва'}`;
+    showScreen(4);
+    clearTimeout(slotTimer);
+    slotTimer = setTimeout(showSlotFound, 6000);
+  }
+  document.getElementById('skip-wait').addEventListener('click', () => {
+    clearTimeout(slotTimer);
+    showSlotFound();
+  });
+
+  function showSlotFound() {
+    document.getElementById('slot-flag').className = 'flag flag-sm flag-' + state.country.code;
+    document.getElementById('slot-country-name').textContent = state.country.name;
+    document.getElementById('slot-sys').textContent = state.country.sys;
+    showScreen(5);
+  }
+
+  // SCREEN 5 — pay → SCREEN 6 (success) → авто SCREEN 7 (chat)
+  document.getElementById('pay-btn').addEventListener('click', () => {
+    document.getElementById('success-country').textContent = state.country.name;
+    document.getElementById('success-sys').textContent = state.country.sys;
+    showScreen(6);
+    setTimeout(() => {
+      showScreen(7);
+      initSlotChat();
+    }, 2500);
+  });
+
+  // SCREEN 7 — чат с консультантом после оплаты
+  function initSlotChat() {
     const body = document.getElementById('chat-body');
     body.innerHTML = '';
-    addBotMsg(`Здравствуй, ${getFirstName()}! 👋<br>Анкета на визу <b>${countryAcc(state.country.name)}</b> уже заполнена — все данные у нас.`);
+    addBotMsg(`Поздравляю, ${getFirstName()}! 🎉<br>Слот закреплён за тобой: <b>14 июля, 10:30</b> · ${countryAcc(state.country.name)}.`);
     setTimeout(() => {
-      addBotMsg(`Как ты хочешь подавать документы?`);
-      addChoices();
-    }, 700);
+      addBotMsg(
+        `Я Анна, твой консультант. Помогу с документами и подготовкой к подаче.<br><br>` +
+        `Вот <b>опросный лист на шенген-визу</b> ${countryAdj(state.country.name)}:` +
+        `<br><br>` +
+        `<a href="docs/oprosnik-shengen.docx" download target="_blank" ` +
+        `style="display:inline-flex; align-items:center; gap:8px; background:var(--indigo-light); ` +
+        `color:var(--indigo); padding:8px 12px; border-radius:10px; text-decoration:none; ` +
+        `font-weight:600; font-size:12px; margin-top:4px;">` +
+        `📄 Опросник на Шенген.docx <span style="opacity:0.7;">· скачать</span></a>`
+      );
+    }, 900);
+    setTimeout(() => {
+      addBotMsg(`Также список нужных документов:<br>${getDocsList()}`);
+    }, 2200);
+    setTimeout(() => {
+      addBotMsg(`Если будут вопросы — пиши прямо здесь, я рядом. 👋`);
+    }, 3400);
   }
 
   function getFirstName() {
@@ -697,53 +856,6 @@
     body.appendChild(div);
     body.scrollTop = body.scrollHeight;
   }
-  function addChoices() {
-    const body = document.getElementById('chat-body');
-    const row = document.createElement('div');
-    row.className = 'choice-row';
-    const selfBtn = document.createElement('button');
-    selfBtn.className = 'choice-btn';
-    selfBtn.textContent = 'Самостоятельно';
-    selfBtn.addEventListener('click', () => choosePath('self'));
-    const centerBtn = document.createElement('button');
-    centerBtn.className = 'choice-btn';
-    centerBtn.textContent = 'В Визовом центре';
-    centerBtn.addEventListener('click', () => choosePath('center'));
-    row.appendChild(selfBtn);
-    row.appendChild(centerBtn);
-    body.appendChild(row);
-    body.scrollTop = body.scrollHeight;
-  }
-
-  function choosePath(mode) {
-    state.chatMode = mode;
-    document.querySelectorAll('.choice-row').forEach(r => r.remove());
-    if (mode === 'self') {
-      addUserMsg('Самостоятельно');
-      setTimeout(() => {
-        addBotMsg(
-          `Тогда вот <b>опросный лист на шенген-визу</b> ${countryAdj(state.country.name)}.<br>` +
-          `<b style="color:#dc2626">Этот документ обязательно надо заполнить</b> и прислать обратно в чат.` +
-          `<br><br>` +
-          `<a href="docs/oprosnik-shengen.docx" download target="_blank" ` +
-          `style="display:inline-flex; align-items:center; gap:8px; background:var(--indigo-light); ` +
-          `color:var(--indigo); padding:8px 12px; border-radius:10px; text-decoration:none; ` +
-          `font-weight:600; font-size:12px; margin-top:4px;">` +
-          `📄 Опросник на Шенген.docx <span style="opacity:0.7;">· скачать</span></a>`
-        );
-      }, 500);
-      setTimeout(() => {
-        addBotMsg(`И вот <b>список документов</b>, которые понадобятся:<br>${getDocsList()}`);
-      }, 1800);
-      setTimeout(() => {
-        addBotMsg(`Если будут вопросы — пиши прямо здесь, я рядом. 👋`);
-      }, 3000);
-    } else {
-      addUserMsg('В Визовом центре');
-      setTimeout(() => showScreen(5), 600);
-    }
-  }
-
   function countryAdj(n) {
     const map = { 'Франция': 'Франции', 'Италия': 'Италии', 'Испания': 'Испании', 'Болгария': 'Болгарии' };
     return map[n] || n;
@@ -799,31 +911,20 @@
     if (state.step > 1) showScreen(state.step - 1);
   });
   document.getElementById('next-btn').addEventListener('click', () => {
-    if (state.step < 5) showScreen(state.step + 1);
+    if (state.step < 7) showScreen(state.step + 1);
   });
   function resetAll() {
+    clearTimeout(slotTimer);
     state.country = null;
     state.answers = [];
     state.currentQ = 0;
-    state.chatMode = null;
-    document.querySelectorAll('.country-card').forEach(c => c.classList.remove('active'));
-    const btn = document.getElementById('goto-q');
-    btn.disabled = true;
-    btn.textContent = 'Сначала выбери страну';
     document.getElementById('chat-body').innerHTML = '';
+    renderQuestion();
     showScreen(1);
   }
 
-  // URL param ?country=fr|it|es|bg
-  (function handleCountryParam() {
-    const params = new URLSearchParams(window.location.search);
-    const c = (params.get('country') || '').toLowerCase();
-    if (!['fr', 'it', 'es', 'bg'].includes(c)) return;
-    const card = document.querySelector(`.country-card[data-country="${c}"]`);
-    if (!card) return;
-    card.click();
-    setTimeout(() => document.getElementById('goto-q').click(), 150);
-  })();
+  // Стартовая инициализация — экран 1 = опросник
+  renderQuestion();
 </script>
 
 </body>
