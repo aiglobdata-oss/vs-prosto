@@ -1396,14 +1396,22 @@
   document.getElementById('proto-submit').addEventListener('click', () => {
     if (protoStep === 'phone') {
       const phone = document.getElementById('proto-phone').value.replace(/\D/g, '');
-      if (phone.length < 10) { alert('Введите номер телефона полностью'); return; }
-      document.getElementById('proto-sms-step').style.display = '';
+      if (phone.length < 10) {
+        document.getElementById('proto-phone').style.borderColor = '#dc2626';
+        setTimeout(() => document.getElementById('proto-phone').style.borderColor = '', 1500);
+        return;
+      }
+      document.getElementById('proto-sms-step').style.display = 'block';
       document.getElementById('proto-submit').textContent = 'Подтвердить';
       protoStep = 'sms';
       startProtoTimer();
     } else {
       const code = document.getElementById('proto-sms').value;
-      if (code.length < 4) { alert('Введите код из SMS'); return; }
+      if (code.length < 4) {
+        const errEl = document.getElementById('proto-sms-err');
+        if (errEl) { errEl.style.display = ''; setTimeout(() => errEl.style.display = 'none', 2000); }
+        return;
+      }
       protoAuthSuccess();
     }
   });
