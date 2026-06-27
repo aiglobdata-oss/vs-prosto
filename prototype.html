@@ -741,10 +741,10 @@
 
     <!-- Тип пользователя -->
     <div style="display:flex;gap:10px;margin-bottom:18px;">
-      <div style="flex:1;padding:12px 8px;border:2px solid #4f46e5;border-radius:12px;background:#eef2ff;cursor:pointer;text-align:center;font-size:13px;font-weight:600;color:#4f46e5;line-height:1.4;">
+      <div class="proto-type-card" style="flex:1;padding:12px 8px;border:2px solid #4f46e5;border-radius:12px;background:#eef2ff;cursor:pointer;text-align:center;font-size:13px;font-weight:600;color:#4f46e5;line-height:1.4;">
         <div style="font-size:20px;margin-bottom:4px;">👤</div>Физическое лицо
       </div>
-      <div style="flex:1;padding:12px 8px;border:2px solid #e5e7eb;border-radius:12px;background:#fff;cursor:pointer;text-align:center;font-size:13px;font-weight:600;color:#6b7280;line-height:1.4;">
+      <div class="proto-type-card" style="flex:1;padding:12px 8px;border:2px solid #e5e7eb;border-radius:12px;background:#fff;cursor:pointer;text-align:center;font-size:13px;font-weight:600;color:#6b7280;line-height:1.4;">
         <div style="font-size:20px;margin-bottom:4px;">🏢</div>Визовый центр
       </div>
     </div>
@@ -881,7 +881,8 @@
 <script>
   // mode: 'slot' = выбрал страну, потом 8 Q; 'visa' = сразу 8 Q (Q2 = страна текстом)
   const urlParams = new URLSearchParams(window.location.search);
-  const initialMode = urlParams.get('mode') === 'visa' ? 'visa' : 'slot';
+  const _m = urlParams.get('mode');
+  const initialMode = _m === 'visa' ? 'visa' : _m === 'vc' ? 'vc' : 'slot';
 
   const state = {
     step: 1,
@@ -915,7 +916,15 @@
     { text: "Паспорт 5-летний или 10-летний?", placeholder: "5 или 10", type: "passport_years", inputmode: "numeric", maxlength: 2 },
     { text: "Номер телефона для связи?", placeholder: "(999) 123-45-67", type: "phone", inputmode: "tel", maxlength: 18 },
   ];
-  const questions = (state.mode === 'visa') ? questionsVisa : questionsSlot;
+  // Опросник для визовых центров (B2B): данные клиента
+  const questionsVC = [
+    { text: "ФИО клиента?", placeholder: "Иванов Иван Иванович", type: "name", inputmode: "text", autocap: "words" },
+    { text: "Паспортные данные клиента?", placeholder: "Серия и номер, дата выдачи", type: "text", inputmode: "text", autocap: "characters" },
+    { text: "Место прописки клиента?", placeholder: "Москва, ул. Тверская, 12, кв. 5", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Контактный телефон клиента?", placeholder: "(999) 123-45-67", type: "phone", inputmode: "tel", maxlength: 18 },
+    { text: "Email клиента?", placeholder: "client@example.com", type: "text", inputmode: "email", autocap: "none" },
+  ];
+  const questions = (state.mode === 'vc') ? questionsVC : (state.mode === 'visa') ? questionsVisa : questionsSlot;
 
   // VALIDATION + MASKING
   function validate(type, value) {
@@ -1321,9 +1330,10 @@
   let protoTimerActive = false;
 
   function openAuthWithPrefill() {
-    // Предзаполнить имя (Q0) и телефон (последний вопрос)
+    // В режиме vc: имя=Q0, телефон=Q3; иначе имя=Q0, телефон=последний вопрос
     const nameVal = state.answers[0] || '';
-    const phoneVal = state.answers[questions.length - 1] || '';
+    const phoneIdx = (state.mode === 'vc') ? 3 : (questions.length - 1);
+    const phoneVal = state.answers[phoneIdx] || '';
     if (nameVal) document.getElementById('proto-name').value = nameVal;
     if (phoneVal) {
       const digits = phoneVal.replace(/\D/g, '').replace(/^(7|8)/, '').slice(0, 10);
@@ -1334,7 +1344,16 @@
       if (digits.length >= 8) out += '-' + digits.slice(8, 10);
       document.getElementById('proto-phone').value = out;
     }
-    // Открыть на вкладке Регистрация
+    // vc-режим → вкладка "Визовый центр" в типе пользователя
+    const typeCards = document.querySelectorAll('.proto-type-card');
+    if (state.mode === 'vc' && typeCards.length >= 2) {
+      typeCards[0].style.border = '2px solid #e5e7eb';
+      typeCards[0].style.background = '#fff';
+      typeCards[0].style.color = '#6b7280';
+      typeCards[1].style.border = '2px solid #4f46e5';
+      typeCards[1].style.background = '#eef2ff';
+      typeCards[1].style.color = '#4f46e5';
+    }
     switchProtoTab('reg');
     document.getElementById('proto-sms-step').style.display = 'none';
     document.getElementById('proto-submit').textContent = 'Зарегистрироваться';
@@ -1776,7 +1795,7 @@
     document.getElementById('chat-body').innerHTML = '';
     document.getElementById('chat-side-btns').innerHTML = '';
     document.getElementById('country-sub').textContent =
-      state.mode === 'slot' ? 'Выбери страну — затем 8 вопросов' : 'Выбери из 4 доступных стран';
+      state.mode === 'slot' ? 'Выбери страну — затем 8 вопросов' : state.mode === 'vc' ? 'Заполните данные клиента' : 'Выбери из 4 доступных стран';
     renderQuestion();
     initialShow();
   }
