@@ -963,6 +963,24 @@
     // на первом вопросе кнопка "Назад" неактивна
   });
 
+  // Конвертация русских числительных в цифры (для поля «Сколько человек»)
+  function wordsToDigits(text) {
+    const map = {
+      'ноль': '0', 'нуль': '0',
+      'один': '1', 'одна': '1', 'одного': '1',
+      'два': '2', 'две': '2',
+      'три': '3', 'трёх': '3',
+      'четыре': '4', 'четырёх': '4',
+      'пять': '5', 'пяти': '5',
+      'шесть': '6', 'шести': '6',
+      'семь': '7', 'семи': '7',
+      'восемь': '8', 'восьми': '8',
+      'девять': '9', 'девяти': '9',
+      'десять': '10', 'десяти': '10',
+    };
+    return text.toLowerCase().replace(/[а-яё]+/g, w => map[w] !== undefined ? map[w] : w);
+  }
+
   // VOICE — Web Speech API
   // Создаём новый экземпляр на каждую запись, чтобы избежать конфликта общего объекта
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -992,12 +1010,15 @@
       micBtn.classList.add('recording');
 
       r.onresult = (event) => {
-        const text = event.results[0][0].transcript;
-        // Для текстовых полей — вставляем распознанное; для маскированных — вставляем как есть
+        let text = event.results[0][0].transcript;
         const q = questions && questions[state.currentQ];
         if (inputEl === document.getElementById('q-input') && q && (q.type === 'date' || q.type === 'phone' || q.type === 'passport_years')) {
-          // Для цифровых полей голос не применяем — пользователь введёт вручную
+          // Для цифровых полей голос не применяем — вводить вручную
         } else {
+          // Для вопроса о количестве людей — слова-числа заменяем цифрами
+          if (q && q.text.includes('Сколько человек')) {
+            text = wordsToDigits(text);
+          }
           inputEl.value = text;
           inputEl.dispatchEvent(new Event('input'));
         }
