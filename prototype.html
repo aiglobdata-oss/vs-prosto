@@ -1293,8 +1293,15 @@
         `;
         body.appendChild(row);
         body.scrollTop = 99999;
+        const disableBtns = () => {
+          // После выбора блокируем кнопки (но не убираем из чата — история сохраняется)
+          document.getElementById('vc-self').disabled = true;
+          document.getElementById('vc-center').disabled = true;
+          document.getElementById('vc-self').style.opacity = '0.45';
+          document.getElementById('vc-center').style.opacity = '0.45';
+        };
         document.getElementById('vc-self').addEventListener('click', () => {
-          row.remove();
+          disableBtns();
           addUserMsg('Самостоятельное оформление');
           setTimeout(() => {
             addBotMsg(
@@ -1310,7 +1317,7 @@
           }, 400);
         });
         document.getElementById('vc-center').addEventListener('click', () => {
-          row.remove();
+          disableBtns();
           addUserMsg('С помощью визового центра');
           setTimeout(() => addBotMsg('Понял! Скоро свяжется наш специалист. 🤝'), 400);
         });
