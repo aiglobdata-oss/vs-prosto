@@ -964,53 +964,68 @@
   });
 
   // VOICE — Web Speech API
-  let recognition = null;
-  let activeMicTarget = null; // either q-input or chat-input
-  function initSpeech() {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return null;
-    const r = new SR();
-    r.lang = 'ru-RU';
-    r.continuous = false;
-    r.interimResults = true;
-    return r;
-  }
+  // Создаём новый экземпляр на каждую запись, чтобы избежать конфликта общего объекта
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   function bindMic(micBtn, inputEl, onResult) {
+    let activeRec = null;
+
     micBtn.addEventListener('click', () => {
-      if (!recognition) recognition = initSpeech();
-      if (!recognition) {
-        alert('Голосовой ввод не поддерживается в этом браузере. Попробуй Chrome или Edge.');
+      if (!SR) {
+        alert('Голосовой ввод не поддерживается. Используй Chrome или Edge.');
         return;
       }
-      if (micBtn.classList.contains('recording')) {
-        recognition.stop();
-        return;
-      }
-      activeMicTarget = inputEl;
-      micBtn.classList.add('recording');
-      try {
-        recognition.start();
-      } catch (e) {
+      // Если уже пишет — останавливаем
+      if (activeRec) {
+        activeRec.stop();
+        activeRec = null;
         micBtn.classList.remove('recording');
+        return;
       }
-      recognition.onresult = (event) => {
-        let text = '';
-        for (let i = 0; i < event.results.length; i++) {
-          text += event.results[i][0].transcript;
+
+      const r = new SR();
+      r.lang = 'ru-RU';
+      r.continuous = false;
+      r.interimResults = false; // только финальный результат, без конфликтов с масками
+      r.maxAlternatives = 1;
+      activeRec = r;
+      micBtn.classList.add('recording');
+
+      r.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        // Для текстовых полей — вставляем распознанное; для маскированных — вставляем как есть
+        const q = questions && questions[state.currentQ];
+        if (inputEl === document.getElementById('q-input') && q && (q.type === 'date' || q.type === 'phone' || q.type === 'passport_years')) {
+          // Для цифровых полей голос не применяем — пользователь введёт вручную
+        } else {
+          inputEl.value = text;
+          inputEl.dispatchEvent(new Event('input'));
         }
-        inputEl.value = text;
-        inputEl.dispatchEvent(new Event('input'));
         if (onResult) onResult(text);
       };
-      recognition.onend = () => {
+
+      r.onend = () => {
+        activeRec = null;
         micBtn.classList.remove('recording');
       };
-      recognition.onerror = () => {
+
+      r.onerror = (e) => {
+        activeRec = null;
         micBtn.classList.remove('recording');
+        if (e.error === 'not-allowed' || e.error === 'permission-denied') {
+          alert('Нет доступа к микрофону. Разреши его в настройках браузера.');
+        }
       };
+
+      try {
+        r.start();
+      } catch (e) {
+        activeRec = null;
+        micBtn.classList.remove('recording');
+      }
     });
   }
+
   bindMic(document.getElementById('mic-btn'), document.getElementById('q-input'));
 
   // Биометрия тоггл
