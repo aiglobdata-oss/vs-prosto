@@ -568,7 +568,10 @@
       <a href="#how">Как это работает</a>
       <a href="#pricing">Цена</a>
       <a href="centers.html">Для центров →</a>
-      <a href="cabinet.html" class="btn" style="border:1.5px solid var(--indigo);color:var(--indigo);background:none;padding:9px 18px;border-radius:10px;font-weight:600;font-size:14px;">Войти</a>
+      <!-- Не залогинен -->
+      <button id="btn-login-open" class="btn" style="border:1.5px solid var(--indigo);color:var(--indigo);background:none;padding:9px 18px;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;">Войти</button>
+      <!-- Залогинен (скрыт по умолчанию) -->
+      <div id="header-avatar" style="display:none;width:36px;height:36px;border-radius:50%;background:var(--indigo);color:#fff;font-size:13px;font-weight:700;display:none;align-items:center;justify-content:center;cursor:pointer;" onclick="goToCabinet()">ИИ</div>
       <a href="#cta" class="btn btn-primary">Оставить заявку</a>
     </nav>
   </div>
@@ -1052,6 +1055,303 @@
         !document.getElementById('demoOverlay').classList.contains('open') &&
         !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
       openDemo();
+    }
+  });
+</script>
+
+<!-- ══ AUTH MODAL ══ -->
+<style>
+  .auth-overlay {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(15,23,41,0.55); align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .auth-overlay.open { display: flex; }
+  .auth-card {
+    background: #fff; border-radius: 20px; width: 100%; max-width: 400px;
+    padding: 36px 32px; box-shadow: 0 8px 48px rgba(0,0,0,0.18); position: relative;
+  }
+  .auth-close {
+    position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
+    border: none; background: #f3f4f6; border-radius: 50%; cursor: pointer;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+  }
+  .auth-logo { text-align: center; font-size: 22px; font-weight: 800; color: var(--indigo); margin-bottom: 20px; }
+
+  /* Тип пользователя */
+  .user-type-tabs { display: flex; gap: 10px; margin-bottom: 24px; }
+  .user-type-btn {
+    flex: 1; padding: 12px 8px; border: 2px solid #e5e7eb; border-radius: 12px;
+    background: none; cursor: pointer; font-family: inherit; font-size: 13px;
+    font-weight: 600; color: #6b7280; transition: all .15s; text-align: center; line-height: 1.4;
+  }
+  .user-type-btn.active { border-color: var(--indigo); background: #eef2ff; color: var(--indigo); }
+  .user-type-btn .utype-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+
+  /* Табы Войти/Регистрация */
+  .auth-tabs { display: flex; border-bottom: 2px solid #e5e7eb; margin-bottom: 22px; }
+  .auth-tab {
+    flex: 1; padding: 9px 0; text-align: center; font-size: 14px; font-weight: 600;
+    cursor: pointer; color: #6b7280; border-bottom: 2px solid transparent; margin-bottom: -2px;
+    transition: all .15s;
+  }
+  .auth-tab.active { color: var(--indigo); border-bottom-color: var(--indigo); }
+
+  .auth-field { margin-bottom: 14px; }
+  .auth-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; }
+  .auth-phone-wrap { display: flex; border: 1.5px solid #e5e7eb; border-radius: 10px; overflow: hidden; transition: border-color .15s; }
+  .auth-phone-wrap:focus-within { border-color: var(--indigo); }
+  .auth-prefix { padding: 11px 12px; font-size: 14px; font-weight: 600; background: #f9fafb; border-right: 1.5px solid #e5e7eb; }
+  .auth-input { flex: 1; border: none; outline: none; padding: 11px 12px; font-size: 14px; font-family: inherit; }
+  .auth-input-plain { width: 100%; padding: 11px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-size: 14px; font-family: inherit; outline: none; transition: border-color .15s; }
+  .auth-input-plain:focus { border-color: var(--indigo); }
+  .auth-sms-wrap { display: flex; border: 1.5px solid #e5e7eb; border-radius: 10px; overflow: hidden; transition: border-color .15s; }
+  .auth-sms-wrap:focus-within { border-color: var(--indigo); }
+  .auth-sms-input { flex: 1; border: none; outline: none; padding: 11px 12px; font-size: 14px; font-family: inherit; }
+  .auth-sms-btn { border: none; background: none; color: var(--indigo); font-size: 13px; font-weight: 600; padding: 0 14px; cursor: pointer; white-space: nowrap; font-family: inherit; }
+
+  .auth-agree { display: flex; gap: 9px; align-items: flex-start; margin-bottom: 16px; cursor: pointer; }
+  .auth-checkbox { width: 18px; height: 18px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .auth-checkbox.checked { background: var(--indigo); border-color: var(--indigo); }
+  .auth-checkbox.checked::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; }
+  .auth-agree-text { font-size: 13px; color: #6b7280; line-height: 1.5; }
+  .auth-agree-text a { color: var(--indigo); text-decoration: none; }
+
+  .auth-btn-main { width: 100%; padding: 13px; background: var(--indigo); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 16px; transition: background .15s; }
+  .auth-btn-main:hover { background: #4338ca; }
+  .auth-or { display: flex; align-items: center; gap: 10px; color: #9ca3af; font-size: 13px; margin-bottom: 12px; }
+  .auth-or::before, .auth-or::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
+  .auth-social { width: 100%; padding: 11px; border: 1.5px solid #e5e7eb; border-radius: 10px; background: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 9px; margin-bottom: 8px; transition: background .15s; }
+  .auth-social:hover { background: #f9fafb; }
+  .auth-footer { text-align: center; font-size: 12px; color: #9ca3af; margin-top: 12px; }
+
+  /* SMS step hidden by default */
+  .auth-sms-step { display: none; }
+</style>
+
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-card">
+    <button class="auth-close" id="auth-close">✕</button>
+    <div class="auth-logo">VisaSlot</div>
+
+    <!-- Выбор типа -->
+    <div class="user-type-tabs">
+      <button class="user-type-btn active" data-type="person">
+        <span class="utype-icon">👤</span>Физическое лицо
+      </button>
+      <button class="user-type-btn" data-type="center">
+        <span class="utype-icon">🏢</span>Визовый центр
+      </button>
+    </div>
+
+    <!-- Войти / Регистрация -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" data-tab="login">Войти</div>
+      <div class="auth-tab" data-tab="reg">Регистрация</div>
+    </div>
+
+    <!-- Форма -->
+    <div id="auth-form-body">
+      <!-- Только при регистрации -->
+      <div class="auth-field" id="auth-name-field" style="display:none;">
+        <label class="auth-label">Имя и фамилия</label>
+        <input class="auth-input-plain" id="auth-name" placeholder="Иван Иванов" autocapitalize="words">
+      </div>
+      <!-- Только ВЦ при регистрации -->
+      <div class="auth-field" id="auth-org-field" style="display:none;">
+        <label class="auth-label">Название визового центра</label>
+        <input class="auth-input-plain" id="auth-org" placeholder="Центр Путешествий №1">
+      </div>
+
+      <div class="auth-field">
+        <label class="auth-label">Номер телефона</label>
+        <div class="auth-phone-wrap">
+          <div class="auth-prefix">+7</div>
+          <input class="auth-input" id="auth-phone" type="tel" placeholder="(999) 123-45-67" inputmode="tel" maxlength="15">
+        </div>
+      </div>
+
+      <div class="auth-sms-step" id="auth-sms-step">
+        <div class="auth-field">
+          <label class="auth-label">Код из SMS</label>
+          <div class="auth-sms-wrap">
+            <input class="auth-sms-input" id="auth-sms" type="tel" placeholder="6-значный код" maxlength="6" inputmode="numeric">
+            <button class="auth-sms-btn" id="auth-sms-resend">Отправить</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-agree" id="auth-agree-row">
+        <div class="auth-checkbox" id="auth-checkbox"></div>
+        <div class="auth-agree-text">Согласен с <a href="#">офертой</a> и <a href="#">политикой конфиденциальности</a></div>
+      </div>
+
+      <button class="auth-btn-main" id="auth-submit">Получить код</button>
+
+      <div class="auth-or">или</div>
+      <button class="auth-social" id="auth-telegram">
+        <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path d="M5.5 11.5l10-4c.8-.3 1.5.2 1.2 1.3l-1.7 7.8c-.1.6-.5.8-1 .5l-2.7-2-1.3 1.2c-.1.1-.3.2-.6.2l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1L8.3 13.4l-2.8-.9c-.6-.2-.6-.6 0-.9z" fill="white"/></svg>
+        Войти через Telegram
+      </button>
+      <button class="auth-social" id="auth-google">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Войти через Google
+      </button>
+      <div class="auth-footer">Это безопасно. Мы не храним пароли</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── AUTH STATE ──
+  const authState = { loggedIn: false, type: 'person', name: '', initials: '' };
+
+  function loginSuccess(initials, type) {
+    authState.loggedIn = true;
+    authState.type = type;
+    authState.initials = initials;
+    // Скрыть кнопку Войти, показать аватар
+    document.getElementById('btn-login-open').style.display = 'none';
+    const ava = document.getElementById('header-avatar');
+    ava.style.display = 'flex';
+    ava.textContent = initials;
+    closeAuthModal();
+    // Если ждали оплату — разблокируем (сигнал в iframe)
+    const iframe = document.querySelector('#demoOverlay iframe');
+    if (iframe) {
+      try { iframe.contentWindow.postMessage({ type: 'auth_success' }, '*'); } catch(e) {}
+    }
+  }
+
+  function goToCabinet() {
+    window.location.href = authState.type === 'center' ? 'vc-cabinet.html' : 'cabinet.html';
+  }
+
+  function openAuthModal(afterPayment) {
+    document.getElementById('auth-overlay').classList.add('open');
+    if (afterPayment) {
+      document.getElementById('auth-overlay').dataset.afterPayment = '1';
+    }
+  }
+  function closeAuthModal() {
+    document.getElementById('auth-overlay').classList.remove('open');
+  }
+
+  // Открыть по кнопке Войти
+  document.getElementById('btn-login-open').addEventListener('click', () => openAuthModal(false));
+  document.getElementById('auth-close').addEventListener('click', closeAuthModal);
+  document.getElementById('auth-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('auth-overlay')) closeAuthModal();
+  });
+
+  // Тип пользователя
+  let currentType = 'person';
+  document.querySelectorAll('.user-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.user-type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentType = btn.dataset.type;
+      updateAuthForm();
+    });
+  });
+
+  // Войти / Регистрация табы
+  let currentAuthTab = 'login';
+  document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentAuthTab = tab.dataset.tab;
+      updateAuthForm();
+    });
+  });
+
+  function updateAuthForm() {
+    const isReg = currentAuthTab === 'reg';
+    const isCenter = currentType === 'center';
+    document.getElementById('auth-name-field').style.display = isReg ? '' : 'none';
+    document.getElementById('auth-org-field').style.display = (isReg && isCenter) ? '' : 'none';
+    document.getElementById('auth-submit').textContent = isReg ? 'Зарегистрироваться' : 'Получить код';
+    document.getElementById('auth-sms-step').style.display = 'none';
+  }
+
+  // Маска телефона
+  document.getElementById('auth-phone').addEventListener('input', e => {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 10);
+    let out = '';
+    if (v.length > 0) out += '(' + v.slice(0, 3);
+    if (v.length >= 3) out += ') ' + v.slice(3, 6);
+    if (v.length >= 6) out += '-' + v.slice(6, 8);
+    if (v.length >= 8) out += '-' + v.slice(8, 10);
+    e.target.value = out;
+  });
+
+  // Галочка согласия
+  let authAgreed = false;
+  document.getElementById('auth-agree-row').addEventListener('click', () => {
+    authAgreed = !authAgreed;
+    document.getElementById('auth-checkbox').classList.toggle('checked', authAgreed);
+  });
+
+  // SMS resend timer
+  let authSmsTimerActive = false;
+  function startAuthSmsTimer() {
+    if (authSmsTimerActive) return;
+    authSmsTimerActive = true;
+    let sec = 60;
+    const btn = document.getElementById('auth-sms-resend');
+    btn.disabled = true; btn.style.opacity = '0.5';
+    const t = setInterval(() => {
+      sec--;
+      btn.textContent = `Повтор ${sec}с`;
+      if (sec <= 0) { clearInterval(t); btn.textContent = 'Отправить'; btn.disabled = false; btn.style.opacity = '1'; authSmsTimerActive = false; }
+    }, 1000);
+  }
+
+  // Кнопка Submit
+  let authStep = 'phone'; // 'phone' | 'sms'
+  document.getElementById('auth-submit').addEventListener('click', () => {
+    if (authStep === 'phone') {
+      const phone = document.getElementById('auth-phone').value.replace(/\D/g, '');
+      if (phone.length < 10) { alert('Введите номер телефона полностью'); return; }
+      // Показываем SMS поле
+      document.getElementById('auth-sms-step').style.display = '';
+      document.getElementById('auth-submit').textContent = 'Войти';
+      authStep = 'sms';
+      startAuthSmsTimer();
+    } else {
+      const code = document.getElementById('auth-sms').value;
+      if (code.length < 4) { alert('Введите код из SMS'); return; }
+      const name = document.getElementById('auth-name').value.trim() || 'Пользователь';
+      const initials = currentAuthTab === 'reg'
+        ? name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+        : 'ВС';
+      authStep = 'phone';
+      loginSuccess(initials, currentType);
+    }
+  });
+
+  // Авто-вход при 6 цифрах
+  document.getElementById('auth-sms').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+    if (e.target.value.length === 6) {
+      const name = document.getElementById('auth-name').value.trim() || 'Пользователь';
+      const initials = currentAuthTab === 'reg'
+        ? name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+        : 'ВС';
+      authStep = 'phone';
+      loginSuccess(initials, currentType);
+    }
+  });
+
+  // Социальные кнопки
+  document.getElementById('auth-telegram').addEventListener('click', () => loginSuccess('ТГ', currentType));
+  document.getElementById('auth-google').addEventListener('click', () => loginSuccess('ГГ', currentType));
+
+  // Слушаем сигнал от прототипа (требует регистрации перед оплатой)
+  window.addEventListener('message', e => {
+    if (e.data && e.data.type === 'require_auth') {
+      openAuthModal(true);
     }
   });
 </script>

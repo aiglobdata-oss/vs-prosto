@@ -1111,14 +1111,38 @@
   }
 
   // SCREEN 5 — pay → SCREEN 6 (success) → авто SCREEN 7 (chat)
-  document.getElementById('pay-btn').addEventListener('click', () => {
-    document.getElementById('success-country').textContent = state.country.name;
-    document.getElementById('success-sys').textContent = state.country.sys;
+  // Флаг: родительское окно подтвердило авторизацию
+  let parentAuthed = false;
+  window.addEventListener('message', e => {
+    if (e.data && e.data.type === 'auth_success') {
+      parentAuthed = true;
+      proceedToPay();
+    }
+  });
+
+  function proceedToPay() {
+    document.getElementById('success-country').textContent = state.country ? state.country.name : '';
+    document.getElementById('success-sys').textContent = state.country ? state.country.sys : '';
     showScreen(6);
     setTimeout(() => {
       showScreen(7);
       initSlotChat();
     }, 2500);
+  }
+
+  document.getElementById('pay-btn').addEventListener('click', () => {
+    if (window.self !== window.top) {
+      // Открыт в iframe (внутри лендинга) — проверяем авторизацию
+      if (parentAuthed) {
+        proceedToPay();
+      } else {
+        // Просим родительское окно открыть модалку входа
+        window.parent.postMessage({ type: 'require_auth' }, '*');
+      }
+    } else {
+      // Открыт напрямую (не в iframe) — сразу оплата
+      proceedToPay();
+    }
   });
 
   // SCREEN 7 — рендер боковых кнопок
