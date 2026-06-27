@@ -1115,37 +1115,97 @@
     document.querySelectorAll('#side-card').forEach(b => b.addEventListener('click', onSideCard));
   }
 
-  function onSideVisa() {
-    // В чате показать 2 выбора
+  // Универсальная функция для выбора «Самостоятельно / Визовый центр»
+  // Нажатая кнопка → disabled+матовая; вторая остаётся активной
+  function addChoiceRow() {
+    const body = document.getElementById('chat-body');
+    const uid = Date.now(); // уникальный суффикс для id
     const row = document.createElement('div');
     row.className = 'choice-row';
     row.innerHTML = `
-      <button class="choice-btn" id="choice-self">Самостоятельно</button>
-      <button class="choice-btn" id="choice-center">С помощью визового центра</button>
+      <button class="choice-btn" id="cs-${uid}">Самостоятельное оформление</button>
+      <button class="choice-btn" id="cc-${uid}">С помощью визового центра</button>
     `;
-    document.getElementById('chat-body').appendChild(row);
-    document.getElementById('chat-body').scrollTop = 99999;
-    document.getElementById('choice-self').addEventListener('click', () => {
-      row.remove();
-      addUserMsg('Самостоятельно');
+    body.appendChild(row);
+    body.scrollTop = 99999;
+
+    const btnSelf   = document.getElementById(`cs-${uid}`);
+    const btnCenter = document.getElementById(`cc-${uid}`);
+
+    const fadeBtn = (btn) => {
+      btn.disabled = true;
+      btn.style.opacity = '0.38';
+      btn.style.cursor = 'default';
+      btn.style.pointerEvents = 'none';
+    };
+
+    btnSelf.addEventListener('click', () => {
+      fadeBtn(btnSelf);
+      addUserMsg('Самостоятельное оформление');
       setTimeout(() => {
         addBotMsg(
-          `Вот <b>опросный лист на шенген-визу</b> ${countryAdj(state.country ? state.country.name : '')}:` +
-          `<br><br>` +
+          `Хорошо! Вот <b>опросный лист на шенген-визу</b>:<br><br>` +
           `<a href="docs/oprosnik-shengen.docx" download target="_blank" ` +
-          `style="display:inline-flex; align-items:center; gap:8px; background:var(--indigo-light); ` +
-          `color:var(--indigo); padding:8px 12px; border-radius:10px; text-decoration:none; ` +
-          `font-weight:600; font-size:12px; margin-top:4px;">` +
+          `style="display:inline-flex;align-items:center;gap:8px;background:var(--indigo-light);` +
+          `color:var(--indigo);padding:8px 12px;border-radius:10px;text-decoration:none;` +
+          `font-weight:600;font-size:12px;margin-top:4px;">` +
           `📄 Опросник на Шенген.docx <span style="opacity:0.7;">· скачать</span></a>`
         );
-        setTimeout(() => addBotMsg(`Список документов:<br>${getDocsList()}`), 900);
+        setTimeout(() => addBotMsg(`Также список нужных документов:<br>${getDocsList()}`), 900);
+        setTimeout(() => addBotMsg('Если будут вопросы — пиши прямо здесь, я рядом. 👋'), 1900);
       }, 400);
     });
-    document.getElementById('choice-center').addEventListener('click', () => {
-      row.remove();
+
+    btnCenter.addEventListener('click', () => {
+      fadeBtn(btnCenter);
       addUserMsg('С помощью визового центра');
-      setTimeout(() => addBotMsg('Понял! Скоро свяжется наш специалист. 🤝'), 400);
+      setTimeout(() => {
+        addBotMsg('Понял! Подключаю специалиста визового центра. 🤝');
+        setTimeout(() => addFeedbackBtns(), 1500);
+      }, 400);
     });
+  }
+
+  // 👍/👎 после ответа специалиста
+  // 👎 → старые кнопки disabled, новый addChoiceRow()
+  function addFeedbackBtns() {
+    const body = document.getElementById('chat-body');
+    const uid = Date.now();
+    const fb = document.createElement('div');
+    fb.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 0;';
+    fb.innerHTML = `
+      <span style="font-size:11px;color:var(--muted);flex:1;">Специалист помог?</span>
+      <button id="fl-${uid}" style="background:#f0fdf4;border:1.5px solid #86efac;color:#16a34a;border-radius:10px;padding:6px 14px;font-size:16px;cursor:pointer;font-family:inherit;">👍</button>
+      <button id="fd-${uid}" style="background:#fff1f2;border:1.5px solid #fca5a5;color:#dc2626;border-radius:10px;padding:6px 14px;font-size:16px;cursor:pointer;font-family:inherit;">👎</button>
+    `;
+    body.appendChild(fb);
+    body.scrollTop = 99999;
+
+    const btnLike    = document.getElementById(`fl-${uid}`);
+    const btnDislike = document.getElementById(`fd-${uid}`);
+
+    const fadeFb = () => {
+      [btnLike, btnDislike].forEach(b => { b.disabled = true; b.style.opacity = '0.38'; b.style.cursor = 'default'; b.style.pointerEvents = 'none'; });
+    };
+
+    btnLike.addEventListener('click', () => {
+      fadeFb();
+      addUserMsg('👍 Спасибо!');
+      setTimeout(() => addBotMsg('Рады помочь! Если что-то понадобится — пиши. 😊'), 400);
+    });
+
+    btnDislike.addEventListener('click', () => {
+      fadeFb();
+      addUserMsg('👎 Ответ не подошёл');
+      setTimeout(() => {
+        addBotMsg('Понял, найдём другого специалиста. Выбери удобный вариант:');
+        setTimeout(() => addChoiceRow(), 600);
+      }, 400);
+    });
+  }
+
+  function onSideVisa() {
+    addChoiceRow();
   }
 
   function onSideSlot() {
@@ -1236,39 +1296,9 @@
     addBotMsg(`Поздравляю, ${getFirstName()}! 🎉<br>Слот закреплён за тобой: <b>14 июля, 10:30</b><br>г. Москва, ул. Садовая-Кудринская, 3<br>${countryAcc(state.country.name)}<br><br>⏰ <b>Прибыть за 20 мин до встречи!</b>`);
 
     if (state.mode === 'visa') {
-      // visa-mode: показать 2 choice-btn вместо документов
       setTimeout(() => {
         addBotMsg('Я Анна, твой консультант. Помогу с оформлением визы.');
-        setTimeout(() => {
-          const row = document.createElement('div');
-          row.className = 'choice-row';
-          row.innerHTML = `
-            <button class="choice-btn" id="choice-self-v">Самостоятельно</button>
-            <button class="choice-btn" id="choice-center-v">С помощью визового центра</button>
-          `;
-          body.appendChild(row);
-          body.scrollTop = 99999;
-          document.getElementById('choice-self-v').addEventListener('click', () => {
-            row.remove();
-            addUserMsg('Самостоятельно');
-            setTimeout(() => {
-              addBotMsg(
-                `Вот <b>опросный лист на шенген-визу</b>:<br><br>` +
-                `<a href="docs/oprosnik-shengen.docx" download target="_blank" ` +
-                `style="display:inline-flex; align-items:center; gap:8px; background:var(--indigo-light); ` +
-                `color:var(--indigo); padding:8px 12px; border-radius:10px; text-decoration:none; ` +
-                `font-weight:600; font-size:12px; margin-top:4px;">` +
-                `📄 Опросник на Шенген.docx <span style="opacity:0.7;">· скачать</span></a>`
-              );
-              setTimeout(() => addBotMsg(`Список документов:<br>${getDocsList()}`), 900);
-            }, 400);
-          });
-          document.getElementById('choice-center-v').addEventListener('click', () => {
-            row.remove();
-            addUserMsg('С помощью визового центра');
-            setTimeout(() => addBotMsg('Понял! Скоро свяжется наш специалист. 🤝'), 400);
-          });
-        }, 700);
+        setTimeout(() => addChoiceRow(), 700);
       }, 900);
       return;
     }
@@ -1284,44 +1314,7 @@
     renderSideBtns();
     setTimeout(() => {
       addBotMsg('Я Анна, твой консультант. Помогу с документами и подготовкой к подаче.');
-      setTimeout(() => {
-        const row = document.createElement('div');
-        row.className = 'choice-row';
-        row.innerHTML = `
-          <button class="choice-btn" id="vc-self">Самостоятельное оформление</button>
-          <button class="choice-btn" id="vc-center">С помощью визового центра</button>
-        `;
-        body.appendChild(row);
-        body.scrollTop = 99999;
-        const disableBtns = () => {
-          // После выбора блокируем кнопки (но не убираем из чата — история сохраняется)
-          document.getElementById('vc-self').disabled = true;
-          document.getElementById('vc-center').disabled = true;
-          document.getElementById('vc-self').style.opacity = '0.45';
-          document.getElementById('vc-center').style.opacity = '0.45';
-        };
-        document.getElementById('vc-self').addEventListener('click', () => {
-          disableBtns();
-          addUserMsg('Самостоятельное оформление');
-          setTimeout(() => {
-            addBotMsg(
-              `Хорошо! Вот <b>опросный лист на шенген-визу</b>:<br><br>` +
-              `<a href="docs/oprosnik-shengen.docx" download target="_blank" ` +
-              `style="display:inline-flex;align-items:center;gap:8px;background:var(--indigo-light);` +
-              `color:var(--indigo);padding:8px 12px;border-radius:10px;text-decoration:none;` +
-              `font-weight:600;font-size:12px;margin-top:4px;">` +
-              `📄 Опросник на Шенген.docx <span style="opacity:0.7;">· скачать</span></a>`
-            );
-            setTimeout(() => addBotMsg(`Также список нужных документов:<br>${getDocsList()}`), 900);
-            setTimeout(() => addBotMsg('Если будут вопросы — пиши прямо здесь, я рядом. 👋'), 1900);
-          }, 400);
-        });
-        document.getElementById('vc-center').addEventListener('click', () => {
-          disableBtns();
-          addUserMsg('С помощью визового центра');
-          setTimeout(() => addBotMsg('Понял! Скоро свяжется наш специалист. 🤝'), 400);
-        });
-      }, 700);
+      setTimeout(() => addChoiceRow(), 700);
     }, 500);
   }
 
