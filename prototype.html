@@ -401,10 +401,10 @@
     padding: 10px 6px; transition: all .15s ease; text-align: center;
     line-height: 1.2;
   }
-  .side-btn-indigo { background: var(--indigo-light); color: var(--indigo); }
-  .side-btn-indigo:hover { background: var(--indigo); color: #fff; }
-  .side-btn-amber { background: #fff7ed; color: #92400e; border-top: 1px solid var(--line); }
-  .side-btn-amber:hover { background: #ffedd5; }
+  .side-btn-indigo { background: #4f46e5; color: #fff; }
+  .side-btn-indigo:hover { background: #4338ca; color: #fff; }
+  .side-btn-amber { background: #5a7a47; color: #fff; border-top: 1px solid rgba(255,255,255,0.2); }
+  .side-btn-amber:hover { background: #4a6a3a; color: #fff; }
   .chat-main-area { flex: 1; min-width: 0; padding: 24px 20px 28px; display: flex; flex-direction: column; }
 
   /* CONTROLS */
@@ -823,9 +823,9 @@
     updateNextButton();
     document.getElementById('q-next').textContent = (i === questions.length - 1) ? 'Готово →' : 'Далее →';
 
-    // Биометрия — показывать только на вопросе 3 (индекс 2)
+    // Биометрия — показывать только на вопросе 7 (индекс 6)
     const biBtn = document.getElementById('biometrics-btn');
-    biBtn.style.display = (i === 2) ? 'block' : 'none';
+    biBtn.style.display = (i === 6) ? 'block' : 'none';
     biBtn.classList.toggle('active', state.biometrics);
   }
 
@@ -1080,7 +1080,66 @@
   }
 
   function onSideCard() {
-    showScreen(8);
+    addUserMsg('Оформить банковскую карту');
+    setTimeout(() => {
+      addBotMsg('Вот доступные карты для оплаты за границей:');
+      setTimeout(() => {
+        const body = document.getElementById('chat-body');
+        const cardsDiv = document.createElement('div');
+        cardsDiv.style.cssText = 'display:flex;flex-direction:column;gap:8px;align-self:stretch;margin-top:4px;';
+        cardsDiv.innerHTML = `
+          <div class="card-mini" data-card="kg" style="cursor:pointer;">
+            <div class="cm-head" style="background:linear-gradient(135deg,#E8112D,#b30420);">
+              <div class="cm-flag flag-kg-pic"></div>
+              <div><p class="cm-bank">Кыргызстан · Visa</p><p class="cm-name">Gold / Platinum</p></div>
+            </div>
+            <div class="cm-body">
+              <p class="cm-feats">Выпуск 1–7 дней · SWIFT · Apple/Google Pay</p>
+              <div class="cm-foot"><span class="cm-price">от <b>20 000 ₽</b></span><span class="cm-arrow">→ Подробнее</span></div>
+            </div>
+          </div>
+          <div class="card-mini" data-card="bakai" style="cursor:pointer;">
+            <div class="cm-head" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+              <div class="cm-flag flag-kg-pic"></div>
+              <div><p class="cm-bank">Бакай Банк · Киргизия</p><p class="cm-name">Gold / Platinum / Infinite</p></div>
+            </div>
+            <div class="cm-body">
+              <p class="cm-feats">Lounge Key · Низкая комиссия · SWIFT</p>
+              <div class="cm-foot"><span class="cm-price">от <b>25 000 ₽</b></span><span class="cm-arrow">→ Подробнее</span></div>
+            </div>
+          </div>
+          <div class="card-mini" data-card="ayil" style="cursor:pointer;">
+            <div class="cm-head" style="background:linear-gradient(135deg,#1f2937,#374151);">
+              <div class="cm-flag flag-kg-pic"></div>
+              <div><p class="cm-bank">Айыл Банк · Киргизия</p><p class="cm-name">Gold / Infinite</p></div>
+            </div>
+            <div class="cm-body">
+              <p class="cm-feats">14 валют · DragonPass · с 14 лет</p>
+              <div class="cm-foot"><span class="cm-price"><b>15 000 ₽</b></span><span class="cm-arrow">→ Подробнее</span></div>
+            </div>
+          </div>
+          <div class="card-mini" data-card="am" style="cursor:pointer;">
+            <div class="cm-head" style="background:linear-gradient(135deg,#D90012,#0033A0);">
+              <div class="cm-flag flag-am-pic"></div>
+              <div><p class="cm-bank">Армения · MasterCard</p><p class="cm-name">Apple Pay / Standard / Gold</p></div>
+            </div>
+            <div class="cm-body">
+              <p class="cm-feats">Без визита · Видео-верификация ~5 мин</p>
+              <div class="cm-foot"><span class="cm-price"><b>30 000 ₽</b></span><span class="cm-arrow">→ Подробнее</span></div>
+            </div>
+          </div>
+        `;
+        cardsDiv.querySelectorAll('.card-mini').forEach(card => {
+          card.addEventListener('click', () => {
+            const names = { kg: 'Кыргызстан (Visa Gold/Platinum)', bakai: 'Бакай Банк', ayil: 'Айыл Банк', am: 'Армения (MasterCard)' };
+            addUserMsg(`Интересует: ${names[card.dataset.card] || card.dataset.card}`);
+            setTimeout(() => addBotMsg('Отлично! Менеджер свяжется с вами в течение часа и расскажет подробности. 📞'), 400);
+          });
+        });
+        body.appendChild(cardsDiv);
+        body.scrollTop = 99999;
+      }, 400);
+    }, 500);
   }
 
   // SCREEN 7 — чат с консультантом после оплаты
@@ -1135,25 +1194,8 @@
       return;
     }
 
-    // slot-mode обычный: показать опросник + документы
-    setTimeout(() => {
-      addBotMsg(
-        `Я Анна, твой консультант. Помогу с документами и подготовкой к подаче.<br><br>` +
-        `Вот <b>опросный лист на шенген-визу</b> ${countryAdj(state.country.name)}:` +
-        `<br><br>` +
-        `<a href="docs/oprosnik-shengen.docx" download target="_blank" ` +
-        `style="display:inline-flex; align-items:center; gap:8px; background:var(--indigo-light); ` +
-        `color:var(--indigo); padding:8px 12px; border-radius:10px; text-decoration:none; ` +
-        `font-weight:600; font-size:12px; margin-top:4px;">` +
-        `📄 Опросник на Шенген.docx <span style="opacity:0.7;">· скачать</span></a>`
-      );
-    }, 900);
-    setTimeout(() => {
-      addBotMsg(`Также список нужных документов:<br>${getDocsList()}`);
-    }, 2200);
-    setTimeout(() => {
-      addBotMsg(`Если будут вопросы — пиши прямо здесь, я рядом. 👋`);
-    }, 3400);
+    // slot-mode: только приветствие, документы показываются по кнопке
+    setTimeout(() => addBotMsg('Если будут вопросы — пиши здесь, я рядом. 👋'), 900);
   }
 
   function getFirstName() {
@@ -1203,7 +1245,8 @@
       'Испания': ['Анкета BLS на испанском', 'Дополнительно — справка о работе на испанском'],
       'Болгария': ['Анкета на болгарскую визу', 'Копия предыдущих шенгенских виз'],
     };
-    const all = [...base, ...(extra[state.country.name] || [])];
+    const countryName = (state.country && state.country.name) || '';
+    const all = [...base, ...(extra[countryName] || [])];
     return '<ul>' + all.map(d => `<li>${d}</li>`).join('') + '</ul>';
   }
 
