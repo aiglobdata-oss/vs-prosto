@@ -449,7 +449,7 @@
 
   <!-- Header -->
   <header class="cab-header">
-    <div class="cab-logo">VisaSlot</div>
+    <a href="landing.html" class="cab-logo" style="text-decoration:none;">VisaSlot</a>
     <div class="cab-balance">Баланс: <b>5 000 ₽</b></div>
     <button class="btn-topup">+ Пополнить</button>
     <div class="cab-avatar" id="cab-avatar">ИИ</div>
@@ -965,15 +965,10 @@
     const dangerItem = document.createElement('div');
   })();
 
-  // Выйти
+  // Выйти → на главную
   document.getElementById('nav-logout').addEventListener('click', () => {
     if (confirm('Выйти из аккаунта?')) {
-      document.getElementById('cabinet-screen').classList.remove('visible');
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('phone-step').style.display = '';
-      document.getElementById('sms-step').classList.remove('visible');
-      document.getElementById('phone-input').value = '';
-      document.getElementById('sms-input').value = '';
+      window.location.href = 'landing.html';
     }
   });
 
