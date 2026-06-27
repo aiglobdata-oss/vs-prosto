@@ -969,7 +969,8 @@
     if (country) params.set('country', country);
     if (mode) params.set('mode', mode);
     const qs = params.toString();
-    frame.src = 'prototype.html' + (qs ? '?' + qs : '');
+    params.set('v', Date.now());
+    frame.src = 'prototype.html?' + params.toString();
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
