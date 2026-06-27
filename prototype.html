@@ -206,10 +206,13 @@
   .chat-status { font-size: 11px; color: var(--green); margin: 0; font-weight: 500; display: flex; align-items: center; gap: 4px; }
   .chat-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
   .chat-body {
-    min-height: 320px;
+    flex: 1; overflow-y: auto;
     display: flex; flex-direction: column; gap: 10px;
     margin-bottom: 14px;
+    /* скрываем скроллбар визуально */
+    scrollbar-width: none;
   }
+  .chat-body::-webkit-scrollbar { display: none; }
   .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.4; animation: msgIn .3s ease; }
   @keyframes msgIn {
     from { opacity: 0; transform: translateY(8px); }
@@ -384,13 +387,13 @@
     cursor: pointer; font-family: inherit; transition: all .15s ease; text-align: left;
   }
   .biometrics-btn.active {
-    background: var(--indigo-light); color: var(--indigo); border-color: var(--indigo);
+    background: var(--indigo); color: #fff; border-color: var(--indigo);
   }
-  .biometrics-btn::before { content: '☐ '; }
-  .biometrics-btn.active::before { content: '☑ '; }
+  .biometrics-btn::before { content: '○ '; }
+  .biometrics-btn.active::before { content: '✓ '; }
 
   /* SIDE BUTTONS (chat screen 7) */
-  .chat-flex-wrap { display: flex; gap: 0; flex: 1; min-height: 600px; }
+  .chat-flex-wrap { display: flex; gap: 0; flex: 1; height: 520px; max-height: 520px; overflow: hidden; }
   .chat-side-btns {
     display: flex; flex-direction: column; gap: 0; width: 40px; flex-shrink: 0;
     border-left: 1px solid var(--line);
@@ -405,7 +408,7 @@
   .side-btn-indigo:hover { background: #4338ca; color: #fff; }
   .side-btn-amber { background: #5a7a47; color: #fff; border-top: 1px solid rgba(255,255,255,0.2); }
   .side-btn-amber:hover { background: #4a6a3a; color: #fff; }
-  .chat-main-area { flex: 1; min-width: 0; padding: 24px 20px 28px; display: flex; flex-direction: column; }
+  .chat-main-area { flex: 1; min-width: 0; padding: 24px 20px 14px; display: flex; flex-direction: column; overflow: hidden; }
 
   /* CARD DETAIL OVERLAY */
   .card-detail-overlay {
@@ -724,7 +727,7 @@
     { text: "Как вас зовут?", placeholder: "Иванов Иван Иванович", type: "name", inputmode: "text", autocap: "words" },
     { text: "Какая страна интересует?", placeholder: "Например: Греция, Канада, Япония…", type: "text", inputmode: "text", autocap: "words" },
     { text: "Дата рождения?", placeholder: "12.01.1982", type: "date", inputmode: "numeric", maxlength: 10 },
-    { text: "Цель поездки?", placeholder: "Туризм / работа / учёба", type: "text", inputmode: "text", autocap: "sentences" },
+    { text: "Цель поездки?", placeholder: "Туризм / работа / учёба / приглашение", type: "text", inputmode: "text", autocap: "sentences" },
     { text: "Желаемые даты поездки?", placeholder: "Июль — август 2026", type: "text", inputmode: "text", autocap: "sentences" },
     { text: "Сколько человек поедет?", placeholder: "Например: 2 взрослых + 1 ребёнок", type: "text", inputmode: "text", autocap: "sentences" },
     { text: "Паспорт 5-летний или 10-летний?", placeholder: "5 или 10", type: "passport_years", inputmode: "numeric", maxlength: 2 },
@@ -937,9 +940,15 @@
       const primary = document.getElementById('primary-action');
       primary.textContent = 'Найти мне слот →';
       showScreen(3);
-      // visa-mode: через 2.5 сек авто-открываем чат (без поиска слота)
       if (state.mode === 'visa') {
+        // В visa-mode кнопки на экране 3 не нужны — чат откроется автоматически
+        primary.style.display = 'none';
+        document.getElementById('goto-cards').style.display = 'none';
+        document.querySelector('[data-screen="3"] .final-text').textContent = 'Подключаем консультанта…';
         setTimeout(() => {
+          primary.style.display = '';
+          document.getElementById('goto-cards').style.display = '';
+          document.querySelector('[data-screen="3"] .final-text').textContent = 'Все данные собраны.\nЧто дальше?';
           showScreen(7);
           initVisaChat();
         }, 2500);
