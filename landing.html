@@ -1316,7 +1316,7 @@
         setTimeout(() => document.getElementById('auth-phone').style.borderColor = '', 1500);
         return;
       }
-      document.getElementById('auth-sms-step').style.display = '';
+      document.getElementById('auth-sms-step').style.display = 'block';
       document.getElementById('auth-submit').textContent = 'Подтвердить';
       authStep = 'sms';
       startAuthSmsTimer();
