@@ -1538,14 +1538,16 @@
     btnCenter.addEventListener('click', () => {
       fadeBtn(btnCenter);
       addUserMsg('С помощью визового центра');
-      // Отправляем уведомление в кабинет ВЦ
+      // Отправляем уведомление в кабинет ВЦ с ответами опросника
       try {
         const bc = new BroadcastChannel('visaslot_notifications');
+        const qa = questions.map((q, i) => ({ q: q.text, a: state.answers[i] || '—' }));
         bc.postMessage({
           type: 'new_request',
           client: (state.answers && state.answers[0]) || 'Клиент',
           country: (state.answers && state.answers[1]) || 'Неизвестно',
           time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
+          qa,
         });
         bc.close();
       } catch(e) {}
