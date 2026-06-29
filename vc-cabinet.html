@@ -194,6 +194,8 @@
     .cab-center-name { display: none; }
   }
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -523,6 +525,21 @@
 </div>
 
 <script>
+  // ── FIREBASE ──
+  firebase.initializeApp({
+    apiKey: "AIzaSyBFwQNHXq-vVDBDbMgXScLyJkZkR0NyE9s",
+    authDomain: "visaslot-eb315.firebaseapp.com",
+    databaseURL: "https://visaslot-eb315-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "visaslot-eb315",
+    storageBucket: "visaslot-eb315.firebasestorage.app",
+    messagingSenderId: "772730854431",
+    appId: "1:772730854431:web:3ebfe5d68ed91dc385892a"
+  });
+  const vsDb = firebase.database();
+  const vcStartTs = Date.now();
+  let _activeChatFbRef = null;
+  let _activeChatFbCallback = null;
+
   // Navigation
   document.querySelectorAll('.nav-item[data-section]').forEach(item => {
     item.addEventListener('click', () => {
@@ -602,11 +619,32 @@
     renderChatMessages(reqId);
     chatPanel.style.display = 'flex';
     // Уведомляем клиента что специалист вошёл в чат
-    try {
-      const bc = new BroadcastChannel('visaslot_chat');
-      bc.postMessage({ type: 'specialist_joined', reqId });
-      bc.close();
-    } catch(e) {}
+    vsDb.ref('vs_chat/' + reqId).push({ type: 'specialist_joined', reqId, _ts: Date.now() });
+    // Слушаем входящие сообщения клиента через Firebase
+    if (_activeChatFbRef && _activeChatFbCallback) {
+      _activeChatFbRef.off('child_added', _activeChatFbCallback);
+    }
+    const chatOpenTs = Date.now();
+    _activeChatFbRef = vsDb.ref('vs_chat/' + reqId);
+    _activeChatFbCallback = _activeChatFbRef.on('child_added', snap => {
+      const d = snap.val();
+      if (!d || d._ts < chatOpenTs) return;
+      if (d.type === 'client_message' || d.type === 'client_file') {
+        const rId = d.reqId || activeChatReqId;
+        if (!rId) return;
+        if (!chatMessages[rId]) chatMessages[rId] = [];
+        if (d.type === 'client_file') {
+          chatMessages[rId].push(d.fileType === 'image'
+            ? { from: 'client', type: 'image', src: d.src, name: d.name, time: d.time }
+            : { from: 'client', type: 'file', name: d.name, size: d.size, time: d.time });
+        } else {
+          chatMessages[rId].push({ from: 'client', text: d.text, time: d.time });
+        }
+        playTing();
+        if (activeChatReqId === rId) renderChatMessages(rId);
+        else showChatToast({ ...d, text: d.text || '📎 ' + (d.name || 'файл') });
+      }
+    });
   }
 
   function closeChatPanel() {
@@ -751,39 +789,11 @@
     chatMessages[activeChatReqId].push({ from: 'manager', text, time });
     renderChatMessages(activeChatReqId);
     input.value = '';
-    // Отправляем клиенту через BroadcastChannel
-    try {
-      const bc = new BroadcastChannel('visaslot_chat');
-      bc.postMessage({ type: 'manager_message', text, time, reqId: activeChatReqId });
-      bc.close();
-    } catch(e) {}
+    // Отправляем клиенту через Firebase
+    vsDb.ref('vs_chat/' + activeChatReqId).push({ type: 'manager_message', text, time, reqId: activeChatReqId, _ts: Date.now() });
   }
 
-  // Получаем сообщения от клиента
-  try {
-    const chatBc = new BroadcastChannel('visaslot_chat');
-    chatBc.addEventListener('message', e => {
-      const d = e.data;
-      if (!d) return;
-      if (d.type === 'client_message' || d.type === 'client_file') {
-        const reqId = d.reqId || activeChatReqId;
-        if (!reqId) return;
-        if (!chatMessages[reqId]) chatMessages[reqId] = [];
-        if (d.type === 'client_file') {
-          if (d.fileType === 'image') {
-            chatMessages[reqId].push({ from: 'client', type: 'image', src: d.src, name: d.name, time: d.time });
-          } else {
-            chatMessages[reqId].push({ from: 'client', type: 'file', name: d.name, size: d.size, time: d.time });
-          }
-        } else {
-          chatMessages[reqId].push({ from: 'client', text: d.text, time: d.time });
-        }
-        playTing();
-        if (activeChatReqId === reqId) renderChatMessages(reqId);
-        else showChatToast({ ...d, text: d.text || '📎 ' + (d.name || 'файл') });
-      }
-    });
-  } catch(e) {}
+  // Получаем сообщения от клиента — через Firebase (слушатель запускается в openChatPanel)
 
   // Logout
   document.getElementById('nav-logout').addEventListener('click', () => {
@@ -1246,15 +1256,14 @@
     }
   }
 
-  // Слушаем BroadcastChannel
-  try {
-    const bc = new BroadcastChannel('visaslot_notifications');
-    bc.addEventListener('message', e => {
-      if (!e.data) return;
-      if (e.data.type === 'new_request') showToast(e.data);
-      if (e.data.type === 'reassign_request') showReassignToast(e.data);
-    });
-  } catch(e) {}
+  // Слушаем уведомления через Firebase (работает между устройствами)
+  vsDb.ref('vs_notifications').on('child_added', snap => {
+    const d = snap.val();
+    if (!d || d._ts < vcStartTs) return; // игнорируем старые уведомления
+    if (d.type === 'new_request') showToast(d);
+    if (d.type === 'reassign_request') showReassignToast(d);
+    if (d.type === 'dislike_notice') markClientDisliked(d.reqId);
+  });
 
   function showReassignToast(data) {
     playTing();
@@ -1439,13 +1448,7 @@
       if (!list.includes(reqId)) { list.push(reqId); sessionStorage.setItem(DISLIKE_KEY, JSON.stringify(list)); }
     } catch(e) {}
   }
-  // Ловим дизлайк от клиента — отмечаем reqId как заблокированный
-  try {
-    const dislikeBc = new BroadcastChannel('visaslot_notifications');
-    dislikeBc.addEventListener('message', e => {
-      if (e.data && e.data.type === 'dislike_notice') markClientDisliked(e.data.reqId);
-    });
-  } catch(e) {}
+  // Дизлайк обрабатывается в слушателе vs_notifications выше
 
   // CSS для анимации
   const style = document.createElement('style');

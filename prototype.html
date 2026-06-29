@@ -454,6 +454,8 @@
     .head h1 { font-size: 22px; }
   }
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -879,6 +881,37 @@
 </div>
 
 <script>
+  // ── FIREBASE ──
+  firebase.initializeApp({
+    apiKey: "AIzaSyBFwQNHXq-vVDBDbMgXScLyJkZkR0NyE9s",
+    authDomain: "visaslot-eb315.firebaseapp.com",
+    databaseURL: "https://visaslot-eb315-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "visaslot-eb315",
+    storageBucket: "visaslot-eb315.firebasestorage.app",
+    messagingSenderId: "772730854431",
+    appId: "1:772730854431:web:3ebfe5d68ed91dc385892a"
+  });
+  const vsDb = firebase.database();
+  let _chatFbListener = null;
+
+  function startClientChatListener(reqId) {
+    if (_chatFbListener) return;
+    const startTs = Date.now();
+    _chatFbListener = vsDb.ref('vs_chat/' + reqId).on('child_added', snap => {
+      const d = snap.val();
+      if (!d || d._ts < startTs) return;
+      if (d.type === 'specialist_joined') {
+        addBotMsg('🤝 Визовый специалист подключился и готов помочь!');
+        feedbackShown = false;
+        specialistConnected = true;
+        resetSilenceTimer();
+      }
+      if (d.type === 'manager_message') {
+        addSpecialistMsg(d.text);
+      }
+    });
+  }
+
   // mode: 'slot' = выбрал страну, потом 8 Q; 'visa' = сразу 8 Q (Q2 = страна текстом)
   const urlParams = new URLSearchParams(window.location.search);
   const _m = urlParams.get('mode');
@@ -1545,9 +1578,8 @@
     btnCenter.addEventListener('click', () => {
       fadeBtn(btnCenter);
       addUserMsg('С помощью визового центра');
-      // Отправляем уведомление в кабинет ВЦ с ответами опросника
+      // Отправляем уведомление в кабинет ВЦ через Firebase
       try {
-        const bc = new BroadcastChannel('visaslot_notifications');
         const qa = questions.map((q, i) => ({ q: q.text, a: state.answers[i] || '—' }));
         const countryQ = questions.find(q => /страна|country/i.test(q.text));
         const countryVal = countryQ ? (state.answers[questions.indexOf(countryQ)] || '—') : '—';
@@ -1556,7 +1588,7 @@
         const reqId = 'req_' + Date.now();
         window._chatReqId = reqId;
         window._chatClientName = (state.answers && state.answers[0]) || 'Клиент';
-        bc.postMessage({
+        vsDb.ref('vs_notifications').push({
           type: 'new_request',
           reqId,
           client: window._chatClientName,
@@ -1566,8 +1598,9 @@
           slotMode: state.mode === 'slot',
           time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
           qa,
+          _ts: Date.now(),
         });
-        bc.close();
+        startClientChatListener(reqId);
       } catch(e) {}
       setTimeout(() => {
         addBotMsg('Понял! Подключаю специалиста визового центра. 🤝');
@@ -1762,23 +1795,7 @@
     } catch(e){}
   }
 
-  // Listener: сообщения от менеджера
-  try {
-    const chatBcClient = new BroadcastChannel('visaslot_chat');
-    chatBcClient.addEventListener('message', e => {
-      const d = e.data;
-      if (!d) return;
-      if (d.type === 'specialist_joined') {
-        addBotMsg('🤝 Визовый специалист подключился и готов помочь!');
-        feedbackShown = false;
-        specialistConnected = true; // разрешаем таймер
-        resetSilenceTimer();
-      }
-      if (d.type === 'manager_message') {
-        addSpecialistMsg(d.text);
-      }
-    });
-  } catch(e) {}
+  // Listener: сообщения от менеджера — через Firebase (см. startClientChatListener)
 
   // Перехватываем input в чате → отправляем менеджеру
   document.getElementById('chat-input') && (() => {
@@ -1833,29 +1850,22 @@
     if (block) block.remove();
     addBotMsg('Не расстраивайтесь — мы найдём вам другого специалиста! Уже ищем… 🔍');
     setTimeout(() => addBotMsg('Ожидайте — первый свободный специалист подключится к вам.'), 1500);
-    // Сначала уведомляем текущий ВЦ о дизлайке — они блокируют этого клиента на день
-    try {
-      const bcD = new BroadcastChannel('visaslot_notifications');
-      bcD.postMessage({ type: 'dislike_notice', reqId: window._chatReqId || '' });
-      bcD.close();
-    } catch(e) {}
-    // Broadcast — переназначить клиента другому визовому центру
-    try {
-      const bc = new BroadcastChannel('visaslot_notifications');
-      bc.postMessage({
-        type: 'reassign_request',
-        reqId: window._chatReqId || ('req_' + Date.now()),
-        client: window._chatClientName || 'Клиент',
-        country: '',
-        purpose: 'Переназначение — клиент недоволен специалистом',
-        biometrics: false,
-        slotMode: false,
-        time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
-        qa: [],
-        isReassign: true,
-      });
-      bc.close();
-    } catch(e) {}
+    // Уведомляем текущий ВЦ о дизлайке — они блокируют клиента на день
+    vsDb.ref('vs_notifications').push({ type: 'dislike_notice', reqId: window._chatReqId || '', _ts: Date.now() });
+    // Переназначить клиента другому визовому центру
+    vsDb.ref('vs_notifications').push({
+      type: 'reassign_request',
+      reqId: window._chatReqId || ('req_' + Date.now()),
+      client: window._chatClientName || 'Клиент',
+      country: '',
+      purpose: 'Переназначение — клиент недоволен специалистом',
+      biometrics: false,
+      slotMode: false,
+      time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
+      qa: [],
+      isReassign: true,
+      _ts: Date.now(),
+    });
   }
 
   function sendClientMsg() {
@@ -1866,17 +1876,16 @@
     addUserMsg(text);
     input.value = '';
     resetSilenceTimer(); // сброс таймера при каждом сообщении
-    try {
-      const bc = new BroadcastChannel('visaslot_chat');
-      bc.postMessage({
+    if (window._chatReqId) {
+      vsDb.ref('vs_chat/' + window._chatReqId).push({
         type: 'client_message',
         text,
-        reqId: window._chatReqId || null,
+        reqId: window._chatReqId,
         clientName: window._chatClientName || 'Клиент',
         time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
+        _ts: Date.now(),
       });
-      bc.close();
-    } catch(e) {}
+    }
   }
 
   function addBotMsg(html) {
@@ -2015,9 +2024,10 @@
     body.appendChild(div);
     body.scrollTop = body.scrollHeight;
     if (window._chatReqId) {
-      const bc = new BroadcastChannel('visaslot_chat');
-      bc.postMessage({ type: 'client_file', fileType: data.type, src: data.src, name: data.name, size: data.size, time, reqId: window._chatReqId, clientName: window._chatClientName });
-      bc.close();
+      vsDb.ref('vs_chat/' + window._chatReqId).push({
+        type: 'client_file', fileType: data.type, src: data.src, name: data.name, size: data.size,
+        time, reqId: window._chatReqId, clientName: window._chatClientName, _ts: Date.now(),
+      });
     }
   }
 
