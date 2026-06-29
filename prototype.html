@@ -1770,6 +1770,8 @@
       if (!d) return;
       if (d.type === 'specialist_joined') {
         addBotMsg('🤝 Визовый специалист подключился и готов помочь!');
+        feedbackShown = false;
+        resetSilenceTimer(); // таймер стартует когда специалист подключился
       }
       if (d.type === 'manager_message') {
         addSpecialistMsg(d.text);
@@ -1786,15 +1788,14 @@
     }
   })();
 
-  // Таймер молчания клиента → через 5 мин показываем "Специалист помог?"
+  // Таймер молчания клиента → через 1 минуту показываем "Специалист помог?"
   let silenceTimer = null;
   let feedbackShown = false;
 
   function resetSilenceTimer() {
     clearTimeout(silenceTimer);
-    if (feedbackShown) return; // уже показали — не сбрасываем
-    // 300000 = 5 минут; для теста можно уменьшить до 30000
-    silenceTimer = setTimeout(showSpecialistFeedback, 300000);
+    if (feedbackShown) return;
+    silenceTimer = setTimeout(showSpecialistFeedback, 60000); // 1 минута
   }
 
   function showSpecialistFeedback() {
