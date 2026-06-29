@@ -1066,9 +1066,15 @@
     updateNextButton();
     document.getElementById('q-next').textContent = (i === questions.length - 1) ? 'Готово →' : 'Далее →';
 
-    // Биометрия — показывать только на вопросе 7 (индекс 6)
+    // Микрофон — скрыть для полей с клавиатурным вводом
+    const noMicTypes = ['date', 'passport_years', 'phone'];
+    const micBtn = document.getElementById('mic-btn');
+    micBtn.style.display = noMicTypes.includes(q.type) ? 'none' : '';
+    input.style.paddingRight = noMicTypes.includes(q.type) ? '12px' : '44px';
+
+    // Биометрия — показывать на вопросе с паспортом (по типу, не по индексу)
     const biBtn = document.getElementById('biometrics-btn');
-    biBtn.style.display = (i === 6) ? 'block' : 'none';
+    biBtn.style.display = (q.type === 'passport_years') ? 'block' : 'none';
     biBtn.classList.toggle('active', state.biometrics);
   }
 
@@ -1556,6 +1562,7 @@
           client: window._chatClientName,
           country: countryVal,
           purpose: purposeVal,
+          biometrics: state.biometrics,
           time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
           qa,
         });
