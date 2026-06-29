@@ -837,8 +837,13 @@
     if (!tbody) return;
     const reqId = 'req_' + Date.now();
     requestAnswers[reqId] = data;
-    const hasQA = data.qa && data.qa.length > 0;
     const initials = (data.client || 'КЛ').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    // Найти страну из qa: ищем вопрос со словом "страна" или берём второй ответ если это visa-режим
+    let countryVal = '—';
+    if (data.qa && data.qa.length) {
+      const countryQ = data.qa.find(item => /страна|country/i.test(item.q));
+      if (countryQ && countryQ.a !== '—') countryVal = countryQ.a;
+    }
     const tr = document.createElement('tr');
     tr.style.cssText = 'background:var(--indigo-light);animation:fadeIn .4s ease;';
     tr.innerHTML = `
@@ -851,7 +856,7 @@
           </div>
         </div>
       </td>
-      <td>${data.country || '—'}</td>
+      <td>${countryVal}</td>
       <td>Визовый специалист</td>
       <td>${data.time || new Date().toLocaleDateString('ru-RU')}</td>
       <td>—</td>
@@ -859,10 +864,10 @@
       <td>
         <div class="action-btns">
           <button class="btn-xs btn-xs-primary">Взять</button>
-          ${hasQA ? `<button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline" style="display:inline-flex;align-items:center;gap:4px;" title="Ответы клиента">
+          <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline" style="display:inline-flex;align-items:center;gap:4px;" title="Ответы клиента">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             Анкета
-          </button>` : ''}
+          </button>
         </div>
       </td>
     `;
