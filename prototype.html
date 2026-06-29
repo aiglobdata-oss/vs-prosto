@@ -1542,10 +1542,13 @@
       try {
         const bc = new BroadcastChannel('visaslot_notifications');
         const qa = questions.map((q, i) => ({ q: q.text, a: state.answers[i] || '—' }));
+        // Ищем страну по тексту вопроса, не по индексу
+        const countryQ = questions.find(q => /страна|country/i.test(q.text));
+        const countryVal = countryQ ? (state.answers[questions.indexOf(countryQ)] || '—') : '—';
         bc.postMessage({
           type: 'new_request',
           client: (state.answers && state.answers[0]) || 'Клиент',
-          country: (state.answers && state.answers[1]) || 'Неизвестно',
+          country: countryVal,
           time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
           qa,
         });
