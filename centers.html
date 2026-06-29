@@ -53,6 +53,7 @@
   .btn:hover { transform: translateY(-1px); }
   .btn-primary { background: var(--indigo); color: #fff; box-shadow: 0 6px 20px rgba(79,70,229,0.28); }
   .btn-ghost { background: #fff; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn-outline { background: none; color: var(--indigo); border: 1.5px solid var(--indigo); }
   .btn-lg { padding: 15px 30px; font-size: 16px; }
 
   /* HERO */
@@ -207,7 +208,7 @@
     <nav class="nav-links">
       <a href="#how">Возможности</a>
       <a href="#pricing">Тарифы</a>
-      <button id="vc-btn-login" onclick="document.getElementById('vc-auth-overlay').classList.add('open')" style="border:1.5px solid var(--indigo);color:var(--indigo);background:none;padding:9px 18px;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;">Войти</button>
+      <button id="vc-btn-login" onclick="document.getElementById('vc-auth-overlay').classList.add('open')" class="btn btn-outline">Войти</button>
       <div id="vc-header-avatar" style="display:none;width:36px;height:36px;border-radius:50%;background:var(--indigo);color:#fff;font-size:13px;font-weight:700;align-items:center;justify-content:center;cursor:pointer;" onclick="window.location.href='vc-cabinet.html'">ВЦ</div>
       <a href="landing.html" class="btn btn-primary" style="color:#fff!important;text-decoration:none;">Для физлиц</a>
     </nav>
