@@ -1322,6 +1322,18 @@
         setTimeout(() => document.getElementById('auth-phone').style.borderColor = '', 1500);
         return;
       }
+      if (!authAgreed) {
+        const cb = document.getElementById('auth-checkbox');
+        cb.style.borderColor = '#dc2626';
+        cb.style.boxShadow = '0 0 0 3px rgba(220,38,38,0.15)';
+        document.getElementById('auth-agree-row').style.color = '#dc2626';
+        setTimeout(() => {
+          cb.style.borderColor = '';
+          cb.style.boxShadow = '';
+          document.getElementById('auth-agree-row').style.color = '';
+        }, 2000);
+        return;
+      }
       document.getElementById('auth-sms-step').style.display = 'block';
       document.getElementById('auth-submit').textContent = 'Подтвердить';
       authStep = 'sms';
