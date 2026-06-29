@@ -545,11 +545,6 @@
   document.getElementById('vc-auth-close').addEventListener('click', () => {
     document.getElementById('vc-auth-overlay').classList.remove('open');
   });
-  document.getElementById('vc-auth-overlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('vc-auth-overlay'))
-      document.getElementById('vc-auth-overlay').classList.remove('open');
-  });
-
   // Табы
   let vcTab = 'login';
   document.querySelectorAll('.vc-auth-tab').forEach(tab => {
@@ -558,8 +553,8 @@
       tab.classList.add('active');
       vcTab = tab.dataset.tab;
       const isReg = vcTab === 'reg';
-      document.getElementById('vc-org-field').style.display = isReg ? '' : 'none';
-      document.getElementById('vc-contact-field').style.display = isReg ? '' : 'none';
+      document.getElementById('vc-org-field').style.display = isReg ? 'block' : 'none';
+      document.getElementById('vc-contact-field').style.display = isReg ? 'block' : 'none';
       document.getElementById('vc-submit').textContent = isReg ? 'Зарегистрироваться' : 'Получить код';
       document.getElementById('vc-sms-step').style.display = 'none';
       vcStep = 'phone';
@@ -595,14 +590,22 @@
   document.getElementById('vc-submit').addEventListener('click', () => {
     if (vcStep === 'phone') {
       const phone = document.getElementById('vc-phone').value.replace(/\D/g, '');
-      if (phone.length < 10) { alert('Введите номер телефона полностью'); return; }
-      document.getElementById('vc-sms-step').style.display = '';
-      document.getElementById('vc-submit').textContent = 'Войти';
+      if (phone.length < 10) {
+        document.getElementById('vc-phone').style.borderColor = '#dc2626';
+        setTimeout(() => document.getElementById('vc-phone').style.borderColor = '', 1500);
+        return;
+      }
+      document.getElementById('vc-sms-step').style.display = 'block';
+      document.getElementById('vc-submit').textContent = 'Подтвердить';
       vcStep = 'sms';
       startVcTimer();
     } else {
       const code = document.getElementById('vc-sms').value;
-      if (code.length < 4) { alert('Введите код из SMS'); return; }
+      if (code.length < 4) {
+        document.getElementById('vc-sms').style.borderColor = '#dc2626';
+        setTimeout(() => document.getElementById('vc-sms').style.borderColor = '', 1500);
+        return;
+      }
       vcLoginSuccess();
     }
   });
