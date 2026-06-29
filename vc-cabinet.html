@@ -380,16 +380,16 @@
         </div>
         <button class="btn-main">Вывести средства</button>
       </div>
+      <!-- Статус-дропдаун -->
+      <div id="status-dropdown" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.13);padding:6px;min-width:200px;">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;padding:4px 10px 8px;">Статус клиента</div>
+      </div>
+
       <table class="pay-table">
         <thead>
-          <tr><th>Клиент</th><th>Услуга</th><th>Дата</th><th>Сумма</th><th>Статус</th></tr>
+          <tr><th>Клиент</th><th>Услуга</th><th>Дата</th><th>Сумма</th><th>Менеджер</th><th>Статус</th></tr>
         </thead>
-        <tbody>
-          <tr><td>Иван Иванов</td><td>Оформление визы · Италия</td><td>27 июня 2026</td><td class="pay-in">+15 000 ₽</td><td><span class="badge badge-done">Получено</span></td></tr>
-          <tr><td>Анна Петрова</td><td>Оформление визы · Франция</td><td>26 июня 2026</td><td class="pay-in">+12 000 ₽</td><td><span class="badge badge-done">Получено</span></td></tr>
-          <tr><td>Сергей Козлов</td><td>Оформление визы · Испания</td><td>25 июня 2026</td><td class="pay-in">+10 000 ₽</td><td><span class="badge badge-active">Ожидает</span></td></tr>
-          <tr><td>Мария Смирнова</td><td>Оформление визы · Германия</td><td>24 июня 2026</td><td class="pay-in">+8 000 ₽</td><td><span class="badge badge-done">Получено</span></td></tr>
-          <tr><td>VisaSlot</td><td>Комиссия платформы (июнь)</td><td>1 июня 2026</td><td class="pay-out">−4 500 ₽</td><td><span class="badge badge-done">Списано</span></td></tr>
+        <tbody id="payments-tbody">
         </tbody>
       </table>
     </div>
@@ -611,6 +611,100 @@
   }
 
   renderManagers();
+
+  // ── ПЛАТЕЖИ ──
+  const CLIENT_STATUSES = [
+    { key: 'irrelevant',  label: 'Не актуально',      bg: '#fee2e2', color: '#b91c1c' },
+    { key: 'trip6',       label: 'Поездка 6+ мес',    bg: '#dbeafe', color: '#1d4ed8' },
+    { key: 'trip3',       label: 'Поездка 3+ мес',    bg: '#bfdbfe', color: '#1e40af' },
+    { key: 'callback',    label: 'Перезвонить',        bg: '#ffedd5', color: '#c2410c' },
+    { key: 'processing',  label: 'В обработке',        bg: '#dcfce7', color: '#15803d' },
+    { key: 'waiting',     label: 'Ожидает',            bg: '#fef9c3', color: '#a16207' },
+    { key: 'sent_kp',     label: 'Отправлено КП',      bg: '#dbeafe', color: '#1e40af' },
+    { key: 'contract',    label: 'Заключён договор',   bg: '#ede9fe', color: '#6d28d9' },
+    { key: 'visa_done',   label: 'Получена виза',      bg: '#d1fae5', color: '#065f46' },
+  ];
+
+  let payments = [
+    { id: 1, client: 'Иван Иванов',    service: 'Оформление визы · Италия',  date: '27 июня 2026', amount: '+15 000 ₽', type: 'in', manager: 'Анна Петрова',  status: 'visa_done' },
+    { id: 2, client: 'Анна Петрова',   service: 'Оформление визы · Франция', date: '26 июня 2026', amount: '+12 000 ₽', type: 'in', manager: 'Сергей Волков', status: 'contract' },
+    { id: 3, client: 'Сергей Козлов',  service: 'Оформление визы · Испания', date: '25 июня 2026', amount: '+10 000 ₽', type: 'in', manager: 'Анна Петрова',  status: 'waiting' },
+    { id: 4, client: 'Мария Смирнова', service: 'Оформление визы · Германия',date: '24 июня 2026', amount: '+8 000 ₽',  type: 'in', manager: 'Сергей Волков', status: 'processing' },
+    { id: 5, client: 'VisaSlot',       service: 'Комиссия платформы (июнь)', date: '1 июня 2026',  amount: '−4 500 ₽',  type: 'out', manager: '—',            status: null },
+  ];
+
+  function getStatus(key) { return CLIENT_STATUSES.find(s => s.key === key) || null; }
+
+  function renderPayments() {
+    const tbody = document.getElementById('payments-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = payments.map(p => {
+      const st = p.status ? getStatus(p.status) : null;
+      const statusBadge = st
+        ? `<span onclick="openStatusDrop(event,${p.id})" style="display:inline-flex;align-items:center;gap:5px;background:${st.bg};color:${st.color};border-radius:20px;padding:4px 11px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;user-select:none;">${st.label} <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></span>`
+        : `<span style="color:var(--muted);font-size:13px;">—</span>`;
+      const mgrOpts = managers.map(m => `<option value="${m.name}" ${m.name===p.manager?'selected':''}>${m.name}</option>`).join('');
+      const mgrCell = p.manager === '—'
+        ? `<td style="color:var(--muted);font-size:13px;">—</td>`
+        : `<td><select onchange="setPaymentManager(${p.id},this.value)" style="border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:13px;font-family:inherit;background:#fff;cursor:pointer;outline:none;color:var(--ink);">${mgrOpts}</select></td>`;
+      return `<tr>
+        <td style="font-weight:600;">${p.client}</td>
+        <td>${p.service}</td>
+        <td>${p.date}</td>
+        <td class="${p.type==='in'?'pay-in':'pay-out'}">${p.amount}</td>
+        ${mgrCell}
+        <td>${statusBadge}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function setPaymentManager(id, name) {
+    const p = payments.find(p => p.id === id);
+    if (p) { p.manager = name; }
+  }
+
+  let activePaymentId = null;
+
+  function openStatusDrop(e, id) {
+    e.stopPropagation();
+    activePaymentId = id;
+    const drop = document.getElementById('status-dropdown');
+    // заполняем список
+    const existing = drop.querySelectorAll('.status-opt');
+    existing.forEach(el => el.remove());
+    CLIENT_STATUSES.forEach(st => {
+      const el = document.createElement('div');
+      el.className = 'status-opt';
+      el.style.cssText = `display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;`;
+      el.innerHTML = `<span style="width:10px;height:10px;border-radius:50%;background:${st.color};flex-shrink:0;"></span>${st.label}`;
+      el.onmouseenter = () => el.style.background = '#f3f4f6';
+      el.onmouseleave = () => el.style.background = '';
+      el.onclick = () => { setPaymentStatus(id, st.key); closeDrop(); };
+      drop.appendChild(el);
+    });
+    // позиция
+    const rect = e.currentTarget.getBoundingClientRect();
+    drop.style.display = 'block';
+    const dropW = 210;
+    let left = rect.left;
+    if (left + dropW > window.innerWidth - 8) left = window.innerWidth - dropW - 8;
+    drop.style.left = left + 'px';
+    drop.style.top = (rect.bottom + 4) + 'px';
+  }
+
+  function setPaymentStatus(id, key) {
+    const p = payments.find(p => p.id === id);
+    if (p) { p.status = key; renderPayments(); }
+  }
+
+  function closeDrop() {
+    document.getElementById('status-dropdown').style.display = 'none';
+    activePaymentId = null;
+  }
+
+  document.addEventListener('click', closeDrop);
+
+  renderPayments();
 </script>
 </body>
 </html>
