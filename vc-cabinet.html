@@ -1797,20 +1797,11 @@
     </div>
   </nav>
 
-<!-- ── ДОБАВИТЬ СЛОТ ── -->
-<div id="add-slot-overlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(15,23,41,.55);align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#fff;border-radius:20px;width:100%;max-width:380px;padding:32px;position:relative;">
-    <button onclick="closeAddSlot()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);">✕</button>
-    <div style="font-size:18px;font-weight:700;margin-bottom:24px;">Добавить слот</div>
-    <div style="margin-bottom:16px;">
-      <label style="font-size:13px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;">Дата</label>
-      <input id="slot-new-date" type="date" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box;">
-    </div>
-    <div style="margin-bottom:24px;">
-      <label style="font-size:13px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px;">Время</label>
-      <input id="slot-new-time" type="time" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box;">
-    </div>
-    <button onclick="saveSlot()" style="width:100%;padding:13px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Добавить</button>
+<!-- ── ДОБАВИТЬ СЛОТ: iframe-модал с прототипом ── -->
+<div id="add-slot-overlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(15,23,41,.7);align-items:center;justify-content:center;">
+  <div style="position:relative;width:100%;max-width:480px;height:90vh;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.3);">
+    <button onclick="closeAddSlot()" style="position:absolute;top:14px;right:14px;z-index:10;background:rgba(0,0,0,.35);color:#fff;border:none;width:32px;height:32px;border-radius:50%;font-size:17px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>
+    <iframe id="add-slot-iframe" src="" style="width:100%;height:100%;border:none;" allow="microphone"></iframe>
   </div>
 </div>
 
@@ -1920,31 +1911,15 @@
     setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 2000);
   }
 
-  // ── СЛОТЫ: добавить слот ──
+  // ── СЛОТЫ: купить слот через прототип ──
   function openAddSlot() {
-    document.getElementById('add-slot-overlay').style.display = 'flex';
+    const overlay = document.getElementById('add-slot-overlay');
+    document.getElementById('add-slot-iframe').src = 'prototype.html?mode=slot&from=cabinet';
+    overlay.style.display = 'flex';
   }
   function closeAddSlot() {
     document.getElementById('add-slot-overlay').style.display = 'none';
-  }
-  function saveSlot() {
-    const date = document.getElementById('slot-new-date').value;
-    const time = document.getElementById('slot-new-time').value;
-    if (!date || !time) { alert('Заполните дату и время'); return; }
-    const d = new Date(date);
-    const days = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const label = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
-    const slotId = 's' + Date.now();
-    const ssId   = 'ss' + Date.now();
-    const card = document.createElement('div');
-    card.className = 'slot-card';
-    card.dataset.slotId = slotId;
-    card.innerHTML = `<div class="slot-date">${label}</div><div class="slot-time">${time}</div><div class="slot-status slot-free" id="${ssId}">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('${slotId}','${label} · ${time}')">Назначить клиента</button>`;
-    document.getElementById('slots-grid').appendChild(card);
-    closeAddSlot();
-    document.getElementById('slot-new-date').value = '';
-    document.getElementById('slot-new-time').value = '';
+    document.getElementById('add-slot-iframe').src = '';
   }
 
   // Загрузить настройки из localStorage при старте
