@@ -1065,13 +1065,29 @@
     editingManagerId = null;
   }
 
+  function resizeAvatar(dataUrl, callback) {
+    const img = new Image();
+    img.onload = function() {
+      const MAX = 160;
+      const ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.round(img.width  * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      callback(canvas.toDataURL('image/jpeg', 0.75));
+    };
+    img.src = dataUrl;
+  }
+
   function previewAvatar(input) {
     const file = input.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = e => {
-      mgrAvatarData = e.target.result;
-      document.getElementById('mgr-avatar-preview').innerHTML = `<img src="${mgrAvatarData}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+      resizeAvatar(e.target.result, (resized) => {
+        mgrAvatarData = resized;
+        document.getElementById('mgr-avatar-preview').innerHTML = `<img src="${resized}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+      });
     };
     reader.readAsDataURL(file);
   }
@@ -1095,6 +1111,7 @@
     renderPayments();
     saveManagers();
     closeAddManager();
+    applyRoleUI();
   }
 
   renderManagers();
