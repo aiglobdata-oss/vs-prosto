@@ -1031,6 +1031,32 @@
     if (p) { p.manager = name; }
   }
 
+  function syncPaymentsToApplications() {
+    const paidClients = new Set(payments.filter(p => p.type === 'in').map(p => p.client.trim()));
+    document.querySelectorAll('.app-table tbody tr').forEach(tr => {
+      const nameCell = tr.cells[0];
+      if (!nameCell) return;
+      const clientName = nameCell.querySelector('strong, b')
+        ? nameCell.querySelector('strong, b').textContent.trim()
+        : nameCell.textContent.trim().split('\n')[0].trim();
+      if (paidClients.has(clientName)) {
+        const pill = tr.querySelector('.app-stat-pill');
+        if (pill && pill.dataset.key !== 'paid') {
+          const s = appStatByKey('paid');
+          pill.dataset.key = 'paid';
+          pill.style.background = s.bg;
+          pill.style.color = s.color;
+          pill.style.border = 'none';
+          pill.childNodes[0].textContent = s.label;
+          tr.dataset.status = s.filter;
+        }
+      }
+    });
+    updateFilterCounts();
+    renderClients();
+    renderStats();
+  }
+
   let activePaymentId = null;
 
   function openStatusDrop(e, id) {
@@ -1120,6 +1146,7 @@
   document.addEventListener('click', () => { closeDrop(); closeAppDrop(); });
 
   renderPayments();
+  syncPaymentsToApplications();
 
   // ── УВЕДОМЛЕНИЯ (BroadcastChannel) ──
   // Контейнер для тостов
