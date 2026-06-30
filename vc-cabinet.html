@@ -236,12 +236,15 @@
     #section-applications .filter-bar > div { flex-shrink: 0; }
 
     .app-table thead { display: none; }
-    .app-table, .app-table tbody { display: block; width: 100%; }
-    .app-table tr { display: block; background: #fff; border: 1px solid var(--line); border-radius: 16px; margin-bottom: 14px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
-    .app-table td { display: block; border: none !important; padding: 0; font-size: 14px; }
+    .app-table { display: block; width: 100%; border-collapse: separate !important; border: none !important; background: transparent !important; box-shadow: none !important; border-radius: 0 !important; }
+    .app-table tbody { display: block; width: 100%; }
+    .app-table tr { display: block; position: relative; background: #fff; border: 1px solid var(--line) !important; border-radius: 16px; margin-bottom: 14px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .app-table td,
+    .app-table tr:last-child td,
+    .app-table tr:hover td { display: block; border: none !important; border-bottom: none !important; padding: 0; background: transparent !important; }
 
     /* Клиент (col 1) */
-    .app-table td:nth-child(1) { margin-bottom: 12px; font-size: 15px; }
+    .app-table td:nth-child(1) { margin-bottom: 12px; font-size: 15px; padding-right: 44px; }
 
     /* Страна (col 2) + Тип визы (col 3): в одну строку */
     .app-table td:nth-child(2) { display: inline; font-size: 14px; font-weight: 600; color: var(--ink); }
@@ -268,8 +271,7 @@
     .app-table td:nth-child(8) .btn-xs { flex: 1; min-width: 80px; justify-content: center; padding: 8px 10px; font-size: 13px; }
 
     /* Корзина (col 9): поверх справа */
-    .app-table td:nth-child(9) { display: inline-block; position: absolute; top: 14px; right: 14px; }
-    .app-table tr { position: relative; }
+    .app-table td:nth-child(9) { display: inline-block !important; position: absolute; top: 14px; right: 14px; }
 
     /* ── Слоты: 2 колонки ── */
     .slots-grid { grid-template-columns: 1fr 1fr; }
