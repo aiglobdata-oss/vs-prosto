@@ -1170,17 +1170,66 @@
 
   function setAppStatus(key) {
     if (!_activeStatPill) return;
+    if (key === 'paid') { _pendingPaidPill = _activeStatPill; closeAppDrop(); openPaymentAmountModal(); return; }
+    applyAppStatus(_activeStatPill, key);
+  }
+
+  let _pendingPaidPill = null;
+
+  function openPaymentAmountModal() {
+    const tr = _pendingPaidPill ? _pendingPaidPill.closest('tr') : null;
+    if (!tr) return;
+    const clientName = tr.cells[0].querySelector('strong,b')
+      ? tr.cells[0].querySelector('strong,b').textContent.trim()
+      : tr.cells[0].textContent.trim().split('\n')[0].trim();
+    document.getElementById('pam-client').textContent = clientName;
+    document.getElementById('pam-amount').value = '';
+    document.getElementById('pay-amount-overlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('pam-amount').focus(), 100);
+  }
+
+  function confirmPaymentAmount() {
+    const raw = document.getElementById('pam-amount').value.replace(/\s/g,'');
+    const num = parseInt(raw);
+    if (!num || num <= 0) { document.getElementById('pam-amount').style.borderColor='#dc2626'; setTimeout(()=>document.getElementById('pam-amount').style.borderColor='',1500); return; }
+    const tr = _pendingPaidPill.closest('tr');
+    const clientName = tr.cells[0].querySelector('strong,b')
+      ? tr.cells[0].querySelector('strong,b').textContent.trim()
+      : tr.cells[0].textContent.trim().split('\n')[0].trim();
+    const country = tr.cells[1] ? tr.cells[1].textContent.trim() : '—';
+    const specSel = tr.querySelector('.spec-select');
+    const specTxt = tr.querySelector('td:nth-child(6) span');
+    const manager = specSel ? specSel.value : (specTxt ? specTxt.textContent.trim() : '—');
+    // Дата сегодня
+    const today = new Date();
+    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    const dateStr = `${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+    // Удалить старую запись для этого клиента если есть
+    payments = payments.filter(p => p.client !== clientName || p.type !== 'in');
+    payments.unshift({ id: Date.now(), client: clientName, service: `Оформление визы · ${country}`, date: dateStr, amount: `+${num.toLocaleString('ru-RU')} ₽`, type: 'in', manager, status: 'paid' });
+    applyAppStatus(_pendingPaidPill, 'paid');
+    _pendingPaidPill = null;
+    document.getElementById('pay-amount-overlay').style.display = 'none';
+    renderPayments();
+    updateFilterCounts(); renderClients(); renderStats();
+  }
+
+  function cancelPaymentAmount() {
+    _pendingPaidPill = null;
+    document.getElementById('pay-amount-overlay').style.display = 'none';
+  }
+
+  function applyAppStatus(pill, key) {
     const s  = appStatByKey(key);
-    const tr = _activeStatPill.closest('tr');
-    _activeStatPill.dataset.key          = s.key;
-    _activeStatPill.style.background     = s.bg;
-    _activeStatPill.style.color          = s.color;
-    // Обновляем текст (первый текстовый узел перед SVG)
-    const nodes = [..._activeStatPill.childNodes];
+    const tr = pill.closest('tr');
+    pill.dataset.key          = s.key;
+    pill.style.background     = s.bg;
+    pill.style.color          = s.color;
+    pill.style.border         = s.border ? `1.5px solid ${s.border}` : 'none';
+    const nodes = [...pill.childNodes];
     const txt   = nodes.find(n => n.nodeType === 3);
     if (txt) txt.textContent = s.label;
-    else _activeStatPill.insertBefore(document.createTextNode(s.label), _activeStatPill.firstChild);
-    // Обновляем data-status на <tr> для фильтров
+    else pill.insertBefore(document.createTextNode(s.label), pill.firstChild);
     if (tr) { tr.dataset.status = s.filter; updateFilterCounts(); renderClients(); renderStats(); }
   }
 
@@ -1960,6 +2009,22 @@
 
 <!-- ── ДРОПДАУН СТАТУСА ЗАЯВКИ ── -->
 <div id="app-status-dropdown" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.13);padding:6px;min-width:200px;"></div>
+
+<!-- Модал ввода суммы оплаты -->
+<div id="pay-amount-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:28px 28px 24px;width:340px;max-width:92vw;box-shadow:0 16px 48px rgba(0,0,0,.18);">
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px;">Сумма оплаты</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Клиент: <span id="pam-client" style="font-weight:600;color:var(--ink);"></span></div>
+    <label style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);">Сумма (₽)</label>
+    <input id="pam-amount" type="number" min="1" placeholder="например, 15000"
+      style="width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;font-family:inherit;margin:6px 0 20px;outline:none;"
+      onkeydown="if(event.key==='Enter') confirmPaymentAmount()">
+    <div style="display:flex;gap:10px;">
+      <button onclick="cancelPaymentAmount()" style="flex:1;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Отмена</button>
+      <button onclick="confirmPaymentAmount()" style="flex:2;background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Подтвердить</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── ДОБАВИТЬ СЛОТ: iframe-модал с прототипом ── -->
 <div id="add-slot-overlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(15,23,41,.7);align-items:center;justify-content:center;">
