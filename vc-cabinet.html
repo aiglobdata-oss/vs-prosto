@@ -420,7 +420,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr data-status="new">
+          <tr data-status="new" data-name="Иван Иванов" data-phone="+7 (999) 123-45-67" data-country="🇮🇹 Италия" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">ИИ</div><div><div style="font-weight:600;">Иван Иванов</div><div style="font-size:12px;color:var(--muted);">+7 (999) 123-45-67</div></div></div></td>
             <td>🇮🇹 Италия</td><td>Шенген, туризм</td><td>27 июня 2026</td><td>14 июля, 10:30</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
@@ -428,7 +428,7 @@
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
-          <tr data-status="new">
+          <tr data-status="new" data-name="Анна Петрова" data-phone="+7 (916) 234-56-78" data-country="🇫🇷 Франция" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">АП</div><div><div style="font-weight:600;">Анна Петрова</div><div style="font-size:12px;color:var(--muted);">+7 (916) 234-56-78</div></div></div></td>
             <td>🇫🇷 Франция</td><td>Шенген, туризм</td><td>26 июня 2026</td><td>18 июля, 09:00</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
@@ -436,7 +436,7 @@
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
-          <tr data-status="new">
+          <tr data-status="new" data-name="Сергей Козлов" data-phone="+7 (903) 345-67-89" data-country="🇪🇸 Испания" data-visa="Шенген, бизнес">
             <td><div class="client-cell"><div class="client-ava">СК</div><div><div style="font-weight:600;">Сергей Козлов</div><div style="font-size:12px;color:var(--muted);">+7 (903) 345-67-89</div></div></div></td>
             <td>🇪🇸 Испания</td><td>Шенген, бизнес</td><td>25 июня 2026</td><td>21 июля, 11:00</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
@@ -444,7 +444,7 @@
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
-          <tr data-status="active">
+          <tr data-status="active" data-name="Мария Смирнова" data-phone="+7 (926) 456-78-90" data-country="🇩🇪 Германия" data-visa="Шенген, учёба">
             <td><div class="client-cell"><div class="client-ava">МС</div><div><div style="font-weight:600;">Мария Смирнова</div><div style="font-size:12px;color:var(--muted);">+7 (926) 456-78-90</div></div></div></td>
             <td>🇩🇪 Германия</td><td>Шенген, учёба</td><td>24 июня 2026</td><td>10 июля, 14:00</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
@@ -452,7 +452,7 @@
             <td><div class="action-btns"><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-4','Мария Смирнова')">Чат</button><button class="btn-xs btn-xs-outline">Документы</button></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
-          <tr data-status="active">
+          <tr data-status="active" data-name="Дмитрий Васильев" data-phone="+7 (985) 567-89-01" data-country="🇳🇱 Нидерланды" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">ДВ</div><div><div style="font-weight:600;">Дмитрий Васильев</div><div style="font-size:12px;color:var(--muted);">+7 (985) 567-89-01</div></div></div></td>
             <td>🇳🇱 Нидерланды</td><td>Шенген, туризм</td><td>23 июня 2026</td><td>8 июля, 10:00</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
@@ -1884,35 +1884,33 @@
   function openSlotAssign(slotId, label) {
     activeSlotId = slotId;
     document.getElementById('slot-assign-info').textContent = 'Слот: ' + label;
-    // Собираем клиентов из таблицы (новые + в работе)
     const clients = [];
     document.querySelectorAll('.app-table tbody tr').forEach(tr => {
       const s = tr.dataset.status;
-      if (s === 'new' || s === 'active') {
-        const nameEl = tr.querySelector('.client-cell [style*="font-weight:600"]');
-        const phoneEl = tr.querySelector('.client-cell [style*="12px"]');
-        const countryEl = tr.cells[1];
-        if (nameEl) clients.push({
-          name: nameEl.textContent,
-          phone: phoneEl ? phoneEl.textContent : '',
-          country: countryEl ? countryEl.textContent.trim() : '',
-          status: s,
-          tr,
+      if ((s === 'new' || s === 'active') && tr.dataset.name) {
+        clients.push({
+          name:    tr.dataset.name,
+          phone:   tr.dataset.phone   || '',
+          country: tr.dataset.country || '',
+          visa:    tr.dataset.visa    || '',
+          status:  s,
         });
       }
     });
     const list = document.getElementById('slot-clients-list');
     if (!clients.length) {
       list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:14px;">Нет доступных клиентов</div>';
+      list._clients = [];
     } else {
       list.innerHTML = clients.map((c, i) => {
         const initials = c.name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
         const badge = c.status === 'active'
           ? '<span style="font-size:11px;background:#dcfce7;color:#15803d;border-radius:10px;padding:2px 7px;font-weight:600;">В работе</span>'
           : '<span style="font-size:11px;background:#eef2ff;color:#4f46e5;border-radius:10px;padding:2px 7px;font-weight:600;">Новая</span>';
+        const meta = [c.phone, c.country, c.visa].filter(Boolean).join(' · ');
         return `<div class="slot-client-item" onclick="assignClientToSlot(${i})">
           <div class="ava">${initials}</div>
-          <div class="info"><div class="name">${c.name} ${badge}</div><div class="meta">${c.phone} ${c.country ? '· ' + c.country : ''}</div></div>
+          <div class="info"><div class="name">${c.name} ${badge}</div><div class="meta">${meta}</div></div>
         </div>`;
       }).join('');
       list._clients = clients;
@@ -1925,9 +1923,8 @@
     const clients = list._clients;
     if (!clients || !clients[idx]) return;
     const c = clients[idx];
-    const lastName = c.name.split(/\s+/);
-    const short = lastName[0] + (lastName[1] ? ' ' + lastName[1][0] + '.' : '');
-    // Обновляем слот-карточку
+    const parts = c.name.split(/\s+/);
+    const short = parts[0] + (parts[1] ? ' ' + parts[1][0] + '.' : '');
     const card = document.querySelector(`.slot-card[data-slot-id="${activeSlotId}"]`);
     if (card) {
       const statusEl = card.querySelector('.slot-status');
