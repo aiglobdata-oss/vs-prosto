@@ -295,8 +295,10 @@
         <button class="filter-btn active" data-filter="all" id="fb-all">Все (6)</button>
         <button class="filter-btn" data-filter="new" id="fb-new">Новые (3)</button>
         <button class="filter-btn" data-filter="active" id="fb-active">В работе (2)</button>
-        <button class="filter-btn" data-filter="done" id="fb-done">Завершены (1)</button>
         <button class="filter-btn" data-filter="defer" id="fb-defer">Неактуальные (0)</button>
+        <button class="filter-btn" data-filter="contract" id="fb-contract">Заключён договор (0)</button>
+        <button class="filter-btn" data-filter="paid" id="fb-paid">Оплачено (0)</button>
+        <button class="filter-btn" data-filter="done" id="fb-done">Завершены (1)</button>
         <div style="margin-left:auto;display:flex;gap:8px;">
           <select id="filter-manager" onchange="applyTableFilters()" style="border:1.5px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink);cursor:pointer;outline:none;">
             <option value="">Все менеджеры</option>
@@ -979,9 +981,9 @@
     { key: 'processing',  label: 'В обработке',        bg: '#a3e635', color: '#000', filter: 'active' },
     { key: 'waiting',     label: 'Ожидает',            bg: '#facc15', color: '#000', filter: 'active' },
     { key: 'sent_kp',     label: 'Отправлено КП',      bg: '#2563eb', color: '#fff', filter: 'active' },
-    { key: 'contract',    label: 'Заключён договор',   bg: '#1d8348', color: '#fff', filter: 'done'   },
-    { key: 'paid',        label: 'Оплачено',           bg: '#166534', color: '#fff', filter: 'done'   },
-    { key: 'visa_done',   label: 'Получена виза',      bg: '#064e3b', color: '#fff', filter: 'done'   },
+    { key: 'contract',    label: 'Заключён договор',   bg: '#1d8348', color: '#fff', filter: 'contract' },
+    { key: 'paid',        label: 'Оплачено',           bg: '#166534', color: '#fff', filter: 'paid'     },
+    { key: 'visa_done',   label: 'Получена виза',      bg: '#064e3b', color: '#fff', filter: 'done'     },
   ];
   function appStatByKey(key) { return APP_STATUSES.find(s => s.key === key) || APP_STATUSES[0]; }
   function appStatPillHTML(key) {
@@ -1525,7 +1527,7 @@
 
   function updateFilterCounts() {
     const rows = document.querySelectorAll('.app-table tbody tr');
-    let all = 0, nw = 0, ac = 0, dn = 0, df = 0;
+    let all = 0, nw = 0, ac = 0, dn = 0, df = 0, ct = 0, pd = 0;
     rows.forEach(tr => {
       const s = tr.dataset.status;
       if (!s) return;
@@ -1534,12 +1536,16 @@
       else if (s === 'active') ac++;
       else if (s === 'done') dn++;
       else if (s === 'defer') df++;
+      else if (s === 'contract') ct++;
+      else if (s === 'paid') pd++;
     });
-    document.getElementById('fb-all').textContent    = `Все (${all})`;
-    document.getElementById('fb-new').textContent    = `Новые (${nw})`;
-    document.getElementById('fb-active').textContent = `В работе (${ac})`;
-    document.getElementById('fb-done').textContent   = `Завершены (${dn})`;
-    document.getElementById('fb-defer').textContent  = `Неактуальные (${df})`;
+    document.getElementById('fb-all').textContent      = `Все (${all})`;
+    document.getElementById('fb-new').textContent      = `Новые (${nw})`;
+    document.getElementById('fb-active').textContent   = `В работе (${ac})`;
+    document.getElementById('fb-defer').textContent    = `Неактуальные (${df})`;
+    document.getElementById('fb-contract').textContent = `Заключён договор (${ct})`;
+    document.getElementById('fb-paid').textContent     = `Оплачено (${pd})`;
+    document.getElementById('fb-done').textContent     = `Завершены (${dn})`;
     const navBadge = document.querySelector('.nav-item[data-section="applications"] .nav-badge');
     if (navBadge) navBadge.textContent = nw;
   }
