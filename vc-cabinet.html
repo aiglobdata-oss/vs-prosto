@@ -2648,9 +2648,18 @@
     if (logoutBtn) logoutBtn.style.display = admin ? 'none' : '';
     const hdrAva = document.getElementById('cab-avatar-hdr');
     if (hdrAva && !admin && mgr) {
-      hdrAva.textContent = mgr.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
       hdrAva.title = mgr.name;
+      if (mgr.avatar) {
+        hdrAva.textContent = '';
+        hdrAva.style.backgroundImage = `url(${mgr.avatar})`;
+        hdrAva.style.backgroundSize = 'cover';
+        hdrAva.style.backgroundPosition = 'center';
+      } else {
+        hdrAva.style.backgroundImage = '';
+        hdrAva.textContent = mgr.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+      }
     } else if (hdrAva && admin) {
+      hdrAva.style.backgroundImage = '';
       hdrAva.title = '';
     }
 
