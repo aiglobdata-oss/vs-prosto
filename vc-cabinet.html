@@ -570,12 +570,14 @@
     <div id="add-manager-overlay" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(15,23,41,0.55);align-items:center;justify-content:center;padding:16px;">
       <div style="background:#fff;border-radius:20px;width:100%;max-width:440px;padding:32px;position:relative;">
         <button onclick="closeAddManager()" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);">✕</button>
-        <div style="font-size:18px;font-weight:700;margin-bottom:24px;">Добавить менеджера</div>
+        <div id="mgr-modal-title" style="font-size:18px;font-weight:700;margin-bottom:24px;">Добавить менеджера</div>
 
         <!-- Аватарка -->
         <div style="text-align:center;margin-bottom:20px;">
-          <div id="mgr-avatar-preview" onclick="document.getElementById('mgr-avatar-input').click()" style="width:80px;height:80px;border-radius:50%;background:var(--indigo-light);border:2px dashed var(--indigo);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;cursor:pointer;font-size:28px;">👤</div>
-          <div style="font-size:13px;color:var(--muted);">Нажмите чтобы загрузить фото</div>
+          <label for="mgr-avatar-input" style="cursor:pointer;display:block;">
+            <div id="mgr-avatar-preview" style="width:80px;height:80px;border-radius:50%;background:var(--indigo-light);border:2px dashed var(--indigo);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:28px;overflow:hidden;">👤</div>
+            <div style="font-size:13px;color:var(--muted);">Нажмите чтобы загрузить фото</div>
+          </label>
           <input type="file" id="mgr-avatar-input" accept="image/*" style="display:none;" onchange="previewAvatar(this)">
         </div>
 
@@ -595,7 +597,7 @@
           <input id="mgr-code" type="text" maxlength="8" placeholder="например: 1234" style="width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit;outline:none;">
           <div style="font-size:12px;color:var(--muted);margin-top:5px;">Менеджер вводит этот код вместе с телефоном при входе</div>
         </div>
-        <button onclick="saveManager()" style="width:100%;padding:13px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Добавить</button>
+        <button id="mgr-modal-save-btn" onclick="saveManager()" style="width:100%;padding:13px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Добавить</button>
       </div>
     </div>
 
@@ -1037,8 +1039,8 @@
     document.getElementById('mgr-phone').value = '';
     document.getElementById('mgr-code').value = '';
     document.getElementById('mgr-avatar-preview').innerHTML = '👤';
-    document.querySelector('#add-manager-overlay div div:first-child + div').textContent = 'Добавить менеджера';
-    document.querySelector('#add-manager-overlay button:last-child').textContent = 'Добавить';
+    document.getElementById('mgr-modal-title').textContent = 'Добавить менеджера';
+    document.getElementById('mgr-modal-save-btn').textContent = 'Добавить';
     document.getElementById('add-manager-overlay').style.display = 'flex';
   }
 
@@ -1053,8 +1055,8 @@
     document.getElementById('mgr-avatar-preview').innerHTML = m.avatar
       ? `<img src="${m.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
       : '👤';
-    document.querySelector('#add-manager-overlay div div:first-child + div').textContent = 'Редактировать менеджера';
-    document.querySelector('#add-manager-overlay button:last-child').textContent = 'Сохранить';
+    document.getElementById('mgr-modal-title').textContent = 'Редактировать менеджера';
+    document.getElementById('mgr-modal-save-btn').textContent = 'Сохранить';
     document.getElementById('add-manager-overlay').style.display = 'flex';
   }
 
