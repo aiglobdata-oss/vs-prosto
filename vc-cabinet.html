@@ -463,7 +463,7 @@
 
         <!-- Доход с выпадашкой по месяцам -->
         <div class="stat-card" style="position:relative;">
-          <div class="stat-label">Доход</div>
+          <div class="stat-label">Валовый доход</div>
           <div class="stat-value" id="stat-income" style="margin-top:6px;">—</div>
           <button id="income-period-btn" onclick="toggleIncomeDrop(event)" style="display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:var(--indigo);border:none;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;">
             <span id="income-period-label">за текущий месяц</span>
@@ -930,9 +930,13 @@
           <div onclick="openEditManager(${m.id})" style="font-weight:700;font-size:15px;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;color:var(--indigo);">${m.name}</div>
           <div style="font-size:13px;color:var(--muted);margin-top:2px;">+7 ${formatPhone(m.phone)} · ${m.deals} сделок</div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-          <div onclick="toggleManager(${m.id})" style="width:40px;height:22px;border-radius:11px;background:${m.active ? 'var(--indigo)' : '#d1d5db'};cursor:pointer;position:relative;transition:background .2s;">
-            <div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;${m.active ? 'right:2px' : 'left:2px'};transition:all .2s;"></div>
+        <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+          <div onclick="toggleManager(${m.id})" style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;">
+            <span style="width:9px;height:9px;border-radius:50%;background:${m.active ? '#22c55e' : '#9ca3af'};flex-shrink:0;"></span>
+            <span style="font-size:12px;font-weight:600;color:${m.active ? '#15803d' : '#9ca3af'};">${m.active ? 'в сети' : 'не в сети'}</span>
+            <div style="width:40px;height:22px;border-radius:11px;background:${m.active ? 'var(--indigo)' : '#d1d5db'};position:relative;transition:background .2s;margin-left:4px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;${m.active ? 'right:2px' : 'left:2px'};transition:all .2s;"></div>
+            </div>
           </div>
           <button onclick="deleteManager(${m.id})" style="background:var(--red-light);color:var(--red);border:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Удалить</button>
         </div>
@@ -2004,6 +2008,8 @@
   </nav>
 
 <!-- ── ДРОПДАУН СТАТУСА ЗАЯВКИ ── -->
+<div id="mgr-month-drop" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.13);padding:6px;min-width:170px;"></div>
+
 <div id="app-status-dropdown" style="display:none;position:fixed;z-index:9999;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.13);padding:6px;min-width:200px;"></div>
 
 <!-- Модал ввода суммы оплаты -->
@@ -2098,6 +2104,44 @@
 
   // ── СТАТИСТИКА: рендер из заявок + платежей ──
   let _incomePeriod = 'current'; // 'current' | 'year' | 'YYYY-MM'
+
+  // Выбранный месяц для колонки «Доход (месяц)» в таблице менеджеров
+  const _nowMgr = new Date();
+  let _mgrMonth = _nowMgr.getFullYear() + '-' + String(_nowMgr.getMonth()+1).padStart(2,'0');
+  let _mgrMonthLabel = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'][_nowMgr.getMonth()] + ' ' + _nowMgr.getFullYear();
+
+  function openMgrMonthDrop(e) {
+    e.stopPropagation();
+    let drop = document.getElementById('mgr-month-drop');
+    if (!drop) return;
+    // Собрать уникальные месяцы из payments
+    const RU_M = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    const NOM  = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+    const months = new Set();
+    payments.filter(p => p.type==='in').forEach(p => {
+      const parts = (p.date||'').split(' ');
+      if (parts.length >= 3) { const mi = RU_M.indexOf(parts[1]); if (mi>=0) months.add(parts[2]+'-'+String(mi+1).padStart(2,'0')); }
+    });
+    // Добавить текущий месяц всегда
+    months.add(_mgrMonth);
+    drop.innerHTML = [...months].sort().reverse().map(mo => {
+      const [yr, m] = mo.split('-');
+      const label = NOM[parseInt(m)-1] + ' ' + yr;
+      return `<div onclick="setMgrMonth('${mo}','${label}')" style="padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:${mo===_mgrMonth?'700':'500'};color:${mo===_mgrMonth?'var(--indigo)':'var(--ink)'};" onmouseenter="this.style.background='#f3f4f6'" onmouseleave="this.style.background=''">${label}</div>`;
+    }).join('');
+    drop.style.display = 'block';
+    const rect = e.currentTarget.getBoundingClientRect();
+    drop.style.left = rect.left + 'px';
+    drop.style.top  = (rect.bottom + 4) + 'px';
+  }
+
+  function setMgrMonth(mo, label) {
+    _mgrMonth = mo; _mgrMonthLabel = label;
+    document.getElementById('mgr-month-drop').style.display = 'none';
+    renderMgrStats();
+  }
+
+  document.addEventListener('click', () => { const d = document.getElementById('mgr-month-drop'); if(d) d.style.display='none'; });
 
   function calcIncome(period) {
     let total = 0;
@@ -2228,8 +2272,7 @@
       tbl.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:12px 0;">Менеджеры не добавлены</div>';
       return;
     }
-    const now = new Date();
-    const curMo = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    const curMo = _mgrMonth;
     const RU_MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 
     const rows = [...document.querySelectorAll('.app-table tbody tr')];
@@ -2275,7 +2318,11 @@
               <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Заявок</th>
               <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Успешных</th>
               <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Виз получено</th>
-              <th style="text-align:right;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Доход (месяц)</th>
+              <th style="text-align:right;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">
+                <button id="mgr-month-btn" onclick="openMgrMonthDrop(event)" style="display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:var(--indigo);border:none;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;text-transform:uppercase;">
+                  ${_mgrMonthLabel}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </th>
               <th style="text-align:right;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Доход (год)</th>
             </tr>
           </thead>
