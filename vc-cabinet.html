@@ -869,6 +869,8 @@
     if (!confirm('Удалить менеджера?')) return;
     managers = managers.filter(m => m.id !== id);
     renderManagers();
+    fillSpecSelects();
+    renderPayments();
   }
 
   function openAddManager() {
@@ -927,6 +929,8 @@
       managers.push({ id: Date.now(), name, phone: rawPhone, avatar: mgrAvatarData, active: true, deals: 0 });
     }
     renderManagers();
+    fillSpecSelects();
+    renderPayments();
     closeAddManager();
   }
 
@@ -1689,6 +1693,18 @@
       <div class="create-modal-footer" style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;">
         <button onclick="closeCreateModal()" style="background:#f3f4f6;border:none;border-radius:10px;padding:11px 20px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:600;">Отмена</button>
         <button onclick="submitCreateModal()" style="background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Создать заявку</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модал: Назначить клиента на слот -->
+  <div class="slot-assign-overlay" id="slot-assign-overlay" onclick="if(event.target===this)closeSlotAssign()">
+    <div class="slot-assign-box">
+      <h3>Назначить клиента</h3>
+      <div class="slot-info-line" id="slot-assign-info">Слот: —</div>
+      <div id="slot-clients-list" style="max-height:360px;overflow-y:auto;"></div>
+      <div style="margin-top:16px;text-align:right;">
+        <button onclick="closeSlotAssign()" style="background:#f3f4f6;border:none;border-radius:10px;padding:9px 20px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:600;">Закрыть</button>
       </div>
     </div>
   </div>
