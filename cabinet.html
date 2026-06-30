@@ -1275,15 +1275,25 @@ function uploadPhoto() {
     if (file.size > 5 * 1024 * 1024) { showToast('Файл слишком большой. Максимум 5 МБ'); return; }
     const reader = new FileReader();
     reader.onload = e => {
-      const photo = e.target.result;
-      currentUser = { ...currentUser, photo };
-      applyAvatarPhoto(photo, currentUser.initials);
-      // Сохранить фото
-      const users = getUsers();
-      const idx = users.findIndex(u => u.phone === currentUser.phone);
-      if (idx >= 0) { users[idx].photo = photo; saveUsers(users); }
-      saveCurrentUser(currentUser);
-      showToast('Фото обновлено ✓');
+      // Сжимаем до 256×256 чтобы не переполнить localStorage
+      const img = new Image();
+      img.onload = () => {
+        const SIZE = 256;
+        const canvas = document.createElement('canvas');
+        const ratio = Math.min(SIZE / img.width, SIZE / img.height);
+        canvas.width  = Math.round(img.width  * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        const photo = canvas.toDataURL('image/jpeg', 0.82);
+        currentUser = { ...currentUser, photo };
+        applyAvatarPhoto(photo, currentUser.initials);
+        const users = getUsers();
+        const idx = users.findIndex(u => u.phone === currentUser.phone);
+        if (idx >= 0) { users[idx].photo = photo; saveUsers(users); }
+        saveCurrentUser(currentUser);
+        showToast('Фото обновлено ✓');
+      };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   };

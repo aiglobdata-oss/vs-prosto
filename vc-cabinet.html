@@ -1347,11 +1347,20 @@
       if (file.size > 2 * 1024 * 1024) { alert('Файл слишком большой. Максимум 2 МБ'); return; }
       const reader = new FileReader();
       reader.onload = e => {
-        localStorage.setItem('vs_vc_logo', e.target.result);
-        applyVcLogo(e.target.result);
-        // Обновить логотип в хедере если есть
-        const hdrLogo = document.getElementById('vc-header-logo-img');
-        if (hdrLogo) { hdrLogo.src = e.target.result; hdrLogo.style.display = ''; }
+        // Сжимаем до 256×256 чтобы не переполнить localStorage
+        const imgEl = new Image();
+        imgEl.onload = () => {
+          const SIZE = 256;
+          const canvas = document.createElement('canvas');
+          const ratio = Math.min(SIZE / imgEl.width, SIZE / imgEl.height);
+          canvas.width  = Math.round(imgEl.width  * ratio);
+          canvas.height = Math.round(imgEl.height * ratio);
+          canvas.getContext('2d').drawImage(imgEl, 0, 0, canvas.width, canvas.height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.82);
+          try { localStorage.setItem('vs_vc_logo', compressed); } catch(err) { console.warn('logo save failed', err); }
+          applyVcLogo(compressed);
+        };
+        imgEl.src = e.target.result;
       };
       reader.readAsDataURL(file);
     };
@@ -1359,19 +1368,30 @@
   }
 
   function applyVcLogo(src) {
+    // Превью в настройках
     const img = document.getElementById('vc-logo-img');
     const placeholder = document.getElementById('vc-logo-placeholder');
     const removeBtn = document.getElementById('vc-logo-remove');
     const wrap = document.getElementById('vc-logo-wrap');
-    img.src = src;
-    img.style.display = 'block';
-    placeholder.style.display = 'none';
-    removeBtn.style.display = '';
-    wrap.style.border = '2px solid var(--line)';
+    if (img) { img.src = src; img.style.display = 'block'; }
+    if (placeholder) placeholder.style.display = 'none';
+    if (removeBtn) removeBtn.style.display = '';
+    if (wrap) wrap.style.border = '2px solid var(--line)';
+    // Аватар в хедере — заменяем инициалы на лого
+    const hdrAva = document.querySelector('.cab-avatar');
+    if (hdrAva) {
+      hdrAva.textContent = '';
+      hdrAva.style.backgroundImage = `url(${src})`;
+      hdrAva.style.backgroundSize = 'cover';
+      hdrAva.style.backgroundPosition = 'center';
+    }
   }
 
   function removeVcLogo() {
     localStorage.removeItem('vs_vc_logo');
+    // Восстановить инициалы в хедере
+    const hdrAva = document.querySelector('.cab-avatar');
+    if (hdrAva) { hdrAva.style.backgroundImage = ''; hdrAva.textContent = 'ЦП'; }
     const img = document.getElementById('vc-logo-img');
     const placeholder = document.getElementById('vc-logo-placeholder');
     const removeBtn = document.getElementById('vc-logo-remove');
