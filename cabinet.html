@@ -5,498 +5,566 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VisaSlot — Личный кабинет</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --indigo: #4f46e5;
-    --indigo-mid: #4f46e5;
-    --indigo-light: #eef2ff;
-    --indigo-btn: #4338ca;
-    --green: #16a34a;
-    --red: #dc2626;
-    --muted: #6b7280;
-    --ink: #111827;
-    --line: #e5e7eb;
-    --bg: #f9fafb;
-    --white: #ffffff;
-    --radius: 12px;
-  }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --indigo: #4f46e5;
+  --indigo-dark: #3730a3;
+  --indigo-mid: #4f46e5;
+  --indigo-light: #eef2ff;
+  --indigo-btn: #4338ca;
+  --green: #16a34a;
+  --green-light: #dcfce7;
+  --amber: #d97706;
+  --amber-light: #fef3c7;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --muted: #6b7280;
+  --ink: #111827;
+  --line: #e5e7eb;
+  --bg: #f3f4f6;
+  --white: #ffffff;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
 
-  /* ───── LOGIN ───── */
-  #login-screen {
-    display: flex; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 24px 16px;
-  }
-  .login-card {
-    background: var(--white); border-radius: 20px;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
-    padding: 40px 36px; width: 100%; max-width: 420px;
-  }
-  .login-logo {
-    text-align: center; font-size: 26px; font-weight: 800;
-    color: var(--indigo-mid); margin-bottom: 8px; letter-spacing: -0.5px;
-  }
-  .login-tabs {
-    display: flex; border-bottom: 2px solid var(--line); margin-bottom: 28px;
-  }
-  .login-tab {
-    flex: 1; padding: 10px 0; text-align: center; font-size: 15px; font-weight: 600;
-    cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent;
-    margin-bottom: -2px; transition: all .15s;
-  }
-  .login-tab.active { color: var(--indigo-mid); border-bottom-color: var(--indigo-mid); }
+/* ─────────── LOGIN ─────────── */
+#login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px 16px; background: linear-gradient(135deg, #eef2ff 0%, #f3f4f6 100%); }
+.login-wrap { width: 100%; max-width: 420px; }
+.login-brand { text-align: center; margin-bottom: 28px; }
+.login-brand-name { font-size: 28px; font-weight: 900; color: var(--indigo-mid); letter-spacing: -0.5px; }
+.login-brand-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.login-card { background: var(--white); border-radius: 24px; box-shadow: var(--shadow-lg); padding: 36px 32px; }
+.login-tabs { display: flex; border-bottom: 2px solid var(--line); margin-bottom: 28px; }
+.login-tab { flex: 1; padding: 10px 0; text-align: center; font-size: 15px; font-weight: 600; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
+.login-tab.active { color: var(--indigo-mid); border-bottom-color: var(--indigo-mid); }
+.field-label { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.field-group { margin-bottom: 16px; }
+.phone-wrap { display: flex; border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color .15s; }
+.phone-wrap:focus-within { border-color: var(--indigo-mid); box-shadow: 0 0 0 3px rgba(79,70,229,.08); }
+.phone-prefix { padding: 13px 12px; font-size: 15px; font-weight: 600; background: var(--bg); border-right: 1.5px solid var(--line); color: var(--ink); flex-shrink: 0; }
+.phone-input { flex: 1; border: none; outline: none; padding: 13px 14px; font-size: 15px; font-family: inherit; background: transparent; color: var(--ink); }
+.phone-input::placeholder { color: #9ca3af; }
+.sms-wrap { display: flex; border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color .15s; }
+.sms-wrap:focus-within { border-color: var(--indigo-mid); box-shadow: 0 0 0 3px rgba(79,70,229,.08); }
+.sms-input { flex: 1; border: none; outline: none; padding: 13px 14px; font-size: 18px; font-family: 'Courier New', monospace; background: transparent; color: var(--ink); letter-spacing: 4px; }
+.sms-input::placeholder { font-size: 14px; letter-spacing: 0; font-family: inherit; color: #9ca3af; }
+.sms-send { border: none; background: none; color: var(--indigo-mid); font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; font-family: inherit; white-space: nowrap; transition: opacity .15s; }
+.sms-send:disabled { opacity: 0.45; cursor: default; }
+.sms-send:not(:disabled):hover { opacity: 0.75; }
+.agree-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; cursor: pointer; }
+.agree-box { width: 20px; height: 20px; border: 2px solid var(--line); border-radius: 5px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.agree-box.checked { background: var(--indigo-mid); border-color: var(--indigo-mid); }
+.agree-box.checked::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+.agree-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.agree-text a { color: var(--indigo-mid); text-decoration: none; }
+.btn-main { width: 100%; padding: 15px; background: var(--indigo-btn); color: #fff; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all .15s; margin-bottom: 20px; }
+.btn-main:hover { background: var(--indigo); }
+.btn-main:active { transform: scale(0.98); }
+.or-divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+.or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.social-btn { width: 100%; padding: 12px; border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--white); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; transition: background .15s; color: var(--ink); }
+.social-btn:hover { background: var(--bg); }
+.social-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+.login-footer { text-align: center; font-size: 12px; color: #9ca3af; margin-top: 16px; }
+#sms-step { display: none; }
+#sms-step.visible { display: block; }
+.sms-hint { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 
-  .field-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
-  .field-group { margin-bottom: 16px; }
+/* ─────────── CABINET ─────────── */
+#cabinet-screen { display: none; min-height: 100vh; flex-direction: column; }
+#cabinet-screen.visible { display: flex; }
 
-  .phone-wrap {
-    display: flex; border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden;
-    transition: border-color .15s;
-  }
-  .phone-wrap:focus-within { border-color: var(--indigo-mid); }
-  .phone-prefix {
-    padding: 13px 12px; font-size: 15px; font-weight: 600;
-    background: var(--bg); border-right: 1.5px solid var(--line); color: var(--ink);
-    flex-shrink: 0;
-  }
-  .phone-input {
-    flex: 1; border: none; outline: none; padding: 13px 14px;
-    font-size: 15px; font-family: inherit; background: transparent; color: var(--ink);
-  }
-  .phone-input::placeholder { color: #9ca3af; }
+/* Header */
+.cab-header { background: var(--white); border-bottom: 1px solid var(--line); padding: 0 24px; height: 60px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+.cab-logo { font-size: 20px; font-weight: 900; color: var(--indigo-mid); flex: 1; text-decoration: none; letter-spacing: -0.3px; }
+.cab-balance-chip { display: flex; align-items: center; gap: 6px; background: var(--indigo-light); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--indigo-mid); cursor: pointer; transition: background .15s; }
+.cab-balance-chip:hover { background: #e0e7ff; }
+.cab-notif-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; transition: background .15s; }
+.cab-notif-btn:hover { background: var(--line); }
+.cab-notif-badge { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: var(--red); border: 2px solid var(--white); }
+.cab-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--indigo-mid), var(--indigo-dark)); color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
 
-  .sms-wrap {
-    display: flex; border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden;
-    transition: border-color .15s;
-  }
-  .sms-wrap:focus-within { border-color: var(--indigo-mid); }
-  .sms-input {
-    flex: 1; border: none; outline: none; padding: 13px 14px;
-    font-size: 15px; font-family: inherit; background: transparent; color: var(--ink);
-  }
-  .sms-input::placeholder { color: #9ca3af; }
-  .sms-send {
-    border: none; background: none; color: var(--indigo-mid); font-size: 14px;
-    font-weight: 600; padding: 0 16px; cursor: pointer; font-family: inherit;
-    white-space: nowrap; transition: opacity .15s;
-  }
-  .sms-send:hover { opacity: 0.75; }
+/* Layout */
+.cab-layout { display: flex; flex: 1; overflow: hidden; }
 
-  .agree-row {
-    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; cursor: pointer;
-  }
-  .agree-box {
-    width: 20px; height: 20px; border: 2px solid var(--line); border-radius: 5px;
-    flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center;
-    transition: all .15s; cursor: pointer;
-  }
-  .agree-box.checked { background: var(--indigo-mid); border-color: var(--indigo-mid); }
-  .agree-box.checked::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
-  .agree-text { font-size: 14px; color: var(--muted); line-height: 1.5; }
-  .agree-text a { color: var(--indigo-mid); text-decoration: none; }
+/* Sidebar */
+.cab-sidebar { width: 228px; background: var(--white); border-right: 1px solid var(--line); padding: 16px 10px; flex-shrink: 0; display: flex; flex-direction: column; }
+.nav-section-label { font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: .8px; padding: 0 14px; margin: 12px 0 6px; }
+.nav-item { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--muted); transition: all .15s; margin-bottom: 1px; position: relative; }
+.nav-item:hover { background: var(--bg); color: var(--ink); }
+.nav-item.active { background: var(--indigo-light); color: var(--indigo-mid); font-weight: 600; }
+.nav-item svg { width: 17px; height: 17px; flex-shrink: 0; }
+.nav-item .nav-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 10px; font-weight: 800; border-radius: 10px; padding: 1px 6px; min-width: 18px; text-align: center; }
+.nav-item .nav-tag { margin-left: auto; background: var(--green-light); color: var(--green); font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 7px; }
+.nav-divider { height: 1px; background: var(--line); margin: 8px 0; }
+.nav-bottom { margin-top: auto; }
+.nav-item.danger { color: var(--red); }
+.nav-item.danger:hover { background: var(--red-light); }
 
-  .btn-main {
-    width: 100%; padding: 15px; background: var(--indigo-btn); color: #fff;
-    border: none; border-radius: var(--radius); font-size: 16px; font-weight: 700;
-    cursor: pointer; font-family: inherit; transition: background .15s; margin-bottom: 20px;
-  }
-  .btn-main:hover { background: var(--indigo); }
+/* Main */
+.cab-main { flex: 1; padding: 28px 32px; overflow-y: auto; }
+.section { display: none; }
+.section.active { display: block; animation: fadeSection .2s ease; }
+@keyframes fadeSection { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.section-title { font-size: 22px; font-weight: 800; color: var(--ink); }
+.section-sub { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.btn-sm { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; border: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary-sm { background: var(--indigo-btn); color: #fff; }
+.btn-primary-sm:hover { background: var(--indigo); }
+.btn-outline-sm { background: none; border: 1.5px solid var(--line); color: var(--ink); }
+.btn-outline-sm:hover { background: var(--bg); border-color: #d1d5db; }
+.btn-ghost-sm { background: none; border: none; color: var(--indigo-mid); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; padding: 8px 0; }
 
-  .or-divider {
-    display: flex; align-items: center; gap: 12px; color: var(--muted);
-    font-size: 13px; margin-bottom: 16px;
-  }
-  .or-divider::before, .or-divider::after {
-    content: ''; flex: 1; height: 1px; background: var(--line);
-  }
+/* ── DASHBOARD ── */
+.dash-welcome { background: linear-gradient(135deg, var(--indigo-mid) 0%, var(--indigo-dark) 100%); color: #fff; border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 24px; position: relative; overflow: hidden; }
+.dash-welcome::after { content: ''; position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+.dash-welcome::before { content: ''; position: absolute; right: 40px; bottom: -60px; width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+.dash-welcome-hi { font-size: 13px; font-weight: 600; opacity: 0.8; margin-bottom: 4px; }
+.dash-welcome-name { font-size: 26px; font-weight: 800; margin-bottom: 16px; }
+.dash-welcome-stats { display: flex; gap: 24px; }
+.dash-stat { }
+.dash-stat-val { font-size: 22px; font-weight: 800; }
+.dash-stat-label { font-size: 12px; opacity: 0.75; margin-top: 1px; }
 
-  .social-btn {
-    width: 100%; padding: 13px; border: 1.5px solid var(--line); border-radius: var(--radius);
-    background: var(--white); font-size: 15px; font-weight: 600; cursor: pointer;
-    font-family: inherit; display: flex; align-items: center; justify-content: center;
-    gap: 10px; margin-bottom: 10px; transition: background .15s; color: var(--ink);
-  }
-  .social-btn:hover { background: var(--bg); }
-  .social-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.dash-card { background: var(--white); border-radius: var(--radius-lg); padding: 20px; border: 1px solid var(--line); cursor: pointer; transition: all .15s; }
+.dash-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.dash-card-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
+.dash-card-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.dash-card-sub { font-size: 12px; color: var(--muted); }
 
-  .login-footer { text-align: center; font-size: 13px; color: var(--muted); margin-top: 16px; }
+.dash-section-label { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+.action-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.action-item { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all .15s; }
+.action-item:hover { box-shadow: var(--shadow-sm); border-color: #d1d5db; }
+.action-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.action-dot.red { background: var(--red); }
+.action-dot.amber { background: var(--amber); }
+.action-dot.green { background: var(--green); }
+.action-info { flex: 1; }
+.action-info p:first-child { font-size: 14px; font-weight: 600; color: var(--ink); }
+.action-info p:last-child { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.action-arrow { color: var(--muted); font-size: 16px; }
 
-  /* SMS step */
-  #sms-step { display: none; }
-  #sms-step.visible { display: block; }
+/* ── ЗАЯВКИ ── */
+.app-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+.app-card-head { padding: 18px 22px; display: flex; align-items: center; gap: 14px; }
+.app-flag { font-size: 32px; line-height: 1; }
+.app-meta { flex: 1; }
+.app-country { font-size: 16px; font-weight: 800; color: var(--ink); }
+.app-type { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.app-status { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.status-active { background: var(--green-light); color: #15803d; }
+.status-pending { background: var(--amber-light); color: #92400e; }
+.status-done { background: var(--bg); color: var(--muted); }
 
-  /* ───── CABINET ───── */
-  #cabinet-screen { display: none; min-height: 100vh; flex-direction: column; }
-  #cabinet-screen.visible { display: flex; }
+/* Progress steps */
+.app-progress { padding: 0 22px 18px; border-bottom: 1px solid var(--line); }
+.progress-steps { display: flex; align-items: center; gap: 0; }
+.prog-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.prog-step:not(:last-child)::after { content: ''; position: absolute; top: 11px; left: 50%; width: 100%; height: 2px; background: var(--line); z-index: 0; }
+.prog-step:not(:last-child).done::after { background: var(--indigo-mid); }
+.prog-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); background: var(--white); z-index: 1; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.prog-step.done .prog-dot { background: var(--indigo-mid); border-color: var(--indigo-mid); color: #fff; }
+.prog-step.current .prog-dot { background: var(--white); border-color: var(--indigo-mid); border-width: 3px; }
+.prog-step.current .prog-dot::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--indigo-mid); }
+.prog-label { font-size: 10px; color: var(--muted); margin-top: 6px; text-align: center; font-weight: 500; white-space: nowrap; }
+.prog-step.done .prog-label, .prog-step.current .prog-label { color: var(--indigo-mid); font-weight: 600; }
 
-  /* Header */
-  .cab-header {
-    background: var(--white); border-bottom: 1px solid var(--line);
-    padding: 0 24px; height: 60px; display: flex; align-items: center;
-    gap: 16px; position: sticky; top: 0; z-index: 100;
-  }
-  .cab-logo { font-size: 20px; font-weight: 800; color: var(--indigo-mid); flex: 1; }
-  .cab-balance {
-    font-size: 14px; color: var(--muted); font-weight: 500;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .cab-balance b { color: var(--ink); }
-  .btn-topup {
-    border: 1.5px solid var(--indigo-mid); color: var(--indigo-mid);
-    background: none; border-radius: 10px; padding: 6px 14px;
-    font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
-    display: flex; align-items: center; gap: 4px; transition: all .15s;
-  }
-  .btn-topup:hover { background: var(--indigo-light); }
-  .cab-avatar {
-    width: 36px; height: 36px; border-radius: 50%; background: var(--indigo-mid);
-    color: #fff; font-size: 13px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; cursor: pointer;
-    flex-shrink: 0;
-  }
+.app-body { padding: 18px 22px; }
+.app-row { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: 18px; }
+.app-field p:first-child { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+.app-field p:last-child { font-size: 14px; font-weight: 600; color: var(--ink); }
 
-  /* Layout */
-  .cab-layout { display: flex; flex: 1; }
+/* Doc list */
+.doc-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+.doc-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--bg); border-radius: 10px; border: 1px solid transparent; transition: border-color .15s; }
+.doc-item:hover { border-color: var(--line); }
+.doc-icon { font-size: 18px; flex-shrink: 0; }
+.doc-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--ink); }
+.doc-status { font-size: 12px; font-weight: 700; white-space: nowrap; }
+.doc-ok { color: var(--green); }
+.doc-wait { color: var(--amber); }
+.doc-missing { color: var(--red); }
+.doc-upload-btn { border: 1.5px solid var(--indigo-mid); color: var(--indigo-mid); background: none; border-radius: 7px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; transition: all .15s; flex-shrink: 0; }
+.doc-upload-btn:hover { background: var(--indigo-light); }
 
-  /* Sidebar */
-  .cab-sidebar {
-    width: 240px; background: var(--white); border-right: 1px solid var(--line);
-    padding: 20px 12px; flex-shrink: 0;
-  }
-  .nav-item {
-    display: flex; align-items: center; gap: 12px; padding: 11px 14px;
-    border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500;
-    color: var(--muted); transition: all .15s; margin-bottom: 2px;
-  }
-  .nav-item:hover { background: var(--bg); color: var(--ink); }
-  .nav-item.active { background: var(--indigo-light); color: var(--indigo-mid); font-weight: 600; }
-  .nav-item.danger { color: var(--red); }
-  .nav-item.danger:hover { background: #fef2f2; }
-  .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-  .nav-divider { height: 1px; background: var(--line); margin: 10px 0; }
+.app-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-  /* Main */
-  .cab-main { flex: 1; padding: 32px 40px; overflow-y: auto; }
-  .section { display: none; }
-  .section.active { display: block; }
-  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-  .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+/* ── ПРОФИЛЬ ── */
+.profile-layout { display: flex; gap: 40px; }
+.profile-photo-col { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 120px; flex-shrink: 0; }
+.profile-avatar-big { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--indigo-mid), var(--indigo-dark)); display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 800; color: #fff; }
+.btn-photo { border: 1.5px solid var(--line); background: var(--white); border-radius: 10px; padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--ink); transition: background .15s; white-space: nowrap; }
+.btn-photo:hover { background: var(--bg); }
+.profile-form { flex: 1; min-width: 0; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-field { margin-bottom: 16px; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; display: block; }
+.form-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: var(--radius); font-size: 15px; font-family: inherit; outline: none; transition: border-color .15s; color: var(--ink); background: var(--white); }
+.form-input:focus { border-color: var(--indigo-mid); box-shadow: 0 0 0 3px rgba(79,70,229,.08); }
+.profile-actions { display: flex; gap: 12px; margin-top: 24px; }
+.btn-save { padding: 12px 28px; background: var(--indigo-btn); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
+.btn-save:hover { background: var(--indigo); }
+.btn-cancel { padding: 12px 24px; background: none; border: 1.5px solid var(--line); color: var(--ink); border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background .15s; }
+.btn-cancel:hover { background: var(--bg); }
 
-  /* ── Мои заявки ── */
-  .app-card {
-    background: var(--white); border: 1px solid var(--line);
-    border-radius: 16px; overflow: hidden; margin-bottom: 16px;
-  }
-  .app-card-head {
-    padding: 18px 20px; display: flex; align-items: center; gap: 14px;
-    border-bottom: 1px solid var(--line);
-  }
-  .app-flag { font-size: 28px; }
-  .app-meta { flex: 1; }
-  .app-country { font-size: 16px; font-weight: 700; }
-  .app-type { font-size: 13px; color: var(--muted); margin-top: 2px; }
-  .app-status {
-    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
-  }
-  .status-active { background: #dcfce7; color: #15803d; }
-  .status-pending { background: #fef9c3; color: #a16207; }
-  .status-done { background: #f3f4f6; color: var(--muted); }
-  .app-body { padding: 18px 20px; }
-  .app-row { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 16px; }
-  .app-field p:first-child { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
-  .app-field p:last-child { font-size: 14px; font-weight: 600; color: var(--ink); }
-  .app-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn-sm {
-    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    cursor: pointer; font-family: inherit; transition: all .15s; border: none;
-  }
-  .btn-primary-sm { background: var(--indigo-btn); color: #fff; }
-  .btn-primary-sm:hover { background: var(--indigo); }
-  .btn-outline-sm { background: none; border: 1.5px solid var(--line); color: var(--ink); }
-  .btn-outline-sm:hover { background: var(--bg); }
+.connected-accounts { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+.connected-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+.acc-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1.5px solid var(--line); border-radius: var(--radius); margin-bottom: 10px; }
+.acc-icon { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.acc-info { flex: 1; }
+.acc-info p:first-child { font-size: 14px; font-weight: 600; }
+.acc-info p:last-child { font-size: 12px; color: var(--muted); }
+.btn-connect { border: 1.5px solid var(--indigo-mid); color: var(--indigo-mid); background: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; }
+.btn-connect:hover { background: var(--indigo-light); }
+.btn-disconnect { border: 1.5px solid var(--line); background: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--muted); transition: all .15s; }
+.btn-disconnect:hover { border-color: var(--red); color: var(--red); }
 
-  .doc-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-  .doc-item {
-    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-    background: var(--bg); border-radius: 10px; font-size: 13px;
-  }
-  .doc-icon { font-size: 16px; }
-  .doc-name { flex: 1; color: var(--ink); font-weight: 500; }
-  .doc-status { font-size: 12px; font-weight: 600; }
-  .doc-ok { color: var(--green); }
-  .doc-wait { color: #d97706; }
-  .doc-missing { color: var(--red); }
+/* ── ПЛАТЕЖИ ── */
+.payments-balance-card { background: linear-gradient(135deg, var(--indigo-mid), var(--indigo-dark)); color: #fff; border-radius: var(--radius-lg); padding: 24px 28px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; }
+.pay-bal-label { font-size: 13px; opacity: 0.8; margin-bottom: 4px; }
+.pay-bal-val { font-size: 32px; font-weight: 900; }
+.btn-topup-big { margin-left: auto; background: rgba(255,255,255,0.2); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 12px; padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; white-space: nowrap; }
+.btn-topup-big:hover { background: rgba(255,255,255,0.3); }
+.payment-item { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.pay-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.pay-icon.in { background: var(--green-light); }
+.pay-icon.out { background: var(--red-light); }
+.pay-info { flex: 1; }
+.pay-info p:first-child { font-size: 14px; font-weight: 600; }
+.pay-info p:last-child { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.pay-amount { font-size: 15px; font-weight: 800; }
+.pay-in { color: var(--green); }
+.pay-out { color: var(--red); }
 
-  /* ── Профиль ── */
-  .profile-layout { display: flex; gap: 40px; flex-wrap: wrap; }
-  .profile-photo-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-  .profile-avatar-big {
-    width: 100px; height: 100px; border-radius: 50%;
-    background: var(--indigo-light); display: flex; align-items: center; justify-content: center;
-    font-size: 36px; font-weight: 700; color: var(--indigo-mid);
-  }
-  .btn-photo {
-    border: 1.5px solid var(--line); background: var(--white); border-radius: 10px;
-    padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
-    font-family: inherit; display: flex; align-items: center; gap: 7px;
-    color: var(--ink); transition: background .15s;
-  }
-  .btn-photo:hover { background: var(--bg); }
-  .profile-form { flex: 1; min-width: 260px; }
-  .form-field { margin-bottom: 18px; }
-  .form-label { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; display: block; }
-  .form-input {
-    width: 100%; padding: 12px 14px; border: 1.5px solid var(--line);
-    border-radius: var(--radius); font-size: 15px; font-family: inherit;
-    outline: none; transition: border-color .15s; color: var(--ink); background: var(--white);
-  }
-  .form-input:focus { border-color: var(--indigo-mid); }
-  .connected-accounts { margin-top: 24px; }
-  .connected-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
-  .acc-item {
-    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-    border: 1.5px solid var(--line); border-radius: var(--radius); margin-bottom: 8px;
-  }
-  .acc-icon { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-  .acc-info { flex: 1; }
-  .acc-info p:first-child { font-size: 14px; font-weight: 600; }
-  .acc-info p:last-child { font-size: 12px; color: var(--muted); }
-  .btn-disconnect {
-    border: 1.5px solid var(--line); background: none; border-radius: 8px;
-    padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
-    font-family: inherit; color: var(--muted); transition: all .15s;
-  }
-  .btn-disconnect:hover { border-color: var(--red); color: var(--red); }
-  .profile-actions { display: flex; gap: 12px; margin-top: 28px; }
-  .btn-save { padding: 12px 28px; background: var(--indigo-btn); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
-  .btn-cancel { padding: 12px 24px; background: none; border: 1.5px solid var(--line); color: var(--ink); border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
+/* ── УВЕДОМЛЕНИЯ ── */
+.notif-item { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); cursor: pointer; transition: background .1s; }
+.notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--indigo-mid); flex-shrink: 0; margin-top: 5px; }
+.notif-dot.read { background: var(--line); }
+.notif-info p:first-child { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.notif-info p:last-child { font-size: 12px; color: var(--muted); }
 
-  /* ── Платежи ── */
-  .payment-item {
-    display: flex; align-items: center; gap: 14px; padding: 16px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .pay-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .pay-icon.in { background: #dcfce7; }
-  .pay-icon.out { background: #fef2f2; }
-  .pay-info { flex: 1; }
-  .pay-info p:first-child { font-size: 14px; font-weight: 600; }
-  .pay-info p:last-child { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .pay-amount { font-size: 15px; font-weight: 700; }
-  .pay-in { color: var(--green); }
-  .pay-out { color: var(--red); }
+/* ── ПОДПИСКА ── */
+.plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.plan-card { border: 2px solid var(--line); border-radius: var(--radius-lg); padding: 24px; transition: all .15s; cursor: pointer; }
+.plan-card.current { border-color: var(--indigo-mid); background: var(--indigo-light); }
+.plan-card:not(.current):hover { border-color: #d1d5db; box-shadow: var(--shadow); }
+.plan-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: 6px; }
+.plan-card.current .plan-label { color: var(--indigo-mid); }
+.plan-name { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.plan-price { font-size: 26px; font-weight: 900; color: var(--ink); margin-bottom: 14px; }
+.plan-price span { font-size: 13px; font-weight: 500; color: var(--muted); }
+.plan-features { list-style: none; }
+.plan-features li { font-size: 13px; padding: 4px 0; display: flex; gap: 8px; color: var(--ink); }
+.plan-features li::before { content: '✓'; color: var(--indigo-mid); font-weight: 700; }
 
-  /* ── Уведомления ── */
-  .notif-item { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line); }
-  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--indigo-mid); flex-shrink: 0; margin-top: 5px; }
-  .notif-dot.read { background: var(--line); }
-  .notif-info p:first-child { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-  .notif-info p:last-child { font-size: 12px; color: var(--muted); }
+/* ── КАРТЫ ── */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.bank-card { background: var(--white); border: 1.5px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: all .15s; }
+.bank-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: #d1d5db; }
+.bank-card-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+.bank-card-body { padding: 14px 16px; }
+.bank-card-name { font-size: 15px; font-weight: 800; margin-bottom: 3px; }
+.bank-card-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.bank-card-price { font-size: 17px; font-weight: 900; color: var(--indigo-mid); }
 
-  /* ── Подписка ── */
-  .plan-card {
-    border: 2px solid var(--indigo-mid); border-radius: 16px; padding: 24px;
-    background: var(--indigo-light); margin-bottom: 16px;
-  }
-  .plan-name { font-size: 18px; font-weight: 800; color: var(--indigo-mid); margin-bottom: 4px; }
-  .plan-price { font-size: 28px; font-weight: 800; color: var(--ink); margin-bottom: 12px; }
-  .plan-price span { font-size: 14px; font-weight: 500; color: var(--muted); }
-  .plan-features { list-style: none; }
-  .plan-features li { font-size: 14px; padding: 4px 0; display: flex; gap: 8px; }
-  .plan-features li::before { content: '✓'; color: var(--indigo-mid); font-weight: 700; }
+/* ── БЕЗОПАСНОСТЬ ── */
+.security-section { margin-bottom: 28px; }
+.security-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+.danger-card { border: 2px solid #fca5a5; border-radius: var(--radius-lg); padding: 24px; background: #fff5f5; }
+.danger-card h3 { font-size: 16px; font-weight: 700; color: var(--red); margin-bottom: 8px; }
+.danger-card p { font-size: 14px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+.btn-danger { background: var(--red); color: #fff; border: none; border-radius: var(--radius); padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
+.btn-danger:hover { background: #b91c1c; }
 
-  /* ── Безопасность ── */
-  .security-section { margin-bottom: 32px; }
-  .security-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+/* Empty state */
+.empty-state { text-align: center; padding: 60px 24px; }
+.empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state-text { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.empty-state-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
 
-  /* ── Опасная зона ── */
-  .danger-card { border: 2px solid #fca5a5; border-radius: 16px; padding: 24px; }
-  .danger-card h3 { font-size: 16px; font-weight: 700; color: var(--red); margin-bottom: 8px; }
-  .danger-card p { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
-  .btn-danger { background: var(--red); color: #fff; border: none; border-radius: var(--radius); padding: 11px 22px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #fff; border-radius: 12px; padding: 12px 20px; font-size: 14px; font-weight: 600; z-index: 9999; transition: transform .3s ease; pointer-events: none; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* Mobile */
-  @media (max-width: 640px) {
-    .cab-sidebar { display: none; }
-    .cab-main { padding: 20px 16px; }
-    .profile-layout { flex-direction: column; }
-    .app-row { gap: 16px; }
-  }
+/* Mobile bottom nav */
+.bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-top: 1px solid var(--line); padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 200; }
+.bottom-nav-items { display: flex; }
+.bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; cursor: pointer; color: var(--muted); font-size: 10px; font-weight: 600; transition: color .15s; position: relative; }
+.bottom-nav-item.active { color: var(--indigo-mid); }
+.bottom-nav-item svg { width: 22px; height: 22px; }
+.bottom-nav-badge { position: absolute; top: 4px; right: calc(50% - 18px); background: var(--red); color: #fff; font-size: 9px; font-weight: 800; border-radius: 8px; padding: 0 4px; min-width: 14px; text-align: center; }
+
+@media (max-width: 768px) {
+  .cab-sidebar { display: none; }
+  .bottom-nav { display: block; }
+  .cab-main { padding: 20px 16px 80px; }
+  .dash-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .plan-grid { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .profile-layout { flex-direction: column; align-items: flex-start; }
+  .profile-photo-col { flex-direction: row; width: auto; }
+  .app-row { gap: 14px; }
+  .payments-balance-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .btn-topup-big { margin-left: 0; }
+  .cab-balance-chip { display: none; }
+  .dash-welcome-stats { gap: 16px; }
+}
+@media (max-width: 480px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .login-card { padding: 28px 20px; }
+}
 </style>
 </head>
 <body>
 
 <!-- ══════════════ LOGIN ══════════════ -->
 <div id="login-screen">
-  <div class="login-card">
-    <div class="login-logo">VisaSlot</div>
-
-    <div class="login-tabs">
-      <div class="login-tab active" id="tab-login">Войти</div>
-      <div class="login-tab" id="tab-reg">Регистрация</div>
+  <div class="login-wrap">
+    <div class="login-brand">
+      <div class="login-brand-name">VisaSlot</div>
+      <div class="login-brand-sub">Слоты в консульства без бессонных ночей</div>
     </div>
-
-    <!-- ── ФОРМА ВХОДА ── -->
-    <div id="login-form">
-
-    <!-- Шаг 1: телефон -->
-    <div id="phone-step">
-      <div class="field-group">
-        <div class="field-label">Номер телефона</div>
-        <div class="phone-wrap">
-          <div class="phone-prefix">+7</div>
-          <input class="phone-input" id="phone-input" type="tel" placeholder="(999) 123-45-67" inputmode="tel" maxlength="15">
-        </div>
+    <div class="login-card">
+      <div class="login-tabs">
+        <div class="login-tab active" id="tab-login">Войти</div>
+        <div class="login-tab" id="tab-reg">Регистрация</div>
       </div>
 
-      <div class="agree-row" id="agree-row">
-        <div class="agree-box" id="agree-box"></div>
-        <div class="agree-text">Я согласен с <a href="#">офертой</a> и <a href="#">политикой конфиденциальности</a></div>
-      </div>
-
-      <button class="btn-main" id="btn-get-code">Получить код</button>
-
-      <div class="or-divider">или</div>
-
-      <button class="social-btn" id="btn-telegram">
-        <!-- Telegram icon -->
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path d="M5.5 11.5l10-4c.8-.3 1.5.2 1.2 1.3l-1.7 7.8c-.1.6-.5.8-1 .5l-2.7-2-1.3 1.2c-.1.1-.3.2-.6.2l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1L8.3 13.4l-2.8-.9c-.6-.2-.6-.6 0-.9z" fill="white"/></svg>
-        Войти через Telegram
-      </button>
-
-      <button class="social-btn" id="btn-google">
-        <!-- Google icon -->
-        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-        Войти через Google
-      </button>
-
-      <div class="login-footer">Это безопасно. Мы не храним пароли</div>
-    </div>
-
-    <!-- Шаг 2: SMS-код -->
-    <div id="sms-step">
-      <div class="field-group">
-        <div class="field-label">Номер телефона</div>
-        <div class="phone-wrap">
-          <div class="phone-prefix">+7</div>
-          <input class="phone-input" id="phone-display" type="tel" readonly style="color:var(--muted);">
-        </div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Код из SMS</div>
-        <div class="sms-wrap">
-          <input class="sms-input" id="sms-input" type="tel" placeholder="Введите 6-значный код" maxlength="6" inputmode="numeric">
-          <button class="sms-send" id="sms-resend">Отправить код</button>
-        </div>
-      </div>
-      <button class="btn-main" id="btn-enter">Войти</button>
-      <div class="login-footer" style="cursor:pointer;" id="back-to-phone">← Изменить номер</div>
-    </div>
-
-    </div><!-- /login-form -->
-
-    <!-- ── ФОРМА РЕГИСТРАЦИИ ── -->
-    <div id="reg-form" style="display:none;">
-      <div class="field-group">
-        <div class="field-label">Имя и фамилия</div>
-        <input class="form-input" id="reg-name" type="text" placeholder="Иван Иванов" autocapitalize="words">
-      </div>
-      <div class="field-group">
-        <div class="field-label">Номер телефона</div>
-        <div class="phone-wrap">
-          <div class="phone-prefix">+7</div>
-          <input class="phone-input" id="reg-phone" type="tel" placeholder="(999) 123-45-67" inputmode="tel" maxlength="15">
-        </div>
-      </div>
-
-      <!-- SMS шаг регистрации -->
-      <div id="reg-sms-step" style="display:none;">
-        <div class="field-group">
-          <div class="field-label">Код из SMS</div>
-          <div class="sms-wrap">
-            <input class="sms-input" id="reg-sms-input" type="tel" placeholder="Введите 6-значный код" maxlength="6" inputmode="numeric">
-            <button class="sms-send" id="reg-sms-resend">Отправить код</button>
+      <!-- ── ВХОД ── -->
+      <div id="login-form">
+        <div id="phone-step">
+          <div class="field-group">
+            <div class="field-label">Номер телефона</div>
+            <div class="phone-wrap">
+              <div class="phone-prefix">+7</div>
+              <input class="phone-input" id="phone-input" type="tel" placeholder="(999) 123-45-67" inputmode="tel" maxlength="15" autocomplete="tel">
+            </div>
           </div>
+          <div class="agree-row" id="agree-row">
+            <div class="agree-box" id="agree-box"></div>
+            <div class="agree-text">Я согласен с <a href="#">офертой</a> и <a href="#">политикой конфиденциальности</a></div>
+          </div>
+          <button class="btn-main" id="btn-get-code">Получить SMS-код</button>
+          <div class="or-divider">или</div>
+          <button class="social-btn" id="btn-telegram">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path d="M5.5 11.5l10-4c.8-.3 1.5.2 1.2 1.3l-1.7 7.8c-.1.6-.5.8-1 .5l-2.7-2-1.3 1.2c-.1.1-.3.2-.6.2l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1L8.3 13.4l-2.8-.9c-.6-.2-.6-.6 0-.9z" fill="white"/></svg>
+            Войти через Telegram
+          </button>
+          <button class="social-btn" id="btn-google">
+            <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Войти через Google
+          </button>
+          <div class="login-footer">Мы не храним пароли и не передаём данные третьим лицам</div>
+        </div>
+
+        <div id="sms-step">
+          <div class="sms-hint">Отправили код на <b id="sms-phone-display">+7 ...</b></div>
+          <div class="field-group">
+            <div class="field-label">Код из SMS</div>
+            <div class="sms-wrap">
+              <input class="sms-input" id="sms-input" type="tel" placeholder="• • • • • •" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+              <button class="sms-send" id="sms-resend" disabled>Повтор 60с</button>
+            </div>
+          </div>
+          <button class="btn-main" id="btn-enter">Войти</button>
+          <div style="text-align:center;"><span class="btn-ghost-sm" id="back-to-phone">← Изменить номер</span></div>
         </div>
       </div>
 
-      <div class="agree-row" id="reg-agree-row">
-        <div class="agree-box" id="reg-agree-box"></div>
-        <div class="agree-text">Я согласен с <a href="#">офертой</a> и <a href="#">политикой конфиденциальности</a></div>
+      <!-- ── РЕГИСТРАЦИЯ ── -->
+      <div id="reg-form" style="display:none;">
+        <div id="reg-main-step">
+          <div class="field-group">
+            <div class="field-label">Имя и фамилия</div>
+            <input class="form-input" id="reg-name" type="text" placeholder="Иван Иванов" autocapitalize="words" autocomplete="name">
+          </div>
+          <div class="field-group">
+            <div class="field-label">Номер телефона</div>
+            <div class="phone-wrap">
+              <div class="phone-prefix">+7</div>
+              <input class="phone-input" id="reg-phone" type="tel" placeholder="(999) 123-45-67" inputmode="tel" maxlength="15" autocomplete="tel">
+            </div>
+          </div>
+          <div class="agree-row" id="reg-agree-row">
+            <div class="agree-box" id="reg-agree-box"></div>
+            <div class="agree-text">Я согласен с <a href="#">офертой</a> и <a href="#">политикой конфиденциальности</a></div>
+          </div>
+          <button class="btn-main" id="btn-reg-next">Получить SMS-код</button>
+          <div class="or-divider">или</div>
+          <button class="social-btn" id="btn-reg-telegram">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path d="M5.5 11.5l10-4c.8-.3 1.5.2 1.2 1.3l-1.7 7.8c-.1.6-.5.8-1 .5l-2.7-2-1.3 1.2c-.1.1-.3.2-.6.2l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1L8.3 13.4l-2.8-.9c-.6-.2-.6-.6 0-.9z" fill="white"/></svg>
+            Через Telegram
+          </button>
+          <button class="social-btn" id="btn-reg-google">
+            <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Через Google
+          </button>
+          <div class="login-footer">Мы не храним пароли и не передаём данные третьим лицам</div>
+        </div>
+
+        <div id="reg-sms-step" style="display:none;">
+          <div class="sms-hint">Отправили код на <b id="reg-sms-phone-display">+7 ...</b></div>
+          <div class="field-group">
+            <div class="field-label">Код из SMS</div>
+            <div class="sms-wrap">
+              <input class="sms-input" id="reg-sms-input" type="tel" placeholder="• • • • • •" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+              <button class="sms-send" id="reg-sms-resend" disabled>Повтор 60с</button>
+            </div>
+          </div>
+          <button class="btn-main" id="btn-reg-confirm">Подтвердить и войти</button>
+          <div style="text-align:center;"><span class="btn-ghost-sm" id="reg-back">← Назад</span></div>
+        </div>
       </div>
 
-      <button class="btn-main" id="btn-reg-submit">Зарегистрироваться</button>
-
-      <div class="or-divider">или</div>
-
-      <button class="social-btn" id="btn-reg-telegram">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path d="M5.5 11.5l10-4c.8-.3 1.5.2 1.2 1.3l-1.7 7.8c-.1.6-.5.8-1 .5l-2.7-2-1.3 1.2c-.1.1-.3.2-.6.2l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1L8.3 13.4l-2.8-.9c-.6-.2-.6-.6 0-.9z" fill="white"/></svg>
-        Зарегистрироваться через Telegram
-      </button>
-      <button class="social-btn" id="btn-reg-google">
-        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-        Зарегистрироваться через Google
-      </button>
-
-      <div class="login-footer">Это безопасно. Мы не храним пароли</div>
-    </div><!-- /reg-form -->
-
+    </div><!-- /login-card -->
   </div>
 </div>
 
 <!-- ══════════════ CABINET ══════════════ -->
 <div id="cabinet-screen">
 
-  <!-- Header -->
   <header class="cab-header">
-    <a href="landing.html" class="cab-logo" style="text-decoration:none;">VisaSlot</a>
-    <div class="cab-balance">Баланс: <b>5 000 ₽</b></div>
-    <button class="btn-topup">+ Пополнить</button>
-    <div class="cab-avatar" id="cab-avatar">ИИ</div>
+    <a href="landing.html" class="cab-logo">VisaSlot</a>
+    <div class="cab-balance-chip" onclick="navTo('payments')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      <span id="header-balance">5 000 ₽</span>
+    </div>
+    <button class="cab-notif-btn" onclick="navTo('notifications')" title="Уведомления">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <div class="cab-notif-badge" id="header-notif-badge"></div>
+    </button>
+    <div class="cab-avatar" id="cab-avatar" onclick="navTo('profile')">АА</div>
   </header>
 
   <div class="cab-layout">
 
     <!-- Sidebar -->
     <nav class="cab-sidebar">
-      <div class="nav-item active" data-section="applications">
+      <div class="nav-section-label">Главное</div>
+      <div class="nav-item active" data-section="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Главная
+      </div>
+      <div class="nav-item" data-section="applications">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M7 4H4a1 1 0 00-1 1v15a1 1 0 001 1h16a1 1 0 001-1V5a1 1 0 00-1-1h-3"/><path d="M9 4a2 2 0 012-2h2a2 2 0 012 2v1H9V4z"/></svg>
         Мои заявки
+        <span class="nav-tag">1</span>
       </div>
+
+      <div class="nav-section-label">Аккаунт</div>
       <div class="nav-item" data-section="profile">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         Профиль
-      </div>
-      <div class="nav-item" data-section="security">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v5c0 5-3.5 9.7-8 11C7.5 20.7 4 16 4 11V6l8-4z"/></svg>
-        Безопасность
       </div>
       <div class="nav-item" data-section="payments">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
         Платежи
       </div>
+      <div class="nav-item" data-section="notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        Уведомления
+        <span class="nav-badge" id="notif-badge">2</span>
+      </div>
       <div class="nav-item" data-section="subscription">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         Подписка
       </div>
-      <div class="nav-item" data-section="notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-        Уведомления
+      <div class="nav-item" data-section="cards">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+        Карты банков
+        <span class="nav-tag">new</span>
       </div>
-      <div class="nav-divider"></div>
-      <div class="nav-item danger" id="nav-logout">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-        Выйти
+      <div class="nav-item" data-section="security">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v5c0 5-3.5 9.7-8 11C7.5 20.7 4 16 4 11V6l8-4z"/></svg>
+        Безопасность
+      </div>
+
+      <div class="nav-bottom">
+        <div class="nav-divider"></div>
+        <div class="nav-item danger" id="nav-logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Выйти
+        </div>
       </div>
     </nav>
 
-    <!-- Main content -->
+    <!-- Main -->
     <main class="cab-main">
 
+      <!-- ── ГЛАВНАЯ ── -->
+      <div class="section active" id="section-dashboard">
+        <div class="dash-welcome">
+          <div class="dash-welcome-hi">Добро пожаловать 👋</div>
+          <div class="dash-welcome-name" id="dash-name">Иван Иванов</div>
+          <div class="dash-welcome-stats">
+            <div class="dash-stat"><div class="dash-stat-val">1</div><div class="dash-stat-label">Активная заявка</div></div>
+            <div class="dash-stat"><div class="dash-stat-val">5 000 ₽</div><div class="dash-stat-label">Баланс</div></div>
+            <div class="dash-stat"><div class="dash-stat-val">14 июля</div><div class="dash-stat-label">Слот в консульство</div></div>
+          </div>
+        </div>
+
+        <div class="dash-section-label">Требуется внимание</div>
+        <div class="action-list">
+          <div class="action-item" onclick="navTo('applications')">
+            <div class="action-dot red"></div>
+            <div class="action-info">
+              <p>Загрузите медицинскую страховку</p>
+              <p>Заявка №VS-2407-001 · Италия · до 12 июля</p>
+            </div>
+            <div class="action-arrow">›</div>
+          </div>
+          <div class="action-item" onclick="navTo('applications')">
+            <div class="action-dot amber"></div>
+            <div class="action-info">
+              <p>Справка с работы на проверке</p>
+              <p>Консультант проверит в течение 24 часов</p>
+            </div>
+            <div class="action-arrow">›</div>
+          </div>
+        </div>
+
+        <div class="dash-section-label">Быстрые действия</div>
+        <div class="dash-grid">
+          <div class="dash-card" onclick="navTo('applications')">
+            <div class="dash-card-icon" style="background:#eef2ff;">📋</div>
+            <div class="dash-card-title">Мои заявки</div>
+            <div class="dash-card-sub">Слот 14 июля · Италия</div>
+          </div>
+          <div class="dash-card" onclick="openChat()">
+            <div class="dash-card-icon" style="background:#f0fdf4;">💬</div>
+            <div class="dash-card-title">Чат с консультантом</div>
+            <div class="dash-card-sub">Анна онлайн</div>
+          </div>
+          <div class="dash-card" onclick="navTo('cards')">
+            <div class="dash-card-icon" style="background:#fffbeb;">💳</div>
+            <div class="dash-card-title">Карты банков</div>
+            <div class="dash-card-sub">Кыргызстан, Армения</div>
+          </div>
+          <div class="dash-card" onclick="window.location.href='landing.html'">
+            <div class="dash-card-icon" style="background:#f0f9ff;">🔍</div>
+            <div class="dash-card-title">Найти ещё слот</div>
+            <div class="dash-card-sub">Новая заявка на визу</div>
+          </div>
+        </div>
+      </div>
+
       <!-- ── ЗАЯВКИ ── -->
-      <div class="section active" id="section-applications">
-        <div class="section-title">Мои заявки</div>
-        <div class="section-sub">История и статус обращений по визам</div>
+      <div class="section" id="section-applications">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Мои заявки</div>
+            <div class="section-sub">История и статус обращений по визам</div>
+          </div>
+          <a href="landing.html" class="btn-sm btn-primary-sm" style="text-decoration:none;">+ Новая заявка</a>
+        </div>
 
         <!-- Активная заявка -->
         <div class="app-card">
@@ -504,10 +572,37 @@
             <div class="app-flag">🇮🇹</div>
             <div class="app-meta">
               <div class="app-country">Италия — Шенгенская виза</div>
-              <div class="app-type">Туризм · 1 взрослый · Заявка №VS-2407-001</div>
+              <div class="app-type">Туризм · 1 взрослый · №VS-2407-001</div>
             </div>
             <div class="app-status status-active">Активна</div>
           </div>
+
+          <!-- Прогресс -->
+          <div class="app-progress">
+            <div class="progress-steps">
+              <div class="prog-step done">
+                <div class="prog-dot">✓</div>
+                <div class="prog-label">Заявка</div>
+              </div>
+              <div class="prog-step done">
+                <div class="prog-dot">✓</div>
+                <div class="prog-label">Слот</div>
+              </div>
+              <div class="prog-step current">
+                <div class="prog-dot"></div>
+                <div class="prog-label">Документы</div>
+              </div>
+              <div class="prog-step">
+                <div class="prog-dot"></div>
+                <div class="prog-label">Подача</div>
+              </div>
+              <div class="prog-step">
+                <div class="prog-dot"></div>
+                <div class="prog-label">Виза</div>
+              </div>
+            </div>
+          </div>
+
           <div class="app-body">
             <div class="app-row">
               <div class="app-field">
@@ -516,7 +611,7 @@
               </div>
               <div class="app-field">
                 <p>Адрес</p>
-                <p>г. Москва, Садовая-Кудринская, 3</p>
+                <p>Садовая-Кудринская, 3</p>
               </div>
               <div class="app-field">
                 <p>Консультант</p>
@@ -530,12 +625,12 @@
 
             <div class="doc-list">
               <div class="doc-item">
-                <div class="doc-icon">📄</div>
+                <div class="doc-icon">📘</div>
                 <div class="doc-name">Загранпаспорт (скан разворота)</div>
                 <div class="doc-status doc-ok">✓ Получен</div>
               </div>
               <div class="doc-item">
-                <div class="doc-icon">📄</div>
+                <div class="doc-icon">🖼️</div>
                 <div class="doc-name">Фото 3.5×4.5 см</div>
                 <div class="doc-status doc-ok">✓ Получен</div>
               </div>
@@ -545,16 +640,20 @@
                 <div class="doc-status doc-wait">⏳ На проверке</div>
               </div>
               <div class="doc-item">
-                <div class="doc-icon">📄</div>
+                <div class="doc-icon">🏥</div>
                 <div class="doc-name">Медицинская страховка ≥ 30 000 €</div>
                 <div class="doc-status doc-missing">✗ Не загружен</div>
+                <button class="doc-upload-btn" onclick="uploadDoc(this, 'Медицинская страховка')">Загрузить</button>
               </div>
             </div>
 
             <div class="app-actions">
-              <button class="btn-sm btn-primary-sm">Открыть чат</button>
-              <button class="btn-sm btn-outline-sm">Загрузить документы</button>
-              <button class="btn-sm btn-outline-sm">Скачать опросник</button>
+              <button class="btn-sm btn-primary-sm" onclick="openChat()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                Открыть чат
+              </button>
+              <button class="btn-sm btn-outline-sm" onclick="showToast('Откройте раздел документов в чате')">Загрузить документы</button>
+              <button class="btn-sm btn-outline-sm" onclick="downloadQuestionnaire()">Скачать опросник</button>
             </div>
           </div>
         </div>
@@ -565,87 +664,241 @@
             <div class="app-flag">🇫🇷</div>
             <div class="app-meta">
               <div class="app-country">Франция — Шенгенская виза</div>
-              <div class="app-type">Туризм · 2 взрослых · Заявка №VS-2403-018</div>
+              <div class="app-type">Туризм · 2 взрослых · №VS-2403-018</div>
             </div>
             <div class="app-status status-done">Завершена</div>
           </div>
+
+          <div class="app-progress">
+            <div class="progress-steps">
+              <div class="prog-step done"><div class="prog-dot">✓</div><div class="prog-label">Заявка</div></div>
+              <div class="prog-step done"><div class="prog-dot">✓</div><div class="prog-label">Слот</div></div>
+              <div class="prog-step done"><div class="prog-dot">✓</div><div class="prog-label">Документы</div></div>
+              <div class="prog-step done"><div class="prog-dot">✓</div><div class="prog-label">Подача</div></div>
+              <div class="prog-step done"><div class="prog-dot">✓</div><div class="prog-label">Виза</div></div>
+            </div>
+          </div>
+
           <div class="app-body">
             <div class="app-row">
-              <div class="app-field">
-                <p>Слот был</p>
-                <p>12 марта 2026, 14:00</p>
-              </div>
-              <div class="app-field">
-                <p>Оплачено</p>
-                <p>5 000 ₽</p>
-              </div>
+              <div class="app-field"><p>Слот был</p><p>12 марта 2026, 14:00</p></div>
+              <div class="app-field"><p>Оплачено</p><p>5 000 ₽</p></div>
+              <div class="app-field"><p>Виза выдана</p><p>28 марта 2026</p></div>
             </div>
             <div class="app-actions">
-              <button class="btn-sm btn-outline-sm">История переписки</button>
+              <button class="btn-sm btn-outline-sm" onclick="showToast('История переписки загружается…')">История переписки</button>
             </div>
           </div>
         </div>
 
-        <div style="text-align:center;padding:24px;color:var(--muted);font-size:14px;">
-          Нужна новая виза? <a href="landing.html" style="color:var(--indigo-mid);font-weight:600;text-decoration:none;">Найти слот →</a>
+        <div style="text-align:center;padding:8px;color:var(--muted);font-size:14px;">
+          Нужна новая виза? <a href="landing.html" style="color:var(--indigo-mid);font-weight:700;text-decoration:none;">Найти слот →</a>
         </div>
       </div>
 
       <!-- ── ПРОФИЛЬ ── -->
       <div class="section" id="section-profile">
         <div class="section-title">Профиль</div>
-        <div class="section-sub">Управляйте своей личной информацией</div>
+        <div class="section-sub" style="margin-bottom:24px;">Личная информация и подключённые аккаунты</div>
 
         <div class="profile-layout">
           <div class="profile-photo-col">
-            <div class="profile-avatar-big" id="profile-avatar-big">ИИ</div>
-            <button class="btn-photo">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-              Загрузить фото
-            </button>
+            <div class="profile-avatar-big" id="profile-avatar-big">АА</div>
+            <button class="btn-photo" onclick="showToast('Загрузка фото будет доступна в приложении')">Изменить</button>
           </div>
 
           <div class="profile-form">
-            <div class="form-field">
-              <label class="form-label">Имя</label>
-              <input class="form-input" id="profile-name" value="Иван Иванов" type="text">
-            </div>
-            <div class="form-field">
-              <label class="form-label">Город</label>
-              <input class="form-input" value="Москва, Россия" type="text">
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">Имя</label>
+                <input class="form-input" id="profile-first-name" value="Иван" type="text" autocapitalize="words">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Фамилия</label>
+                <input class="form-input" id="profile-last-name" value="Иванов" type="text" autocapitalize="words">
+              </div>
             </div>
             <div class="form-field">
               <label class="form-label">Номер телефона</label>
-              <input class="form-input" value="+7 (999) 123-45-67" type="tel">
+              <input class="form-input" value="+7 (999) 123-45-67" type="tel" readonly style="color:var(--muted);background:var(--bg);">
             </div>
-
-            <div class="connected-accounts">
-              <div class="connected-title">Подключённые аккаунты</div>
-              <div class="acc-item">
-                <div class="acc-icon">
-                  <svg viewBox="0 0 24 24" fill="none" width="24" height="24"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path d="M5.5 11.5l10-4c.8-.3 1.5.2 1.2 1.3l-1.7 7.8c-.1.6-.5.8-1 .5l-2.7-2-1.3 1.2c-.1.1-.3.2-.6.2l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1L8.3 13.4l-2.8-.9c-.6-.2-.6-.6 0-.9z" fill="white"/></svg>
-                </div>
-                <div class="acc-info">
-                  <p>Telegram</p>
-                  <p>Подключён: @ivan_ivanov</p>
-                </div>
-                <button class="btn-disconnect">Отключить</button>
-              </div>
-              <div class="acc-item">
-                <div class="acc-icon">
-                  <svg viewBox="0 0 24 24" width="22" height="22"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                </div>
-                <div class="acc-info">
-                  <p>Google</p>
-                  <p>Подключён: ivan@gmail.com</p>
-                </div>
-                <button class="btn-disconnect">Отключить</button>
-              </div>
+            <div class="form-field">
+              <label class="form-label">Город</label>
+              <input class="form-input" id="profile-city" value="Москва" type="text">
             </div>
-
+            <div class="form-field">
+              <label class="form-label">Дата рождения</label>
+              <input class="form-input" id="profile-bday" value="01.01.1990" type="text" placeholder="ДД.ММ.ГГГГ">
+            </div>
             <div class="profile-actions">
-              <button class="btn-save">Сохранить</button>
+              <button class="btn-save" onclick="saveProfile()">Сохранить</button>
               <button class="btn-cancel">Отменить</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="connected-accounts">
+          <div class="connected-title">Подключённые аккаунты</div>
+          <div class="acc-item">
+            <div class="acc-icon"><svg viewBox="0 0 24 24" fill="none" width="32" height="32"><circle cx="12" cy="12" r="12" fill="#229ED9"/><path d="M5.5 11.5l10-4c.8-.3 1.5.2 1.2 1.3l-1.7 7.8c-.1.6-.5.8-1 .5l-2.7-2-1.3 1.2c-.1.1-.3.2-.6.2l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1L8.3 13.4l-2.8-.9c-.6-.2-.6-.6 0-.9z" fill="white"/></svg></div>
+            <div class="acc-info"><p>Telegram</p><p>@ivan_ivanov · Подключён</p></div>
+            <button class="btn-disconnect" onclick="showToast('Отключён от Telegram')">Отключить</button>
+          </div>
+          <div class="acc-item">
+            <div class="acc-icon"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg></div>
+            <div class="acc-info"><p>Google</p><p>Не подключён</p></div>
+            <button class="btn-connect" onclick="showToast('Перенаправляем на Google…')">Подключить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ПЛАТЕЖИ ── -->
+      <div class="section" id="section-payments">
+        <div class="section-title">Платежи</div>
+        <div class="section-sub" style="margin-bottom:24px;">Баланс и история транзакций</div>
+
+        <div class="payments-balance-card">
+          <div>
+            <div class="pay-bal-label">Текущий баланс</div>
+            <div class="pay-bal-val">5 000 ₽</div>
+          </div>
+          <button class="btn-topup-big" onclick="showToast('Откроется форма пополнения')">+ Пополнить баланс</button>
+        </div>
+
+        <div class="payment-item">
+          <div class="pay-icon out">💸</div>
+          <div class="pay-info"><p>Бронирование слота · Италия</p><p>10 июля 2026 · Заявка №VS-2407-001</p></div>
+          <div class="pay-amount pay-out">−5 000 ₽</div>
+        </div>
+        <div class="payment-item">
+          <div class="pay-icon in">💰</div>
+          <div class="pay-info"><p>Пополнение баланса</p><p>8 июля 2026 · Банковская карта ···4242</p></div>
+          <div class="pay-amount pay-in">+10 000 ₽</div>
+        </div>
+        <div class="payment-item">
+          <div class="pay-icon out">💸</div>
+          <div class="pay-info"><p>Бронирование слота · Франция</p><p>1 марта 2026 · Заявка №VS-2403-018</p></div>
+          <div class="pay-amount pay-out">−5 000 ₽</div>
+        </div>
+        <div class="payment-item">
+          <div class="pay-icon in">💰</div>
+          <div class="pay-info"><p>Пополнение баланса</p><p>28 февраля 2026 · Банковская карта ···4242</p></div>
+          <div class="pay-amount pay-in">+5 000 ₽</div>
+        </div>
+      </div>
+
+      <!-- ── УВЕДОМЛЕНИЯ ── -->
+      <div class="section" id="section-notifications">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Уведомления</div>
+            <div class="section-sub">Последние события по вашим заявкам</div>
+          </div>
+          <button class="btn-ghost-sm" onclick="markAllRead()">Отметить все прочитанными</button>
+        </div>
+
+        <div class="notif-item" id="notif-1" onclick="markRead('notif-1')">
+          <div class="notif-dot" id="notif-dot-1"></div>
+          <div class="notif-info">
+            <p>Загрузите страховку до 12 июля</p>
+            <p>Сегодня, 11:00 · Без неё подача в консульство невозможна</p>
+          </div>
+        </div>
+        <div class="notif-item" id="notif-2" onclick="markRead('notif-2')">
+          <div class="notif-dot" id="notif-dot-2"></div>
+          <div class="notif-info">
+            <p>Слот закреплён · Италия</p>
+            <p>Сегодня, 10:32 · 14 июля, 10:30 — ул. Садовая-Кудринская, 3</p>
+          </div>
+        </div>
+        <div class="notif-item" id="notif-3" onclick="markRead('notif-3')">
+          <div class="notif-dot read" id="notif-dot-3"></div>
+          <div class="notif-info">
+            <p>Справка с работы получена, проверяем</p>
+            <p>Сегодня, 09:15 · Проверка занимает до 24 часов</p>
+          </div>
+        </div>
+        <div class="notif-item" id="notif-4" onclick="markRead('notif-4')">
+          <div class="notif-dot read" id="notif-dot-4"></div>
+          <div class="notif-info">
+            <p>Оплата прошла успешно</p>
+            <p>Вчера, 18:44 · Списано 5 000 ₽ за слот в Италию</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ПОДПИСКА ── -->
+      <div class="section" id="section-subscription">
+        <div class="section-title">Подписка</div>
+        <div class="section-sub" style="margin-bottom:24px;">Выберите подходящий тарифный план</div>
+
+        <div class="plan-grid">
+          <div class="plan-card current">
+            <div class="plan-label">✓ Текущий план</div>
+            <div class="plan-name">Базовый</div>
+            <div class="plan-price">5 000 ₽ <span>за слот</span></div>
+            <ul class="plan-features">
+              <li>Мониторинг консульств 24/7</li>
+              <li>Уведомления SMS и Telegram</li>
+              <li>Персональный консультант</li>
+              <li>Хранение документов 30 дней</li>
+            </ul>
+          </div>
+          <div class="plan-card" onclick="showToast('Тариф Про — скоро доступен')">
+            <div class="plan-label">Популярный</div>
+            <div class="plan-name">Про</div>
+            <div class="plan-price">12 000 ₽ <span>в год</span></div>
+            <ul class="plan-features">
+              <li>До 4 заявок в год</li>
+              <li>Приоритетная поддержка</li>
+              <li>Хранение документов 1 год</li>
+              <li>Напоминания о сроках визы</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── КАРТЫ БАНКОВ ── -->
+      <div class="section" id="section-cards">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Карты иностранных банков</div>
+            <div class="section-sub">Visa и MasterCard для путешествий без ограничений</div>
+          </div>
+          <button class="btn-sm btn-primary-sm" onclick="openCardQuiz()">Подобрать карту →</button>
+        </div>
+
+        <div class="card-grid">
+          <div class="bank-card" onclick="openCardDetail('kg')">
+            <img class="bank-card-img" src="images/kg.png.jpg" alt="Кыргызстан" onerror="this.style.display='none'">
+            <div class="bank-card-body">
+              <div class="bank-card-name">🇰🇬 Кыргызстан</div>
+              <div class="bank-card-desc">Visa Gold / Platinum · Apple Pay</div>
+              <div class="bank-card-price">от 20 000 ₽</div>
+            </div>
+          </div>
+          <div class="bank-card" onclick="openCardDetail('bakai')">
+            <img class="bank-card-img" src="images/bakai.png.jpg" alt="Бакай" onerror="this.style.display='none'">
+            <div class="bank-card-body">
+              <div class="bank-card-name">🏦 Бакай Банк</div>
+              <div class="bank-card-desc">Gold / Platinum / Infinite · без доверенности</div>
+              <div class="bank-card-price">от 25 000 ₽</div>
+            </div>
+          </div>
+          <div class="bank-card" onclick="openCardDetail('ayil')">
+            <img class="bank-card-img" src="images/ayil.png.jpg" alt="Айыл" onerror="this.style.display='none'">
+            <div class="bank-card-body">
+              <div class="bank-card-name">🌾 Айыл Банк</div>
+              <div class="bank-card-desc">Gold / Infinite · быстрое оформление</div>
+              <div class="bank-card-price">от 15 000 ₽</div>
+            </div>
+          </div>
+          <div class="bank-card" onclick="openCardDetail('am')">
+            <img class="bank-card-img" src="images/am.png.jpg" alt="Армения" onerror="this.style.display='none'">
+            <div class="bank-card-body">
+              <div class="bank-card-name">🇦🇲 Армения</div>
+              <div class="bank-card-desc">MasterCard · международные расчёты</div>
+              <div class="bank-card-price">от 30 000 ₽</div>
             </div>
           </div>
         </div>
@@ -654,170 +907,90 @@
       <!-- ── БЕЗОПАСНОСТЬ ── -->
       <div class="section" id="section-security">
         <div class="section-title">Безопасность</div>
-        <div class="section-sub">Настройки входа и защиты аккаунта</div>
+        <div class="section-sub" style="margin-bottom:24px;">Настройки входа и защиты аккаунта</div>
 
         <div class="security-section">
           <div class="security-title">Двухфакторная аутентификация</div>
           <div class="acc-item">
-            <div class="acc-icon" style="background:var(--indigo-light);">📱</div>
-            <div class="acc-info">
-              <p>SMS на +7 (999) ···-45-67</p>
-              <p>Включена</p>
-            </div>
-            <button class="btn-disconnect">Изменить</button>
+            <div class="acc-icon" style="background:var(--indigo-light);font-size:18px;">📱</div>
+            <div class="acc-info"><p>SMS на +7 (999) ···-45-67</p><p>Включена</p></div>
+            <button class="btn-disconnect" onclick="showToast('Настройка 2FA')">Изменить</button>
           </div>
         </div>
 
         <div class="security-section">
           <div class="security-title">Активные сессии</div>
           <div class="acc-item">
-            <div class="acc-icon" style="background:#f0fdf4;">💻</div>
-            <div class="acc-info">
-              <p>Chrome · Москва, Россия</p>
-              <p>Сейчас активна · эта сессия</p>
-            </div>
+            <div class="acc-icon" style="background:#f0fdf4;font-size:18px;">💻</div>
+            <div class="acc-info"><p>Chrome · Москва</p><p>Сейчас активна · эта сессия</p></div>
           </div>
           <div class="acc-item">
-            <div class="acc-icon" style="background:#f9fafb;">📱</div>
-            <div class="acc-info">
-              <p>Safari · iPhone</p>
-              <p>3 дня назад</p>
-            </div>
-            <button class="btn-disconnect">Завершить</button>
+            <div class="acc-icon" style="background:var(--bg);font-size:18px;">📱</div>
+            <div class="acc-info"><p>Safari · iPhone</p><p>3 дня назад</p></div>
+            <button class="btn-disconnect" onclick="showToast('Сессия завершена')">Завершить</button>
           </div>
         </div>
-      </div>
 
-      <!-- ── ПЛАТЕЖИ ── -->
-      <div class="section" id="section-payments">
-        <div class="section-title">Платежи</div>
-        <div class="section-sub">История транзакций</div>
-
-        <div class="payment-item">
-          <div class="pay-icon out">💸</div>
-          <div class="pay-info">
-            <p>Бронирование слота · Италия</p>
-            <p>14 июля 2026 · Заявка №VS-2407-001</p>
+        <div class="security-section">
+          <div class="security-title">Опасная зона</div>
+          <div class="danger-card">
+            <h3>Удалить аккаунт</h3>
+            <p>Все данные, заявки и история переписки будут удалены без возможности восстановления.</p>
+            <button class="btn-danger" onclick="confirmDelete()">Удалить аккаунт</button>
           </div>
-          <div class="pay-amount pay-out">−5 000 ₽</div>
-        </div>
-        <div class="payment-item">
-          <div class="pay-icon in">💰</div>
-          <div class="pay-info">
-            <p>Пополнение баланса</p>
-            <p>10 июля 2026 · Банковская карта</p>
-          </div>
-          <div class="pay-amount pay-in">+10 000 ₽</div>
-        </div>
-        <div class="payment-item">
-          <div class="pay-icon out">💸</div>
-          <div class="pay-info">
-            <p>Бронирование слота · Франция</p>
-            <p>1 марта 2026 · Заявка №VS-2403-018</p>
-          </div>
-          <div class="pay-amount pay-out">−5 000 ₽</div>
-        </div>
-      </div>
-
-      <!-- ── ПОДПИСКА ── -->
-      <div class="section" id="section-subscription">
-        <div class="section-title">Подписка</div>
-        <div class="section-sub">Текущий тарифный план</div>
-
-        <div class="plan-card">
-          <div class="plan-name">Базовый</div>
-          <div class="plan-price">5 000 ₽ <span>за слот</span></div>
-          <ul class="plan-features">
-            <li>Мониторинг консульств 24/7</li>
-            <li>Уведомления по SMS и Telegram</li>
-            <li>Персональный консультант</li>
-            <li>Хранение документов 30 дней</li>
-          </ul>
-        </div>
-
-        <div style="margin-top:16px;">
-          <button class="btn-save" style="background:none;border:2px solid var(--indigo-btn);color:var(--indigo-btn);">Посмотреть другие тарифы</button>
-        </div>
-      </div>
-
-      <!-- ── УВЕДОМЛЕНИЯ ── -->
-      <div class="section" id="section-notifications">
-        <div class="section-title">Уведомления</div>
-        <div class="section-sub">Последние события по вашим заявкам</div>
-
-        <div class="notif-item">
-          <div class="notif-dot"></div>
-          <div class="notif-info">
-            <p>Слот закреплён · Италия</p>
-            <p>Сегодня, 10:32 · 14 июля, 10:30 — ул. Садовая-Кудринская, 3</p>
-          </div>
-        </div>
-        <div class="notif-item">
-          <div class="notif-dot"></div>
-          <div class="notif-info">
-            <p>Документ на проверке · Италия</p>
-            <p>Сегодня, 09:15 · Справка с работы получена, проверяем</p>
-          </div>
-        </div>
-        <div class="notif-item">
-          <div class="notif-dot read"></div>
-          <div class="notif-info">
-            <p>Оплата прошла успешно</p>
-            <p>Вчера, 18:44 · Списано 5 000 ₽ за слот в Италию</p>
-          </div>
-        </div>
-        <div class="notif-item">
-          <div class="notif-dot read"></div>
-          <div class="notif-info">
-            <p>Не забудьте загрузить страховку</p>
-            <p>Вчера, 12:00 · Документ обязателен для подачи</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── ОПАСНАЯ ЗОНА ── -->
-      <div class="section" id="section-danger">
-        <div class="section-title">Опасная зона</div>
-        <div class="section-sub">Необратимые действия с аккаунтом</div>
-
-        <div class="danger-card">
-          <h3>Удалить аккаунт</h3>
-          <p>Все данные, заявки и история переписки будут удалены без возможности восстановления.</p>
-          <button class="btn-danger">Удалить аккаунт</button>
         </div>
       </div>
 
     </main>
   </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-items">
+      <div class="bottom-nav-item active" data-section="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Главная
+      </div>
+      <div class="bottom-nav-item" data-section="applications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M7 4H4a1 1 0 00-1 1v15a1 1 0 001 1h16a1 1 0 001-1V5a1 1 0 00-1-1h-3"/><path d="M9 4a2 2 0 012-2h2a2 2 0 012 2v1H9V4z"/></svg>
+        Заявки
+      </div>
+      <div class="bottom-nav-item" data-section="notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="bottom-nav-badge" id="bottom-notif-badge">2</span>
+        Уведомления
+      </div>
+      <div class="bottom-nav-item" data-section="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Профиль
+      </div>
+    </div>
+  </nav>
+
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
-  // ── TABS ──
-  document.getElementById('tab-login').addEventListener('click', () => {
-    document.getElementById('tab-login').classList.add('active');
-    document.getElementById('tab-reg').classList.remove('active');
-    document.getElementById('login-form').style.display = '';
-    document.getElementById('reg-form').style.display = 'none';
-  });
-  document.getElementById('tab-reg').addEventListener('click', () => {
-    document.getElementById('tab-reg').classList.add('active');
-    document.getElementById('tab-login').classList.remove('active');
-    document.getElementById('reg-form').style.display = '';
-    document.getElementById('login-form').style.display = 'none';
-  });
+// ─── STATE ───
+let currentUser = { name: 'Иванов Иван', initials: 'ИИ' };
 
-  // ── LOGIN LOGIC ──
-  let agreed = false;
+// ─── TABS ───
+document.getElementById('tab-login').addEventListener('click', () => switchAuthTab('login'));
+document.getElementById('tab-reg').addEventListener('click', () => switchAuthTab('reg'));
 
-  document.getElementById('agree-row').addEventListener('click', () => {
-    agreed = !agreed;
-    document.getElementById('agree-box').classList.toggle('checked', agreed);
-  });
+function switchAuthTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-reg').classList.toggle('active', tab === 'reg');
+  document.getElementById('login-form').style.display = tab === 'login' ? '' : 'none';
+  document.getElementById('reg-form').style.display = tab === 'reg' ? '' : 'none';
+}
 
-  // Phone mask
-  document.getElementById('phone-input').addEventListener('input', e => {
-    let v = e.target.value.replace(/\D/g, '');
-    if (v.length > 10) v = v.slice(0, 10);
+// ─── PHONE MASK ───
+function applyPhoneMask(input) {
+  input.addEventListener('input', e => {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 10);
     let out = '';
     if (v.length > 0) out += '(' + v.slice(0, 3);
     if (v.length >= 3) out += ') ' + v.slice(3, 6);
@@ -825,159 +998,263 @@
     if (v.length >= 8) out += '-' + v.slice(8, 10);
     e.target.value = out;
   });
+}
+applyPhoneMask(document.getElementById('phone-input'));
+applyPhoneMask(document.getElementById('reg-phone'));
 
-  document.getElementById('btn-get-code').addEventListener('click', () => {
-    const phone = document.getElementById('phone-input').value;
-    if (phone.replace(/\D/g, '').length < 10) {
-      alert('Введите номер телефона полностью');
-      return;
+// ─── AGREE ───
+let agreed = false, regAgreed = false;
+document.getElementById('agree-row').addEventListener('click', () => {
+  agreed = !agreed;
+  document.getElementById('agree-box').classList.toggle('checked', agreed);
+});
+document.getElementById('reg-agree-row').addEventListener('click', () => {
+  regAgreed = !regAgreed;
+  document.getElementById('reg-agree-box').classList.toggle('checked', regAgreed);
+});
+
+// ─── SMS TIMER ───
+function startSmsTimer(btnId, sec = 60) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = true;
+  const t = setInterval(() => {
+    sec--;
+    btn.textContent = `Повтор ${sec}с`;
+    if (sec <= 0) {
+      clearInterval(t);
+      btn.textContent = 'Отправить снова';
+      btn.disabled = false;
     }
-    // Переход к вводу SMS
-    document.getElementById('phone-display').value = phone;
-    document.getElementById('phone-step').style.display = 'none';
-    document.getElementById('sms-step').classList.add('visible');
-    startResendTimer();
-  });
+  }, 1000);
+}
 
-  // Войти через соцсеть — сразу в кабинет (демо)
-  document.getElementById('btn-telegram').addEventListener('click', () => enterCabinet('ТГ'));
-  document.getElementById('btn-google').addEventListener('click', () => enterCabinet('ГГ'));
+// ─── LOGIN FLOW ───
+document.getElementById('btn-get-code').addEventListener('click', () => {
+  const phone = document.getElementById('phone-input').value.replace(/\D/g, '');
+  if (phone.length < 10) { showToast('Введите номер телефона полностью'); return; }
+  document.getElementById('sms-phone-display').textContent = '+7 ' + document.getElementById('phone-input').value;
+  document.getElementById('phone-step').style.display = 'none';
+  document.getElementById('sms-step').classList.add('visible');
+  startSmsTimer('sms-resend');
+  setTimeout(() => document.getElementById('sms-input').focus(), 100);
+});
 
-  // SMS resend timer
-  let resendTimer = null;
-  function startResendTimer() {
-    let sec = 60;
-    const btn = document.getElementById('sms-resend');
-    btn.disabled = true;
-    btn.style.opacity = '0.5';
-    resendTimer = setInterval(() => {
-      sec--;
-      btn.textContent = `Повтор через ${sec}с`;
-      if (sec <= 0) {
-        clearInterval(resendTimer);
-        btn.textContent = 'Отправить код';
-        btn.disabled = false;
-        btn.style.opacity = '1';
-      }
-    }, 1000);
-  }
+document.getElementById('btn-enter').addEventListener('click', () => {
+  const code = document.getElementById('sms-input').value;
+  if (code.length < 4) { showToast('Введите код из SMS'); return; }
+  enterCabinet('ИИ', 'Иван Иванов');
+});
 
-  document.getElementById('btn-enter').addEventListener('click', () => {
-    const code = document.getElementById('sms-input').value;
-    if (code.length < 4) { alert('Введите код из SMS'); return; }
-    enterCabinet('ИИ');
-  });
+document.getElementById('sms-input').addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+  if (e.target.value.length === 6) enterCabinet('ИИ', 'Иван Иванов');
+});
 
-  // Ввод кода — авто-вход при 6 цифрах
-  document.getElementById('sms-input').addEventListener('input', e => {
-    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
-    if (e.target.value.length === 6) enterCabinet('ИИ');
-  });
+document.getElementById('back-to-phone').addEventListener('click', () => {
+  document.getElementById('sms-step').classList.remove('visible');
+  document.getElementById('phone-step').style.display = '';
+});
 
-  document.getElementById('back-to-phone').addEventListener('click', () => {
-    clearInterval(resendTimer);
-    document.getElementById('sms-step').classList.remove('visible');
-    document.getElementById('phone-step').style.display = '';
-  });
+document.getElementById('btn-telegram').addEventListener('click', () => enterCabinet('ТГ', 'Telegram User'));
+document.getElementById('btn-google').addEventListener('click', () => enterCabinet('ГГ', 'Google User'));
 
-  function enterCabinet(initials) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('cabinet-screen').classList.add('visible');
-    document.getElementById('cab-avatar').textContent = initials;
-    document.getElementById('profile-avatar-big').textContent = initials;
-  }
+// ─── REGISTRATION FLOW ───
+document.getElementById('btn-reg-next').addEventListener('click', () => {
+  const name = document.getElementById('reg-name').value.trim();
+  const phone = document.getElementById('reg-phone').value.replace(/\D/g, '');
+  if (!name) { showToast('Введите имя и фамилию'); return; }
+  if (phone.length < 10) { showToast('Введите номер телефона полностью'); return; }
+  if (!regAgreed) { showToast('Примите условия использования'); return; }
+  document.getElementById('reg-sms-phone-display').textContent = '+7 ' + document.getElementById('reg-phone').value;
+  document.getElementById('reg-main-step').style.display = 'none';
+  document.getElementById('reg-sms-step').style.display = '';
+  startSmsTimer('reg-sms-resend');
+  setTimeout(() => document.getElementById('reg-sms-input').focus(), 100);
+});
 
-  // ── REGISTRATION LOGIC ──
-  let regAgreed = false;
-  document.getElementById('reg-agree-row').addEventListener('click', () => {
-    regAgreed = !regAgreed;
-    document.getElementById('reg-agree-box').classList.toggle('checked', regAgreed);
-  });
+document.getElementById('btn-reg-confirm').addEventListener('click', () => {
+  const code = document.getElementById('reg-sms-input').value;
+  if (code.length < 4) { showToast('Введите код из SMS'); return; }
+  const name = document.getElementById('reg-name').value.trim();
+  const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'НП';
+  enterCabinet(initials, name);
+});
 
-  document.getElementById('reg-phone').addEventListener('input', e => {
-    let v = e.target.value.replace(/\D/g, '');
-    if (v.length > 10) v = v.slice(0, 10);
-    let out = '';
-    if (v.length > 0) out += '(' + v.slice(0, 3);
-    if (v.length >= 3) out += ') ' + v.slice(3, 6);
-    if (v.length >= 6) out += '-' + v.slice(6, 8);
-    if (v.length >= 8) out += '-' + v.slice(8, 10);
-    e.target.value = out;
-  });
-
-  document.getElementById('btn-reg-submit').addEventListener('click', () => {
+document.getElementById('reg-sms-input').addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+  if (e.target.value.length === 6) {
     const name = document.getElementById('reg-name').value.trim();
-    const phone = document.getElementById('reg-phone').value.replace(/\D/g, '');
-    if (!name) { alert('Введите имя'); return; }
-    if (phone.length < 10) { alert('Введите номер телефона полностью'); return; }
-    if (!regAgreed) { alert('Подтвердите согласие с офертой'); return; }
-    // Показываем поле SMS
-    document.getElementById('reg-sms-step').style.display = '';
-    document.getElementById('btn-reg-submit').textContent = 'Подтвердить код';
-    document.getElementById('btn-reg-submit').onclick = () => {
-      const code = document.getElementById('reg-sms-input').value;
-      if (code.length < 4) { alert('Введите код из SMS'); return; }
-      const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-      enterCabinet(initials);
-    };
-    startRegResendTimer();
-  });
-
-  function startRegResendTimer() {
-    let sec = 60;
-    const btn = document.getElementById('reg-sms-resend');
-    btn.disabled = true; btn.style.opacity = '0.5';
-    const t = setInterval(() => {
-      sec--;
-      btn.textContent = `Повтор через ${sec}с`;
-      if (sec <= 0) {
-        clearInterval(t);
-        btn.textContent = 'Отправить код';
-        btn.disabled = false; btn.style.opacity = '1';
-      }
-    }, 1000);
+    const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'НП';
+    enterCabinet(initials, name);
   }
+});
 
-  document.getElementById('reg-sms-input').addEventListener('input', e => {
-    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
-    if (e.target.value.length === 6) {
-      const name = document.getElementById('reg-name').value.trim();
-      const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'НП';
-      enterCabinet(initials);
+document.getElementById('reg-back').addEventListener('click', () => {
+  document.getElementById('reg-sms-step').style.display = 'none';
+  document.getElementById('reg-main-step').style.display = '';
+});
+
+document.getElementById('btn-reg-telegram').addEventListener('click', () => enterCabinet('ТГ', 'Telegram User'));
+document.getElementById('btn-reg-google').addEventListener('click', () => enterCabinet('ГГ', 'Google User'));
+
+// ─── ENTER CABINET ───
+function enterCabinet(initials, name) {
+  currentUser = { name, initials };
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('cabinet-screen').classList.add('visible');
+  document.getElementById('cab-avatar').textContent = initials;
+  document.getElementById('profile-avatar-big').textContent = initials;
+  // Заполнить имя в дашборде
+  const firstName = (name || '').split(' ')[0] || name;
+  document.getElementById('dash-name').textContent = name || 'Пользователь';
+  // Заполнить профиль
+  const parts = (name || '').split(' ');
+  if (parts[0]) document.getElementById('profile-first-name').value = parts[0];
+  if (parts[1]) document.getElementById('profile-last-name').value = parts[1] || '';
+}
+
+// ─── NAVIGATION ───
+function navTo(section) {
+  document.querySelectorAll('.nav-item[data-section]').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-item[data-section]').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+  const target = document.getElementById('section-' + section);
+  if (target) target.classList.add('active');
+
+  document.querySelectorAll('[data-section="' + section + '"]').forEach(n => n.classList.add('active'));
+
+  // Скролл наверх
+  document.querySelector('.cab-main').scrollTop = 0;
+}
+
+document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+  item.addEventListener('click', () => navTo(item.dataset.section));
+});
+document.querySelectorAll('.bottom-nav-item[data-section]').forEach(item => {
+  item.addEventListener('click', () => navTo(item.dataset.section));
+});
+
+document.getElementById('nav-logout').addEventListener('click', () => {
+  if (confirm('Выйти из аккаунта?')) window.location.href = 'landing.html';
+});
+
+// ─── NOTIFICATIONS ───
+let unreadCount = 2;
+
+function markRead(id) {
+  const dot = document.getElementById('notif-dot-' + id.replace('notif-', ''));
+  if (dot && !dot.classList.contains('read')) {
+    dot.classList.add('read');
+    unreadCount = Math.max(0, unreadCount - 1);
+    updateNotifBadge();
+  }
+}
+
+function markAllRead() {
+  document.querySelectorAll('.notif-dot').forEach(d => d.classList.add('read'));
+  unreadCount = 0;
+  updateNotifBadge();
+  showToast('Все уведомления прочитаны');
+}
+
+function updateNotifBadge() {
+  const badge = document.getElementById('notif-badge');
+  const bottomBadge = document.getElementById('bottom-notif-badge');
+  const headerBadge = document.getElementById('header-notif-badge');
+  if (unreadCount > 0) {
+    badge.textContent = unreadCount;
+    badge.style.display = '';
+    bottomBadge.textContent = unreadCount;
+    bottomBadge.style.display = '';
+    headerBadge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+    bottomBadge.style.display = 'none';
+    headerBadge.style.display = 'none';
+  }
+}
+
+// ─── PROFILE SAVE ───
+function saveProfile() {
+  const first = document.getElementById('profile-first-name').value.trim();
+  const last = document.getElementById('profile-last-name').value.trim();
+  const fullName = [first, last].filter(Boolean).join(' ');
+  if (fullName) {
+    const initials = [first[0], last[0]].filter(Boolean).join('').toUpperCase();
+    document.getElementById('cab-avatar').textContent = initials || currentUser.initials;
+    document.getElementById('profile-avatar-big').textContent = initials || currentUser.initials;
+    document.getElementById('dash-name').textContent = fullName;
+    currentUser = { name: fullName, initials };
+  }
+  showToast('Профиль сохранён');
+}
+
+// ─── TOAST ───
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── DOC UPLOAD ───
+function uploadDoc(btn, name) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.pdf,.jpg,.jpeg,.png';
+  input.onchange = () => {
+    if (input.files[0]) {
+      const item = btn.closest('.doc-item');
+      item.querySelector('.doc-status').textContent = '⏳ Загружается…';
+      item.querySelector('.doc-status').className = 'doc-status doc-wait';
+      btn.style.display = 'none';
+      setTimeout(() => {
+        item.querySelector('.doc-status').textContent = '✓ Получен';
+        item.querySelector('.doc-status').className = 'doc-status doc-ok';
+        showToast(name + ' загружен');
+      }, 1500);
     }
-  });
+  };
+  input.click();
+}
 
-  document.getElementById('btn-reg-telegram').addEventListener('click', () => enterCabinet('ТГ'));
-  document.getElementById('btn-reg-google').addEventListener('click', () => enterCabinet('ГГ'));
+// ─── CHAT ───
+function openChat() {
+  window.open('prototype.html?mode=slot', '_blank');
+}
 
-  // ── CABINET NAVIGATION ──
-  document.querySelectorAll('.nav-item[data-section]').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      item.classList.add('active');
-      document.getElementById('section-' + item.dataset.section).classList.add('active');
-    });
-  });
+// ─── CARD QUIZ ───
+function openCardQuiz() {
+  window.open('card-quiz.html', '_blank');
+}
 
-  // Danger zone nav
-  document.querySelector('.nav-item.danger[data-section]') || (() => {
-    const dangerItem = document.createElement('div');
-  })();
+// ─── CARD DETAIL ───
+function openCardDetail(bank) {
+  const names = { kg: 'Кыргызстан', bakai: 'Бакай Банк', ayil: 'Айыл Банк', am: 'Армения' };
+  showToast('Открываем подробности: ' + (names[bank] || bank));
+}
 
-  // Выйти → на главную
-  document.getElementById('nav-logout').addEventListener('click', () => {
-    if (confirm('Выйти из аккаунта?')) {
-      window.location.href = 'landing.html';
-    }
-  });
+// ─── DOWNLOAD QUESTIONNAIRE ───
+function downloadQuestionnaire() {
+  const a = document.createElement('a');
+  a.href = 'docs/oprosnik-shengen.docx';
+  a.download = 'Опросник-Шенген-VisaSlot.docx';
+  a.click();
+}
 
-  // Опасная зона — отдельный nav
-  document.querySelectorAll('.nav-item').forEach(item => {
-    if (item.classList.contains('danger') && !item.dataset.section) {
-      item.dataset.section = 'danger';
-    }
-  });
+// ─── DELETE ACCOUNT ───
+function confirmDelete() {
+  if (confirm('Вы уверены? Все данные будут удалены без возможности восстановления.')) {
+    showToast('Аккаунт удалён');
+    setTimeout(() => window.location.href = 'landing.html', 2000);
+  }
+}
+
+// Init badges
+updateNotifBadge();
 </script>
 </body>
 </html>
