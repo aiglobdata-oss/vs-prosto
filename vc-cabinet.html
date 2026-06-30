@@ -217,7 +217,7 @@
       padding: 4px 2px; transition: color .15s; position: relative;
     }
     .mob-nav-item.active { color: var(--indigo); }
-    .mob-nav-item svg { width: 22px; height: 22px; }
+    .mob-nav-item svg { width: 26px; height: 26px; }
     .mob-nav-badge {
       position: absolute; top: 2px; right: calc(50% - 18px);
       background: #ef4444; color: #fff; font-size: 9px; font-weight: 700;
@@ -564,8 +564,16 @@
 
     <!-- ── НАСТРОЙКИ ── -->
     <div class="section" id="section-settings">
-      <div class="section-title" style="margin-bottom:24px;">Настройки</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;">
+        <div class="section-title">Настройки</div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="showSettingsTab('center')" id="stab-center" class="filter-btn active" style="font-size:13px;">Для центра</button>
+          <button onclick="showSettingsTab('managers')" id="stab-managers" class="filter-btn" style="font-size:13px;">Для менеджеров</button>
+        </div>
+      </div>
 
+      <!-- Вкладка: Для центра -->
+      <div id="settings-tab-center">
       <div class="settings-section">
         <div class="settings-title">Информация о центре</div>
 
