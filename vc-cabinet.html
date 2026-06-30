@@ -346,78 +346,6 @@
         <div class="slot-card" data-slot-id="s7"><div class="slot-date">Чт, 10 июля</div><div class="slot-time">16:00</div><div class="slot-status slot-free" id="ss7">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s7','Чт, 10 июля · 16:00')">Назначить клиента</button></div>
         <div class="slot-card" data-slot-id="s8"><div class="slot-date">Пт, 11 июля</div><div class="slot-time">09:30</div><div class="slot-status slot-free" id="ss8">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s8','Пт, 11 июля · 09:30')">Назначить клиента</button></div>
       </div>
-
-    <!-- Модал: Создать заявку -->
-    <div class="create-modal-overlay" id="create-modal-overlay" onclick="if(event.target===this)closeCreateModal()">
-      <div class="create-modal" style="max-width:560px;max-height:90vh;overflow-y:auto;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-          <h3 style="font-size:18px;font-weight:800;margin:0;">Новая заявка</h3>
-          <button onclick="closeCreateModal()" style="border:none;background:none;font-size:22px;cursor:pointer;color:#6b7280;line-height:1;">×</button>
-        </div>
-
-        <!-- Клиент -->
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin-bottom:10px;">Клиент</div>
-        <div class="form-row">
-          <div><label>Имя *</label><input id="cm-first" placeholder="Иван" autocapitalize="words"></div>
-          <div><label>Фамилия *</label><input id="cm-last" placeholder="Иванов" autocapitalize="words"></div>
-        </div>
-        <div class="form-row">
-          <div><label>Телефон *</label><input id="cm-phone" placeholder="+7 (___) ___-__-__" inputmode="tel"></div>
-          <div><label>Источник</label><select id="cm-source"><option>С улицы / офис</option><option>Рекомендация</option><option>Соцсети</option><option>Сайт</option><option>Другое</option></select></div>
-        </div>
-
-        <!-- Виза -->
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Виза</div>
-        <div class="form-row">
-          <div><label>Страна</label><select id="cm-country"><option value="">— выбрать —</option><option>🇫🇷 Франция</option><option>🇮🇹 Италия</option><option>🇪🇸 Испания</option><option>🇧🇬 Болгария</option><option>🇩🇪 Германия</option><option>🇳🇱 Нидерланды</option><option>🇨🇿 Чехия</option><option>🇬🇷 Греция</option><option>🇦🇹 Австрия</option><option>Другая</option></select></div>
-          <div><label>Тип визы</label><select id="cm-visa"><option value="">— выбрать —</option><option>Шенген, туризм</option><option>Шенген, бизнес</option><option>Шенген, учёба</option><option>Шенген, лечение</option><option>Национальная виза</option><option>Транзитная</option></select></div>
-        </div>
-        <div class="form-row">
-          <div><label>Дата заявки</label><input id="cm-date" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
-          <div><label>Статус</label><select id="cm-status"><option value="new">Новая</option><option value="active">В работе</option><option value="done">Завершена</option></select></div>
-        </div>
-
-        <!-- Слот -->
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Слот в консульство</div>
-        <div class="form-row">
-          <div>
-            <label>Есть слот?</label>
-            <select id="cm-has-slot" onchange="toggleSlotField()">
-              <option value="no">Нет / ищем</option>
-              <option value="yes">Да, забронирован</option>
-            </select>
-          </div>
-          <div id="cm-slot-date-wrap">
-            <label>Дата слота</label>
-            <input id="cm-slot-date" placeholder="14 июля, 10:30">
-          </div>
-        </div>
-
-        <!-- Специалист -->
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Назначение</div>
-        <div class="form-row">
-          <div><label>Ответственный специалист</label><select id="cm-spec"><option value="">— не назначен —</option></select></div>
-          <div><label>Примечание</label><input id="cm-note" placeholder="Любая доп. информация…"></div>
-        </div>
-
-        <div class="create-modal-footer" style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;">
-          <button onclick="closeCreateModal()" style="background:#f3f4f6;border:none;border-radius:10px;padding:11px 20px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:600;">Отмена</button>
-          <button onclick="submitCreateModal()" style="background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Создать заявку</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Модал: Назначить клиента на слот -->
-    <div class="slot-assign-overlay" id="slot-assign-overlay" onclick="if(event.target===this)closeSlotAssign()">
-      <div class="slot-assign-box">
-        <h3>Назначить клиента</h3>
-        <div class="slot-info-line" id="slot-assign-info">Слот: —</div>
-        <div id="slot-clients-list" style="max-height:320px;overflow-y:auto;"></div>
-        <div style="margin-top:16px;text-align:right;">
-          <button onclick="closeSlotAssign()" style="background:#f3f4f6;border:none;border-radius:10px;padding:9px 20px;font-size:14px;cursor:pointer;font-family:inherit;">Закрыть</button>
-        </div>
-      </div>
-    </div>
     </div>
 
     <!-- ── КЛИЕНТЫ ── -->
@@ -1637,5 +1565,62 @@
   `;
   document.head.appendChild(style);
 </script>
+
+  <!-- Модал: Создать заявку (вне секций — position:fixed работает корректно) -->
+  <div class="create-modal-overlay" id="create-modal-overlay" onclick="if(event.target===this)closeCreateModal()">
+    <div class="create-modal" style="max-width:560px;max-height:90vh;overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <h3 style="font-size:18px;font-weight:800;margin:0;">Новая заявка</h3>
+        <button onclick="closeCreateModal()" style="border:none;background:none;font-size:22px;cursor:pointer;color:#6b7280;line-height:1;">×</button>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin-bottom:10px;">Клиент</div>
+      <div class="form-row">
+        <div><label>Имя *</label><input id="cm-first" placeholder="Иван" autocapitalize="words"></div>
+        <div><label>Фамилия *</label><input id="cm-last" placeholder="Иванов" autocapitalize="words"></div>
+      </div>
+      <div class="form-row">
+        <div><label>Телефон *</label><input id="cm-phone" placeholder="+7 (___) ___-__-__" inputmode="tel"></div>
+        <div><label>Источник</label><select id="cm-source"><option>С улицы / офис</option><option>Рекомендация</option><option>Соцсети</option><option>Сайт</option><option>Другое</option></select></div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Виза</div>
+      <div class="form-row">
+        <div><label>Страна</label><select id="cm-country"><option value="">— выбрать —</option><option>🇫🇷 Франция</option><option>🇮🇹 Италия</option><option>🇪🇸 Испания</option><option>🇧🇬 Болгария</option><option>🇩🇪 Германия</option><option>🇳🇱 Нидерланды</option><option>🇨🇿 Чехия</option><option>🇬🇷 Греция</option><option>🇦🇹 Австрия</option><option>Другая</option></select></div>
+        <div><label>Тип визы</label><select id="cm-visa"><option value="">— выбрать —</option><option>Шенген, туризм</option><option>Шенген, бизнес</option><option>Шенген, учёба</option><option>Шенген, лечение</option><option>Национальная виза</option><option>Транзитная</option></select></div>
+      </div>
+      <div class="form-row">
+        <div><label>Дата заявки</label><input id="cm-date" type="date"></div>
+        <div><label>Статус</label><select id="cm-status"><option value="new">Новая</option><option value="active">В работе</option><option value="done">Завершена</option></select></div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Слот в консульство</div>
+      <div class="form-row">
+        <div>
+          <label>Есть слот?</label>
+          <select id="cm-has-slot" onchange="toggleSlotField()">
+            <option value="no">Нет / ищем</option>
+            <option value="yes">Да, забронирован</option>
+          </select>
+        </div>
+        <div id="cm-slot-date-wrap" style="opacity:0.4;">
+          <label>Дата слота</label>
+          <input id="cm-slot-date" placeholder="14 июля, 10:30" disabled>
+        </div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Назначение</div>
+      <div class="form-row">
+        <div><label>Ответственный специалист</label><select id="cm-spec"><option value="">— не назначен —</option></select></div>
+        <div><label>Примечание</label><input id="cm-note" placeholder="Любая доп. информация…"></div>
+      </div>
+
+      <div class="create-modal-footer" style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;">
+        <button onclick="closeCreateModal()" style="background:#f3f4f6;border:none;border-radius:10px;padding:11px 20px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:600;">Отмена</button>
+        <button onclick="submitCreateModal()" style="background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Создать заявку</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
