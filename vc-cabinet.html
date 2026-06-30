@@ -261,10 +261,10 @@
       </div>
 
       <div class="filter-bar">
-        <button class="filter-btn active" data-filter="all">Все (12)</button>
-        <button class="filter-btn" data-filter="new">Новые (3)</button>
-        <button class="filter-btn" data-filter="active">В работе (6)</button>
-        <button class="filter-btn" data-filter="done">Завершены (3)</button>
+        <button class="filter-btn active" data-filter="all" id="fb-all">Все (6)</button>
+        <button class="filter-btn" data-filter="new" id="fb-new">Новые (3)</button>
+        <button class="filter-btn" data-filter="active" id="fb-active">В работе (2)</button>
+        <button class="filter-btn" data-filter="done" id="fb-done">Завершены (1)</button>
       </div>
 
       <table class="app-table">
@@ -349,24 +349,60 @@
 
     <!-- Модал: Создать заявку -->
     <div class="create-modal-overlay" id="create-modal-overlay" onclick="if(event.target===this)closeCreateModal()">
-      <div class="create-modal">
-        <h3>Новая заявка</h3>
+      <div class="create-modal" style="max-width:560px;max-height:90vh;overflow-y:auto;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <h3 style="font-size:18px;font-weight:800;margin:0;">Новая заявка</h3>
+          <button onclick="closeCreateModal()" style="border:none;background:none;font-size:22px;cursor:pointer;color:#6b7280;line-height:1;">×</button>
+        </div>
+
+        <!-- Клиент -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin-bottom:10px;">Клиент</div>
         <div class="form-row">
-          <div><label>Имя клиента *</label><input id="cm-name" placeholder="Иван Иванов"></div>
-          <div><label>Телефон *</label><input id="cm-phone" placeholder="+7 (___) ___-__-__"></div>
+          <div><label>Имя *</label><input id="cm-first" placeholder="Иван" autocapitalize="words"></div>
+          <div><label>Фамилия *</label><input id="cm-last" placeholder="Иванов" autocapitalize="words"></div>
         </div>
         <div class="form-row">
-          <div><label>Страна</label><select id="cm-country"><option value="">— выбрать —</option><option>Франция</option><option>Италия</option><option>Испания</option><option>Болгария</option><option>Германия</option><option>Нидерланды</option><option>Чехия</option><option>Другая</option></select></div>
-          <div><label>Тип визы</label><select id="cm-visa"><option value="">— выбрать —</option><option>Шенген, туризм</option><option>Шенген, бизнес</option><option>Шенген, учёба</option><option>Национальная виза</option><option>Транзитная</option></select></div>
-        </div>
-        <div class="form-row">
+          <div><label>Телефон *</label><input id="cm-phone" placeholder="+7 (___) ___-__-__" inputmode="tel"></div>
           <div><label>Источник</label><select id="cm-source"><option>С улицы / офис</option><option>Рекомендация</option><option>Соцсети</option><option>Сайт</option><option>Другое</option></select></div>
-          <div><label>Ответственный</label><select id="cm-spec"><option value="">— не назначен —</option></select></div>
         </div>
-        <div class="form-row full"><label>Примечание</label><textarea id="cm-note" placeholder="Любая дополнительная информация…"></textarea></div>
-        <div class="create-modal-footer">
-          <button onclick="closeCreateModal()" style="background:#f3f4f6;border:none;border-radius:10px;padding:10px 20px;font-size:14px;cursor:pointer;font-family:inherit;">Отмена</button>
-          <button onclick="submitCreateModal()" style="background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Создать заявку</button>
+
+        <!-- Виза -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Виза</div>
+        <div class="form-row">
+          <div><label>Страна</label><select id="cm-country"><option value="">— выбрать —</option><option>🇫🇷 Франция</option><option>🇮🇹 Италия</option><option>🇪🇸 Испания</option><option>🇧🇬 Болгария</option><option>🇩🇪 Германия</option><option>🇳🇱 Нидерланды</option><option>🇨🇿 Чехия</option><option>🇬🇷 Греция</option><option>🇦🇹 Австрия</option><option>Другая</option></select></div>
+          <div><label>Тип визы</label><select id="cm-visa"><option value="">— выбрать —</option><option>Шенген, туризм</option><option>Шенген, бизнес</option><option>Шенген, учёба</option><option>Шенген, лечение</option><option>Национальная виза</option><option>Транзитная</option></select></div>
+        </div>
+        <div class="form-row">
+          <div><label>Дата заявки</label><input id="cm-date" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+          <div><label>Статус</label><select id="cm-status"><option value="new">Новая</option><option value="active">В работе</option><option value="done">Завершена</option></select></div>
+        </div>
+
+        <!-- Слот -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Слот в консульство</div>
+        <div class="form-row">
+          <div>
+            <label>Есть слот?</label>
+            <select id="cm-has-slot" onchange="toggleSlotField()">
+              <option value="no">Нет / ищем</option>
+              <option value="yes">Да, забронирован</option>
+            </select>
+          </div>
+          <div id="cm-slot-date-wrap">
+            <label>Дата слота</label>
+            <input id="cm-slot-date" placeholder="14 июля, 10:30">
+          </div>
+        </div>
+
+        <!-- Специалист -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#9ca3af;margin:16px 0 10px;">Назначение</div>
+        <div class="form-row">
+          <div><label>Ответственный специалист</label><select id="cm-spec"><option value="">— не назначен —</option></select></div>
+          <div><label>Примечание</label><input id="cm-note" placeholder="Любая доп. информация…"></div>
+        </div>
+
+        <div class="create-modal-footer" style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;">
+          <button onclick="closeCreateModal()" style="background:#f3f4f6;border:none;border-radius:10px;padding:11px 20px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:600;">Отмена</button>
+          <button onclick="submitCreateModal()" style="background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Создать заявку</button>
         </div>
       </div>
     </div>
@@ -1265,13 +1301,11 @@
       </td>
     `;
     tbody.prepend(tr);
-    // Обновляем счётчик в навигации
-    const badge = document.querySelector('.nav-item[data-section="applications"] .nav-badge');
-    if (badge) badge.textContent = parseInt(badge.textContent || 0) + 1;
+    updateFilterCounts();
     // Обновляем счётчик в хедере
     const headerBadge = document.querySelector('.cab-stats-pill');
     if (headerBadge) {
-      const cur = parseInt(headerBadge.textContent) || 3;
+      const cur = parseInt(headerBadge.textContent) || 0;
       headerBadge.innerHTML = `⚡ ${cur + 1} новых заявки`;
     }
   }
@@ -1335,6 +1369,7 @@
 
   // Заполнить при загрузке
   fillSpecSelects();
+  updateFilterCounts();
 
   // ── ЛОГОТИП ВИЗОВОГО ЦЕНТРА ──
   (function initVcLogo() {
@@ -1397,47 +1432,118 @@
   }
 
   // ── СОЗДАТЬ ЗАЯВКУ ──
+  function toggleSlotField() {
+    const has = document.getElementById('cm-has-slot').value === 'yes';
+    const wrap = document.getElementById('cm-slot-date-wrap');
+    wrap.style.opacity = has ? '1' : '0.4';
+    document.getElementById('cm-slot-date').disabled = !has;
+  }
+
+  function updateFilterCounts() {
+    const rows = document.querySelectorAll('.app-table tbody tr');
+    let all = 0, nw = 0, ac = 0, dn = 0;
+    rows.forEach(tr => {
+      const s = tr.dataset.status;
+      if (!s) return;
+      all++;
+      if (s === 'new') nw++;
+      else if (s === 'active') ac++;
+      else if (s === 'done') dn++;
+    });
+    document.getElementById('fb-all').textContent    = `Все (${all})`;
+    document.getElementById('fb-new').textContent    = `Новые (${nw})`;
+    document.getElementById('fb-active').textContent = `В работе (${ac})`;
+    document.getElementById('fb-done').textContent   = `Завершены (${dn})`;
+    const navBadge = document.querySelector('.nav-item[data-section="applications"] .nav-badge');
+    if (navBadge) navBadge.textContent = nw;
+  }
+
   function openCreateModal() {
     document.getElementById('cm-spec').innerHTML = buildSpecOptions('');
+    // Установить сегодняшнюю дату
+    document.getElementById('cm-date').value = new Date().toISOString().split('T')[0];
+    toggleSlotField();
     document.getElementById('create-modal-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('cm-first').focus(), 100);
   }
+
   function closeCreateModal() {
     document.getElementById('create-modal-overlay').classList.remove('open');
   }
+
   function submitCreateModal() {
-    const name = document.getElementById('cm-name').value.trim();
+    const first = document.getElementById('cm-first').value.trim();
+    const last  = document.getElementById('cm-last').value.trim();
     const phone = document.getElementById('cm-phone').value.trim();
-    if (!name) { document.getElementById('cm-name').focus(); return; }
+    if (!first) { document.getElementById('cm-first').focus(); return; }
+    if (!last)  { document.getElementById('cm-last').focus(); return; }
+    const name    = first + ' ' + last;
     const country = document.getElementById('cm-country').value;
-    const visa = document.getElementById('cm-visa').value;
-    const source = document.getElementById('cm-source').value;
-    const spec = document.getElementById('cm-spec').value;
-    const note = document.getElementById('cm-note').value.trim();
-    const time = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
-    const initials = name.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const visa    = document.getElementById('cm-visa').value;
+    const source  = document.getElementById('cm-source').value;
+    const spec    = document.getElementById('cm-spec').value;
+    const note    = document.getElementById('cm-note').value.trim();
+    const status  = document.getElementById('cm-status').value;
+    const hasSlot = document.getElementById('cm-has-slot').value === 'yes';
+    const slotDate = hasSlot ? (document.getElementById('cm-slot-date').value || '—') : '—';
+    const dateVal = document.getElementById('cm-date').value;
+    const dateStr = dateVal ? new Date(dateVal).toLocaleDateString('ru-RU', {day:'numeric',month:'long',year:'numeric'}) : new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
+
+    const initials = [first[0], last[0]].join('').toUpperCase();
     const tbody = document.querySelector('.app-table tbody');
     const reqId = 'manual_' + Date.now();
-    requestAnswers[reqId] = { client: name, country, purpose: visa, source, note, time, qa: [] };
+    requestAnswers[reqId] = { client: name, country, purpose: visa, source, note, qa: [] };
+
+    const statusLabel = status === 'new' ? '<span class="badge badge-new">Новая</span>'
+                      : status === 'active' ? '<span class="badge badge-active">В работе</span>'
+                      : '<span class="badge badge-done">Завершена</span>';
+
+    const actionBtns = status === 'new'
+      ? `<button onclick="takeRequest('${reqId}')" class="btn-xs btn-xs-primary">Взять</button>
+         <button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${name}')">Чат</button>
+         <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline">Анкета</button>`
+      : status === 'active'
+      ? `<button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${name}')">Чат</button>
+         <button class="btn-xs btn-xs-outline">Документы</button>
+         <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline">Анкета</button>`
+      : `<button class="btn-xs btn-xs-outline">История</button>`;
+
+    const specCell = status === 'done'
+      ? `<span style="font-size:13px;color:var(--muted);">${spec || '—'}</span>`
+      : `<select class="spec-select" onchange="assignSpec(this)">${buildSpecOptions(spec)}</select>`;
+
     const tr = document.createElement('tr');
-    tr.dataset.status = 'new';
+    tr.dataset.status = status;
+    tr.style.animation = 'fadeIn .3s ease';
     tr.innerHTML = `
-      <td><div class="client-cell"><div class="client-ava" style="background:#6d28d9;color:#fff;">${initials}</div>
-        <div><div style="font-weight:600;">${name}</div><div style="font-size:12px;color:var(--muted);">${phone || '—'}</div></div></div></td>
-      <td>${country || '—'}</td>
-      <td>${visa || source}</td>
-      <td>${time}</td>
-      <td>—</td>
-      <td><select class="spec-select" onchange="assignSpec(this)">${buildSpecOptions(spec)}</select></td>
-      <td><span class="badge badge-new">Новая</span></td>
-      <td><div class="action-btns" id="actions-${reqId}">
-        <button onclick="takeRequest('${reqId}')" class="btn-xs btn-xs-primary">Взять</button>
+      <td><div class="client-cell">
+        <div class="client-ava" style="background:#6d28d9;color:#fff;">${initials}</div>
+        <div>
+          <div style="font-weight:600;">${name}</div>
+          <div style="font-size:12px;color:var(--muted);">${phone || source}</div>
+        </div>
       </div></td>
+      <td>${country || '—'}</td>
+      <td>${visa || '—'}</td>
+      <td>${dateStr}</td>
+      <td>${slotDate}</td>
+      <td>${specCell}</td>
+      <td>${statusLabel}</td>
+      <td><div class="action-btns" id="actions-${reqId}">${actionBtns}</div></td>
     `;
     tbody.prepend(tr);
     closeCreateModal();
+
     // Очистить форму
-    ['cm-name','cm-phone','cm-note'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-    ['cm-country','cm-visa','cm-source'].forEach(id => { const el=document.getElementById(id); if(el) el.selectedIndex=0; });
+    ['cm-first','cm-last','cm-phone','cm-note','cm-slot-date'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value='';
+    });
+    ['cm-country','cm-visa','cm-source','cm-status','cm-has-slot'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.selectedIndex=0;
+    });
+
+    updateFilterCounts();
+    fillSpecSelects();
     playTing();
   }
 
