@@ -2583,7 +2583,13 @@
   function loadManagers() {
     const saved = localStorage.getItem('vs_managers');
     if (saved) {
-      try { managers = JSON.parse(saved); } catch(e) {}
+      try {
+        const loaded = JSON.parse(saved);
+        // Миграция: подставить дефолтные коды если поле отсутствует
+        const defaultCodes = { 1: '1234', 2: '5678' };
+        loaded.forEach(m => { if (!m.code && defaultCodes[m.id]) m.code = defaultCodes[m.id]; });
+        managers = loaded;
+      } catch(e) {}
     }
   }
   loadManagers();
