@@ -2162,14 +2162,16 @@
       if (m.name === curMgr) o.selected = true;
       mgrSel.appendChild(o);
     });
-    // Страны из таблицы
-    const countries = new Set();
-    document.querySelectorAll('.app-table tbody tr').forEach(tr => {
-      const c = tr.cells[1] ? tr.cells[1].textContent.trim() : '';
-      if (c && c !== '—') countries.add(c);
-    });
+    // Полный список стран (как в форме создания заявки)
+    const countries = [
+      '🇦🇹 Австрия','🇦🇺 Австралия','🇧🇪 Бельгия','🇧🇬 Болгария','🇬🇧 Великобритания','🇭🇺 Венгрия',
+      '🇩🇪 Германия','🇬🇷 Греция','🇮🇸 Исландия','🇪🇸 Испания','🇮🇹 Италия','🇨🇦 Канада','🇨🇳 Китай',
+      '🇱🇻 Латвия','🇱🇹 Литва','🇱🇮 Лихтенштейн','🇲🇹 Мальта','🇳🇱 Нидерланды','🇳🇿 Новая Зеландия',
+      '🇳🇴 Норвегия','🇵🇱 Польша','🇵🇹 Португалия','🇷🇴 Румыния','🇸🇰 Словакия','🇸🇮 Словения','🇺🇸 США',
+      '🇫🇮 Финляндия','🇫🇷 Франция','🇨🇿 Чехия','🇨🇭 Швейцария','🇪🇪 Эстония','🇯🇵 Япония','Другая',
+    ];
     cntrSel.innerHTML = '<option value="">Все страны</option>';
-    [...countries].sort().forEach(c => {
+    countries.forEach(c => {
       const o = document.createElement('option');
       o.value = c; o.textContent = c;
       if (c === curCntr) o.selected = true;
