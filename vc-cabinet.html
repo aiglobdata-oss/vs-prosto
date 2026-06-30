@@ -203,8 +203,9 @@
   @media (max-width: 640px) {
     .cab-sidebar { display: none; }
     .cab-main { padding: 12px 12px 80px; }
-    .app-table { font-size: 12px; }
     .cab-center-name { display: none; }
+
+    /* ── Мобильная навигация ── */
     .mob-nav {
       display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
       background: #fff; border-top: 1px solid var(--line);
@@ -223,6 +224,48 @@
       border-radius: 99px; min-width: 16px; height: 16px; padding: 0 4px;
       display: flex; align-items: center; justify-content: center; line-height: 1;
     }
+
+    /* ── Заголовки секций ── */
+    .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .section-header .btn-main, .section-header button { width: 100%; justify-content: center; }
+    .section-header input { width: 100% !important; box-sizing: border-box; }
+
+    /* ── Заявки: скролл таблицы, скрыть лишние колонки ── */
+    .app-table { font-size: 12px; }
+    #section-applications .filter-bar { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+    #section-applications .filter-bar > div { flex-shrink: 0; }
+    .app-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .app-table th:nth-child(3), .app-table td:nth-child(3),
+    .app-table th:nth-child(5), .app-table td:nth-child(5) { display: none; }
+
+    /* ── Слоты: 2 колонки ── */
+    .slots-grid { grid-template-columns: 1fr 1fr; }
+
+    /* ── Клиенты: убрать лишние поля в карточках ── */
+    .client-card-row { flex-wrap: wrap; gap: 8px; }
+
+    /* ── Платежи: карточный вид вместо таблицы ── */
+    .pay-table thead { display: none; }
+    .pay-table, .pay-table tbody, .pay-table tr, .pay-table td { display: block; width: 100%; }
+    .pay-table tr { background: #fff; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; padding: 12px; }
+    .pay-table td { border: none; padding: 3px 0; font-size: 13px; }
+    .pay-table td:before { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 2px; }
+    .pay-table td:nth-child(1):before { content: "Клиент"; }
+    .pay-table td:nth-child(2):before { content: "Услуга"; }
+    .pay-table td:nth-child(3):before { content: "Дата"; }
+    .pay-table td:nth-child(4):before { content: "Сумма"; }
+    .pay-table td:nth-child(5):before { content: "Менеджер"; }
+    .pay-table td:nth-child(6):before { content: "Статус"; }
+
+    /* ── Статистика: карточки в 2 колонки ── */
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    #mgr-stats-table { overflow-x: auto; }
+    #mgr-stats-table table { min-width: 480px; }
+
+    /* ── Настройки: поля на всю ширину ── */
+    #section-settings .form-row { flex-direction: column; }
+    #section-settings .form-row > div { width: 100% !important; }
+    #section-settings input, #section-settings select, #section-settings textarea { width: 100%; box-sizing: border-box; }
   }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -590,7 +633,8 @@
     if (target) target.classList.add('active');
     document.querySelectorAll('[data-section="' + sectionId + '"]').forEach(n => n.classList.add('active'));
     if (sectionId === 'clients') renderClients();
-    if (sectionId === 'stats') renderStats();
+    if (sectionId === 'stats') { renderStats(); renderMgrStats(); }
+    if (sectionId === 'payments') renderPayments();
     window.scrollTo(0, 0);
   }
 
