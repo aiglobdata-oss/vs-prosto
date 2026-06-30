@@ -942,7 +942,7 @@
 
   function toggleManager(id) {
     const m = managers.find(m => m.id === id);
-    if (m) { m.active = !m.active; renderManagers(); }
+    if (m) { m.active = !m.active; renderManagers(); saveManagers(); }
   }
 
   function deleteManager(id) {
@@ -951,6 +951,7 @@
     renderManagers();
     fillSpecSelects();
     renderPayments();
+    saveManagers();
   }
 
   function openAddManager() {
@@ -1011,6 +1012,7 @@
     renderManagers();
     fillSpecSelects();
     renderPayments();
+    saveManagers();
     closeAddManager();
   }
 
@@ -2340,6 +2342,24 @@
     const cell = document.getElementById(id);
     if (cell) cell.innerHTML = appStatPillHTML(key);
   });
+
+  // Мобильная навигация — регистрация после появления DOM
+  document.querySelectorAll('.mob-nav-item[data-section]').forEach(item => {
+    item.addEventListener('click', () => showSection(item.dataset.section));
+  });
+
+  // Менеджеры: сохранение и загрузка из localStorage
+  function saveManagers() {
+    localStorage.setItem('vs_managers', JSON.stringify(managers));
+  }
+  function loadManagers() {
+    const saved = localStorage.getItem('vs_managers');
+    if (saved) {
+      try { managers = JSON.parse(saved); } catch(e) {}
+    }
+  }
+  loadManagers();
+  renderManagers();
 </script>
 
 </body>
