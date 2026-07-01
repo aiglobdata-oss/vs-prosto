@@ -883,6 +883,8 @@
 
   // Ресайз до 1280×720
   function resizeImageMgr(dataUrl, cb) {
+    const MAX_BYTES = 2 * 1024 * 1024;
+    if (dataUrl.length <= MAX_BYTES) { cb(dataUrl); return; }
     const img = new Image();
     img.onload = () => {
       let w = img.width, h = img.height;
@@ -893,7 +895,19 @@
       const c = document.createElement('canvas');
       c.width = w; c.height = h;
       c.getContext('2d').drawImage(img, 0, 0, w, h);
-      cb(c.toDataURL('image/jpeg', 0.88));
+      let quality = 0.92;
+      let result = c.toDataURL('image/jpeg', quality);
+      while (result.length > MAX_BYTES && quality > 0.3) {
+        quality = Math.round((quality - 0.08) * 100) / 100;
+        result = c.toDataURL('image/jpeg', quality);
+      }
+      if (result.length > MAX_BYTES) {
+        c.width  = Math.round(w / 2);
+        c.height = Math.round(h / 2);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        result = c.toDataURL('image/jpeg', 0.8);
+      }
+      cb(result);
     };
     img.src = dataUrl;
   }
