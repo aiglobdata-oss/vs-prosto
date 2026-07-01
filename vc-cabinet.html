@@ -1715,12 +1715,11 @@
     input.onchange = () => {
       const file = input.files[0];
       if (!file) return;
-      if (file.size > 2 * 1024 * 1024) { alert('Файл слишком большой. Максимум 2 МБ'); return; }
       const reader = new FileReader();
       reader.onload = e => {
         const imgEl = new Image();
         imgEl.onload = () => {
-          const compressed = compressToLimit(imgEl, 1_000_000);
+          const compressed = compressToLimit(imgEl, 500_000);
           try { localStorage.setItem('vs_vc_logo', compressed); } catch(err) { console.warn('logo save failed', err); }
           applyVcLogo(compressed);
         };
