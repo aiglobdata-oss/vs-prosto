@@ -132,6 +132,14 @@
   /* ── SLOTS ── */
   .slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
   .slot-card { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  /* FLAGS */
+  .flag { width: 32px; height: 22px; border-radius: 4px; flex-shrink: 0; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.18); display: inline-block; }
+  .flag-lg { width: 56px; height: 38px; border-radius: 6px; }
+  .flag-fr { background: linear-gradient(to right, #0055A4 0 33.33%, #fff 33.33% 66.66%, #EF4135 66.66% 100%); }
+  .flag-it { background: linear-gradient(to right, #009246 0 33.33%, #fff 33.33% 66.66%, #CE2B37 66.66% 100%); }
+  .flag-es { background: linear-gradient(to bottom, #AA151B 0 25%, #F1BF00 25% 75%, #AA151B 75% 100%); }
+  .flag-bg { background: linear-gradient(to bottom, #fff 0 33.33%, #00966E 33.33% 66.66%, #D62612 66.66% 100%); }
+  .slot-country-card:hover { border-color: #b6b9c5; transform: translateY(-2px); }
   .slot-date { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
   .slot-time { font-size: 22px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
   .slot-status { font-size: 12px; font-weight: 600; }
@@ -2197,68 +2205,75 @@
 
 <!-- ── ДОБАВИТЬ СЛОТ: iframe-модал с прототипом ── -->
 <div id="add-slot-overlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(15,23,41,.7);align-items:center;justify-content:center;">
-  <div style="position:relative;width:100%;max-width:520px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.3);padding:32px 28px 28px;">
+  <div style="position:relative;width:100%;max-width:420px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.3);padding:32px 24px 28px;">
     <button onclick="closeAddSlot()" style="position:absolute;top:14px;right:14px;z-index:10;background:rgba(0,0,0,.06);color:#64748b;border:none;width:32px;height:32px;border-radius:50%;font-size:17px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>
 
     <!-- Шаг 1: выбор страны -->
     <div id="slot-step-country">
-      <h3 style="margin:0 0 4px;font-size:20px;font-weight:700;">Добавить слот</h3>
-      <p style="margin:0 0 22px;color:#64748b;font-size:14px;">Выберите страну для поиска доступных слотов</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <button onclick="selectSlotCountry('Франция','VFS Global')" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px 14px;cursor:pointer;text-align:center;transition:border-color .15s,box-shadow .15s;font-family:inherit;" onmouseover="this.style.borderColor='var(--indigo)';this.style.boxShadow='0 0 0 3px rgba(79,70,229,.1)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'">
-          <div style="font-size:40px;line-height:1;margin-bottom:8px;">&#127467;&#127479;</div>
-          <div style="font-weight:700;font-size:15px;color:#1e293b;">Франция</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px;">VFS Global</div>
-        </button>
-        <button onclick="selectSlotCountry('Италия','VFS / Almaviva')" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px 14px;cursor:pointer;text-align:center;transition:border-color .15s,box-shadow .15s;font-family:inherit;" onmouseover="this.style.borderColor='var(--indigo)';this.style.boxShadow='0 0 0 3px rgba(79,70,229,.1)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'">
-          <div style="font-size:40px;line-height:1;margin-bottom:8px;">&#127470;&#127481;</div>
-          <div style="font-weight:700;font-size:15px;color:#1e293b;">Италия</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px;">VFS / Almaviva</div>
-        </button>
-        <button onclick="selectSlotCountry('Испания','BLS International')" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px 14px;cursor:pointer;text-align:center;transition:border-color .15s,box-shadow .15s;font-family:inherit;" onmouseover="this.style.borderColor='var(--indigo)';this.style.boxShadow='0 0 0 3px rgba(79,70,229,.1)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'">
-          <div style="font-size:40px;line-height:1;margin-bottom:8px;">&#127466;&#127480;</div>
-          <div style="font-weight:700;font-size:15px;color:#1e293b;">Испания</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px;">BLS International</div>
-        </button>
-        <button onclick="selectSlotCountry('Болгария','VFS Global')" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:20px 14px;cursor:pointer;text-align:center;transition:border-color .15s,box-shadow .15s;font-family:inherit;" onmouseover="this.style.borderColor='var(--indigo)';this.style.boxShadow='0 0 0 3px rgba(79,70,229,.1)'" onmouseout="this.style.borderColor='#e2e8f0';this.style.boxShadow='none'">
-          <div style="font-size:40px;line-height:1;margin-bottom:8px;">&#127463;&#127468;</div>
-          <div style="font-weight:700;font-size:15px;color:#1e293b;">Болгария</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px;">VFS Global</div>
-        </button>
-      </div>
-      <p style="text-align:center;margin:16px 0 0;font-size:13px;color:#94a3b8;">Доступны только эти 4 страны</p>
-    </div>
-
-    <!-- Шаг 2: поиск слотов -->
-    <div id="slot-step-search" style="display:none;text-align:center;padding:30px 0 10px;">
-      <div id="slot-search-flag" style="font-size:56px;line-height:1;margin-bottom:16px;"></div>
-      <h3 id="slot-search-title" style="margin:0 0 6px;font-size:18px;font-weight:700;"></h3>
-      <p id="slot-search-sub" style="margin:0 0 28px;color:#64748b;font-size:13px;"></p>
-      <div id="slot-search-spinner" style="margin:0 auto 24px;">
-        <div style="width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:var(--indigo);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div>
-        <p style="margin:12px 0 0;color:#64748b;font-size:14px;">Поиск доступных слотов...</p>
-      </div>
-      <div id="slot-search-result" style="display:none;">
-        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:16px;margin-bottom:20px;">
-          <div style="font-size:28px;margin-bottom:8px;">🤖</div>
-          <div style="font-weight:600;font-size:14px;color:#92400e;margin-bottom:4px;">Бот поиска будет подключён позже</div>
-          <div style="font-size:13px;color:#a16207;">Автоматический поиск слотов в консульствах — на следующем этапе разработки</div>
+      <p style="font-size:20px;font-weight:700;margin:0 0 4px;">Добавить слот</p>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 18px;">Выберите страну для поиска свободных слотов</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="slot-country-card" onclick="selectSlotCountry('fr','Франция','VFS Global')" style="background:#fff;border-radius:16px;border:1.5px solid var(--line);padding:18px 10px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:all .15s ease;">
+          <span class="flag flag-lg flag-fr" style="margin-bottom:10px;"></span>
+          <p style="font-size:14px;font-weight:600;margin:0 0 2px;">Франция</p>
+          <p style="font-size:10px;color:var(--muted);margin:0;">VFS Global</p>
         </div>
-        <button onclick="slotManualAdd()" style="width:100%;padding:12px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Добавить слот вручную</button>
-        <button onclick="closeAddSlot()" style="width:100%;padding:10px;background:none;color:#64748b;border:none;font-size:13px;cursor:pointer;margin-top:8px;font-family:inherit;">Отмена</button>
+        <div class="slot-country-card" onclick="selectSlotCountry('it','Италия','VFS / Almaviva')" style="background:#fff;border-radius:16px;border:1.5px solid var(--line);padding:18px 10px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:all .15s ease;">
+          <span class="flag flag-lg flag-it" style="margin-bottom:10px;"></span>
+          <p style="font-size:14px;font-weight:600;margin:0 0 2px;">Италия</p>
+          <p style="font-size:10px;color:var(--muted);margin:0;">VFS / Almaviva</p>
+        </div>
+        <div class="slot-country-card" onclick="selectSlotCountry('es','Испания','BLS International')" style="background:#fff;border-radius:16px;border:1.5px solid var(--line);padding:18px 10px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:all .15s ease;">
+          <span class="flag flag-lg flag-es" style="margin-bottom:10px;"></span>
+          <p style="font-size:14px;font-weight:600;margin:0 0 2px;">Испания</p>
+          <p style="font-size:10px;color:var(--muted);margin:0;">BLS International</p>
+        </div>
+        <div class="slot-country-card" onclick="selectSlotCountry('bg','Болгария','VFS Global')" style="background:#fff;border-radius:16px;border:1.5px solid var(--line);padding:18px 10px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:all .15s ease;">
+          <span class="flag flag-lg flag-bg" style="margin-bottom:10px;"></span>
+          <p style="font-size:14px;font-weight:600;margin:0 0 2px;">Болгария</p>
+          <p style="font-size:10px;color:var(--muted);margin:0;">VFS Global</p>
+        </div>
       </div>
+      <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px;">Доступны только эти 4 страны</p>
     </div>
 
-    <!-- Шаг 3: ручное добавление -->
-    <div id="slot-step-manual" style="display:none;">
-      <h3 style="margin:0 0 4px;font-size:18px;font-weight:700;">Добавить слот вручную</h3>
-      <p id="slot-manual-country" style="margin:0 0 20px;color:#64748b;font-size:14px;"></p>
-      <label style="display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:5px;">Дата</label>
-      <input type="date" id="slot-manual-date" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:14px;box-sizing:border-box;">
-      <label style="display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:5px;">Время</label>
-      <input type="time" id="slot-manual-time" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:20px;box-sizing:border-box;">
-      <button onclick="confirmManualSlot()" style="width:100%;padding:12px;background:var(--indigo);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Добавить</button>
-      <button onclick="slotBackToSearch()" style="width:100%;padding:10px;background:none;color:#64748b;border:none;font-size:13px;cursor:pointer;margin-top:8px;font-family:inherit;">← Назад</button>
+    <!-- Шаг 2: поиск слотов (как prototype Screen 4) -->
+    <div id="slot-step-search" style="display:none;text-align:center;padding:20px 0 0;">
+      <div style="width:48px;height:48px;border:3px solid #e2e8f0;border-top-color:var(--indigo);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 18px;"></div>
+      <p id="slot-search-main" style="font-size:18px;font-weight:700;margin:0 0 8px;line-height:1.3;">Ищем свободные слоты<br>во Францию</p>
+      <p id="slot-search-hint" style="font-size:13px;color:var(--muted);margin:0 0 20px;line-height:1.4;">Мониторим <span id="slot-search-sys">VFS Global</span> 24/7.<br>Уведомим как только появится место.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:5px;font-size:12px;color:var(--muted);margin-bottom:20px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;stroke:currentColor;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Последняя проверка: только что
+      </div>
+      <button id="slot-skip-wait" style="background:none;border:1px dashed var(--line);border-radius:10px;padding:8px 16px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;">⚡ Демо: симулировать находку слота</button>
+    </div>
+
+    <!-- Шаг 3: слот найден (как prototype Screen 5) -->
+    <div id="slot-step-found" style="display:none;">
+      <p style="font-size:20px;font-weight:700;margin:0 0 4px;">Слот найден!</p>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 16px;">Добавьте его в расписание</p>
+      <div style="background:#f8fafc;border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
+          <span class="flag" id="slot-found-flag" style="width:22px;height:15px;border-radius:3px;"></span>
+          <span style="font-size:13px;font-weight:600;" id="slot-found-country">Франция</span>
+          <span style="font-size:12px;color:var(--muted);">·</span>
+          <span style="font-size:12px;color:var(--muted);" id="slot-found-sys">VFS Global</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:2px;">Визовый центр Москва</div>
+        <div style="display:flex;gap:24px;margin-top:10px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Дата</div>
+            <div style="font-size:18px;font-weight:700;" id="slot-found-date">14 июля</div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Время</div>
+            <div style="font-size:18px;font-weight:700;" id="slot-found-time">10:30</div>
+          </div>
+        </div>
+      </div>
+      <button onclick="addFoundSlot()" style="width:100%;padding:13px;background:var(--indigo);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;">Добавить в расписание</button>
+      <button onclick="closeAddSlot()" style="width:100%;padding:10px;background:none;color:var(--muted);border:none;font-size:13px;cursor:pointer;margin-top:6px;font-family:inherit;">Отмена</button>
     </div>
   </div>
 </div>
@@ -2708,70 +2723,71 @@
   }
 
   // ── СЛОТЫ: купить слот через прототип ──
-  let _slotCountry = '';
-  let _slotFlag = '';
+  let _slotCountry = { code:'', name:'', sys:'' };
   let _slotSearchTimer = null;
-
-  const SLOT_FLAGS = { 'Франция': '\u{1F1EB}\u{1F1F7}', 'Италия': '\u{1F1EE}\u{1F1F9}', 'Испания': '\u{1F1EA}\u{1F1F8}', 'Болгария': '\u{1F1E7}\u{1F1EC}' };
+  const COUNTRY_ACC = { 'Франция':'во Францию', 'Италия':'в Италию', 'Испания':'в Испанию', 'Болгария':'в Болгарию' };
 
   function openAddSlot() {
     document.getElementById('slot-step-country').style.display = '';
     document.getElementById('slot-step-search').style.display = 'none';
-    document.getElementById('slot-step-manual').style.display = 'none';
+    document.getElementById('slot-step-found').style.display = 'none';
     document.getElementById('add-slot-overlay').style.display = 'flex';
   }
   function closeAddSlot() {
     document.getElementById('add-slot-overlay').style.display = 'none';
     if (_slotSearchTimer) { clearTimeout(_slotSearchTimer); _slotSearchTimer = null; }
   }
-  function selectSlotCountry(name, provider) {
-    _slotCountry = name;
-    _slotFlag = SLOT_FLAGS[name] || '';
+  function selectSlotCountry(code, name, sys) {
+    _slotCountry = { code, name, sys };
     document.getElementById('slot-step-country').style.display = 'none';
     document.getElementById('slot-step-search').style.display = '';
-    document.getElementById('slot-search-flag').textContent = _slotFlag;
-    document.getElementById('slot-search-title').textContent = name;
-    document.getElementById('slot-search-sub').textContent = provider;
-    document.getElementById('slot-search-spinner').style.display = '';
-    document.getElementById('slot-search-result').style.display = 'none';
-    _slotSearchTimer = setTimeout(() => {
-      document.getElementById('slot-search-spinner').style.display = 'none';
-      document.getElementById('slot-search-result').style.display = '';
-    }, 2500);
+    document.getElementById('slot-search-main').innerHTML = 'Ищем свободные слоты<br>' + (COUNTRY_ACC[name] || ('в ' + name));
+    document.getElementById('slot-search-sys').textContent = sys;
+    document.getElementById('slot-skip-wait').onclick = showSlotFound;
+    _slotSearchTimer = setTimeout(showSlotFound, 6000);
   }
-  function slotManualAdd() {
+  function showSlotFound() {
+    if (_slotSearchTimer) { clearTimeout(_slotSearchTimer); _slotSearchTimer = null; }
     document.getElementById('slot-step-search').style.display = 'none';
-    document.getElementById('slot-step-manual').style.display = '';
-    document.getElementById('slot-manual-country').textContent = _slotFlag + ' ' + _slotCountry;
-    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('slot-manual-date').value = tomorrow.toISOString().split('T')[0];
-    document.getElementById('slot-manual-time').value = '09:00';
+    document.getElementById('slot-step-found').style.display = '';
+    const ff = document.getElementById('slot-found-flag');
+    ff.className = 'flag flag-' + _slotCountry.code;
+    ff.style.width = '22px'; ff.style.height = '15px'; ff.style.borderRadius = '3px';
+    document.getElementById('slot-found-country').textContent = _slotCountry.name;
+    document.getElementById('slot-found-sys').textContent = _slotCountry.sys;
+    const now = new Date();
+    const rndDays = 7 + Math.floor(Math.random() * 14);
+    const slotDate = new Date(now.getTime() + rndDays * 86400000);
+    const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    document.getElementById('slot-found-date').textContent = slotDate.getDate() + ' ' + MONTHS[slotDate.getMonth()];
+    const hours = [9,10,11,13,14,15,16];
+    const h = hours[Math.floor(Math.random()*hours.length)];
+    const m = Math.random() > 0.5 ? '30' : '00';
+    document.getElementById('slot-found-time').textContent = String(h).padStart(2,'0') + ':' + m;
   }
-  function slotBackToSearch() {
-    document.getElementById('slot-step-manual').style.display = 'none';
-    document.getElementById('slot-step-search').style.display = '';
-  }
-  function confirmManualSlot() {
-    const dateVal = document.getElementById('slot-manual-date').value;
-    const timeVal = document.getElementById('slot-manual-time').value;
-    if (!dateVal || !timeVal) { alert('Укажите дату и время'); return; }
-    const d = new Date(dateVal + 'T' + timeVal);
+  function addFoundSlot() {
+    const dateText = document.getElementById('slot-found-date').textContent;
+    const timeText = document.getElementById('slot-found-time').textContent;
     const DAYS = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
     const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-    const dayLabel = DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
-    const timeLabel = timeVal;
+    const parts = dateText.split(' ');
+    const day = parseInt(parts[0]);
+    const mi = MONTHS.indexOf(parts[1]);
+    const yr = new Date().getFullYear();
+    const d = new Date(yr, mi, day);
+    const dayLabel = DAYS[d.getDay()] + ', ' + day + ' ' + parts[1];
     const slotId = 'slot-' + Date.now();
     const grid = document.getElementById('slots-grid');
     if (!grid) return;
     const card = document.createElement('div');
     card.className = 'slot-card';
-    card.style.cssText = 'background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:6px;';
+    card.dataset.slotId = slotId;
     card.innerHTML = `
-      <div class="slot-date" style="font-size:13px;color:var(--muted);font-weight:600;">${dayLabel}</div>
-      <div class="slot-time" style="font-size:26px;font-weight:800;letter-spacing:-1px;">${timeLabel}</div>
-      <div style="font-size:12px;color:#94a3b8;margin-bottom:2px;">${_slotFlag} ${_slotCountry}</div>
-      <div class="slot-status slot-free" style="font-size:13px;font-weight:600;color:#22c55e;">● Свободен</div>
-      <button class="btn-slot" onclick="openSlotAssign('${slotId}','${dayLabel} · ${timeLabel}')" style="margin-top:8px;padding:8px 16px;background:#eef2ff;color:var(--indigo);border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Назначить клиента</button>
+      <div class="slot-date">${dayLabel}</div>
+      <div class="slot-time">${timeText}</div>
+      <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-${_slotCountry.code}" style="width:18px;height:12px;border-radius:2px;"></span> ${_slotCountry.name}</div>
+      <div class="slot-status slot-free">● Свободен</div>
+      <button class="btn-slot" onclick="openSlotAssign('${slotId}','${dayLabel} · ${timeText}')">Назначить клиента</button>
     `;
     grid.appendChild(card);
     closeAddSlot();
