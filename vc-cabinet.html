@@ -250,6 +250,7 @@
     #section-applications .filter-bar { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 6px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     #section-applications .filter-bar::-webkit-scrollbar { display: none; }
     #section-applications .filter-bar > * { flex-shrink: 0; }
+    .app-table tr.row-hidden { display: none !important; }
 
     .app-table thead { display: none; }
     .app-table { display: block !important; width: 100%; border-collapse: separate !important; border: none !important; background: transparent !important; box-shadow: none !important; border-radius: 0 !important; }
@@ -1215,7 +1216,6 @@
       }
     });
     updateFilterCounts();
-    renderStats();
   }
 
   let activePaymentId = null;
@@ -2500,7 +2500,7 @@
       const matchCntr = !cntrVal || cntr.includes(cntrVal);
       const rowFilter = (APP_STATUSES.find(x => x.key === tr.dataset.status) || {}).filter || tr.dataset.status;
       const matchStatus = activeFilter === 'all' || rowFilter === activeFilter;
-      tr.style.display = (matchMgr && matchCntr && matchStatus) ? '' : 'none';
+      tr.classList.toggle('row-hidden', !(matchMgr && matchCntr && matchStatus));
     });
   }
 
