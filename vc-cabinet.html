@@ -306,12 +306,16 @@
     .app-table td:nth-child(8) .action-btns { flex-wrap: wrap; gap: 8px; }
     .app-table td:nth-child(8) .btn-xs { flex: 1; min-width: 80px; justify-content: center; padding: 8px 10px; font-size: 13px; }
 
-    /* Статус (col 9) */
-    .app-table td:nth-child(9) { margin-bottom: 0 !important; }
+    /* Документы (col 9) */
+    .app-table td:nth-child(9) { margin-bottom: 4px !important; }
+    .app-table td:nth-child(9) .btn-xs { width: 100%; justify-content: center; padding: 8px 10px; font-size: 13px; }
+
+    /* Статус (col 10) */
+    .app-table td:nth-child(10) { margin-bottom: 0 !important; }
     .app-table td .app-stat-pill { width: 100%; box-sizing: border-box; justify-content: space-between; height: 36px; align-items: center; border-radius: 8px; min-width: 80px; }
 
-    /* Корзина (col 10): поверх справа */
-    .app-table td:nth-child(10) { display: inline-block !important; position: absolute; top: 14px; right: 14px; }
+    /* Корзина (col 11): поверх справа */
+    .app-table td:nth-child(11) { display: inline-block !important; position: absolute; top: 14px; right: 14px; }
 
     /* ── Слоты: баланс рядом с заголовком на мобайле ── */
     .slot-balance-mobile { display: inline-block !important; }
@@ -448,6 +452,7 @@
             <th class="spec-col">Специалист</th>
             <th>Чат</th>
             <th>Действия</th>
+            <th>Документы</th>
             <th>Статус</th>
             <th style="width:44px;"></th>
           </tr>
@@ -459,6 +464,7 @@
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline chat-btn" disabled onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></td>
             <td><div class="action-btns" id="actions-static-1"><button onclick="takeRequest('static-1')" class="btn-xs btn-xs-primary">Взять</button></div></td>
+            <td class="docs-cell"></td>
             <td><span id="stat-cell-s1"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
@@ -468,6 +474,7 @@
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline chat-btn" disabled onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></td>
             <td><div class="action-btns" id="actions-static-2"><button onclick="takeRequest('static-2')" class="btn-xs btn-xs-primary">Взять</button></div></td>
+            <td class="docs-cell"></td>
             <td><span id="stat-cell-s2"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
@@ -477,6 +484,7 @@
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline chat-btn" disabled onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></td>
             <td><div class="action-btns" id="actions-static-3"><button onclick="takeRequest('static-3')" class="btn-xs btn-xs-primary">Взять</button></div></td>
+            <td class="docs-cell"></td>
             <td><span id="stat-cell-s3"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
@@ -485,7 +493,8 @@
             <td>🇩🇪 Германия</td><td>Шенген, учёба</td><td>24 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline chat-btn" onclick="openChatPanel('static-4','Мария Смирнова')">Чат</button></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button></div></td>
+            <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Анкета</button></div></td>
+            <td class="docs-cell"><button class="btn-xs btn-xs-outline">Документы</button></td>
             <td><span id="stat-cell-s4"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
@@ -494,7 +503,8 @@
             <td>🇳🇱 Нидерланды</td><td>Шенген, туризм</td><td>23 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline chat-btn" onclick="openChatPanel('static-5','Дмитрий Васильев')">Чат</button></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button></div></td>
+            <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Анкета</button></div></td>
+            <td class="docs-cell"><button class="btn-xs btn-xs-outline">Документы</button></td>
             <td><span id="stat-cell-s5"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
@@ -1613,8 +1623,11 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         Анкета
       </button>
-      <button class="btn-xs btn-xs-outline">Документы</button>
     `;
+    if (tr) {
+      const docsCell = tr.querySelector('.docs-cell');
+      if (docsCell) docsCell.innerHTML = '<button class="btn-xs btn-xs-outline">Документы</button>';
+    }
     renderMgrStats();
   }
 
@@ -1708,6 +1721,7 @@
           </button>
         </div>
       </td>
+      <td class="docs-cell"></td>
       <td>${appStatPillHTML('new')}</td>
       <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
     `;
@@ -1957,9 +1971,9 @@
       ? `<button onclick="takeRequest('${reqId}')" class="btn-xs btn-xs-primary">Взять</button>
          <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline">Анкета</button>`
       : status === 'active'
-      ? `<button class="btn-xs btn-xs-outline">Документы</button>
-         <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline">Анкета</button>`
+      ? `<button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline">Анкета</button>`
       : `<button class="btn-xs btn-xs-outline">История</button>`;
+    const docsCell = status === 'new' ? '' : '<button class="btn-xs btn-xs-outline">Документы</button>';
 
     const specCell = status === 'done'
       ? `<span style="font-size:13px;color:var(--muted);">${spec || '—'}</span>`
@@ -1983,6 +1997,7 @@
       <td class="spec-col spec-cell">${specCell}</td>
       <td>${chatBtn}</td>
       <td><div class="action-btns" id="actions-${reqId}">${actionBtns}</div></td>
+      <td class="docs-cell">${docsCell}</td>
       <td>${appStatPillHTML(status === 'active' ? 'processing' : status === 'done' ? 'visa_done' : 'new')}</td>
       <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
     `;
