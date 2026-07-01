@@ -110,6 +110,7 @@
   .btn-xs-primary:hover { background: var(--indigo-dark); }
   .btn-xs-outline { background: none; border: 1.5px solid var(--line); color: var(--ink); }
   .btn-xs-outline:hover { border-color: var(--indigo); color: var(--indigo); }
+  .btn-xs-outline:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
   .trash-btn { background: none; border: none; cursor: pointer; font-size: 20px; padding: 4px 6px; border-radius: 8px; filter: invert(27%) sepia(90%) saturate(700%) hue-rotate(330deg); transition: transform .15s, background .15s; line-height: 1; }
   .trash-btn:hover { background: #fee2e2; transform: scale(1.15); }
   .del-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 9999; display: flex; align-items: center; justify-content: center; }
@@ -456,7 +457,7 @@
             <td><div class="client-cell"><div class="client-ava">ИИ</div><div><div style="font-weight:600;">Иван Иванов</div><div style="font-size:12px;color:var(--muted);">+7 (999) 123-45-67</div></div></div></td>
             <td>🇮🇹 Италия</td><td>Шенген, туризм</td><td>27 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
-            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></td>
+            <td><button class="btn-xs btn-xs-outline chat-btn" disabled onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></td>
             <td><div class="action-btns" id="actions-static-1"><button onclick="takeRequest('static-1')" class="btn-xs btn-xs-primary">Взять</button></div></td>
             <td><span id="stat-cell-s1"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -465,7 +466,7 @@
             <td><div class="client-cell"><div class="client-ava">АП</div><div><div style="font-weight:600;">Анна Петрова</div><div style="font-size:12px;color:var(--muted);">+7 (916) 234-56-78</div></div></div></td>
             <td>🇫🇷 Франция</td><td>Шенген, туризм</td><td>26 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
-            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></td>
+            <td><button class="btn-xs btn-xs-outline chat-btn" disabled onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></td>
             <td><div class="action-btns" id="actions-static-2"><button onclick="takeRequest('static-2')" class="btn-xs btn-xs-primary">Взять</button></div></td>
             <td><span id="stat-cell-s2"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -474,7 +475,7 @@
             <td><div class="client-cell"><div class="client-ava">СК</div><div><div style="font-weight:600;">Сергей Козлов</div><div style="font-size:12px;color:var(--muted);">+7 (903) 345-67-89</div></div></div></td>
             <td>🇪🇸 Испания</td><td>Шенген, бизнес</td><td>25 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
-            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></td>
+            <td><button class="btn-xs btn-xs-outline chat-btn" disabled onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></td>
             <td><div class="action-btns" id="actions-static-3"><button onclick="takeRequest('static-3')" class="btn-xs btn-xs-primary">Взять</button></div></td>
             <td><span id="stat-cell-s3"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -483,7 +484,7 @@
             <td><div class="client-cell"><div class="client-ava">МС</div><div><div style="font-weight:600;">Мария Смирнова</div><div style="font-size:12px;color:var(--muted);">+7 (926) 456-78-90</div></div></div></td>
             <td>🇩🇪 Германия</td><td>Шенген, учёба</td><td>24 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
-            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-4','Мария Смирнова')">Чат</button></td>
+            <td><button class="btn-xs btn-xs-outline chat-btn" onclick="openChatPanel('static-4','Мария Смирнова')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button></div></td>
             <td><span id="stat-cell-s4"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -492,7 +493,7 @@
             <td><div class="client-cell"><div class="client-ava">ДВ</div><div><div style="font-weight:600;">Дмитрий Васильев</div><div style="font-size:12px;color:var(--muted);">+7 (985) 567-89-01</div></div></div></td>
             <td>🇳🇱 Нидерланды</td><td>Шенген, туризм</td><td>23 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
-            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-5','Дмитрий Васильев')">Чат</button></td>
+            <td><button class="btn-xs btn-xs-outline chat-btn" onclick="openChatPanel('static-5','Дмитрий Васильев')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button></div></td>
             <td><span id="stat-cell-s5"></span></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -1604,6 +1605,8 @@
       if (specCell && mgrName) { specCell.textContent = mgrName; specCell.style.color = 'var(--text)'; specCell.style.fontWeight = '600'; }
       const statusPill = tr.querySelector('.app-stat-pill');
       if (statusPill) { const s = appStatByKey('processing'); statusPill.dataset.key='processing'; statusPill.style.background=s.bg; statusPill.style.color=s.color; statusPill.childNodes[0].textContent=s.label; }
+      const chatBtnEl = tr.querySelector('.chat-btn');
+      if (chatBtnEl) chatBtnEl.disabled = false;
     }
     actionsDiv.innerHTML = `
       <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-primary" style="display:inline-flex;align-items:center;gap:4px;">
@@ -1698,7 +1701,7 @@
       <td>${data.time || new Date().toLocaleDateString('ru-RU')}</td>
       <td class="slot-cell">—</td>
       <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)">${buildSpecOptions('')}</select></td>
-      <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${data.client || 'Клиент'}')">Чат</button></td>
+      <td><button class="btn-xs btn-xs-outline chat-btn" disabled onclick="openChatPanel('${reqId}','${data.client || 'Клиент'}')">Чат</button></td>
       <td>
         <div class="action-btns" id="actions-${reqId}">
           <button onclick="takeRequest('${reqId}')" class="btn-xs btn-xs-primary">Взять</button>
@@ -1951,7 +1954,7 @@
 
     const chatBtn = status === 'done'
       ? ''
-      : `<button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${name}')">Чат</button>`;
+      : `<button class="btn-xs btn-xs-outline chat-btn"${status === 'new' ? ' disabled' : ''} onclick="openChatPanel('${reqId}','${name}')">Чат</button>`;
 
     const actionBtns = status === 'new'
       ? `<button onclick="takeRequest('${reqId}')" class="btn-xs btn-xs-primary">Взять</button>
