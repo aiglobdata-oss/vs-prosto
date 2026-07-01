@@ -143,6 +143,8 @@
   .slot-date { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
   .slot-time { font-size: 22px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
   .slot-status { font-size: 12px; font-weight: 600; }
+  .spec-select { font-size:13px; font-family:inherit; border:1px solid var(--line); border-radius:6px; padding:4px 8px; background:#fff; color:var(--text); cursor:pointer; max-width:160px; }
+  .spec-select:focus { outline:none; border-color:var(--indigo); }
   .slot-free { color: var(--green); }
   .slot-taken { color: var(--muted); }
   .btn-slot { width: 100%; margin-top: 12px; padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; border: none; transition: all .15s; color: #fff; }
@@ -449,7 +451,7 @@
           <tr data-status="new" data-name="Иван Иванов" data-phone="+7 (999) 123-45-67" data-country="🇮🇹 Италия" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">ИИ</div><div><div style="font-weight:600;">Иван Иванов</div><div style="font-size:12px;color:var(--muted);">+7 (999) 123-45-67</div></div></div></td>
             <td>🇮🇹 Италия</td><td>Шенген, туризм</td><td>27 июня 2026</td><td class="slot-cell">—</td>
-            <td class="spec-col spec-cell" style="font-size:13px;color:var(--muted);">—</td>
+            <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s1"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -457,7 +459,7 @@
           <tr data-status="new" data-name="Анна Петрова" data-phone="+7 (916) 234-56-78" data-country="🇫🇷 Франция" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">АП</div><div><div style="font-weight:600;">Анна Петрова</div><div style="font-size:12px;color:var(--muted);">+7 (916) 234-56-78</div></div></div></td>
             <td>🇫🇷 Франция</td><td>Шенген, туризм</td><td>26 июня 2026</td><td class="slot-cell">—</td>
-            <td class="spec-col spec-cell" style="font-size:13px;color:var(--muted);">—</td>
+            <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s2"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -465,7 +467,7 @@
           <tr data-status="new" data-name="Сергей Козлов" data-phone="+7 (903) 345-67-89" data-country="🇪🇸 Испания" data-visa="Шенген, бизнес">
             <td><div class="client-cell"><div class="client-ava">СК</div><div><div style="font-weight:600;">Сергей Козлов</div><div style="font-size:12px;color:var(--muted);">+7 (903) 345-67-89</div></div></div></td>
             <td>🇪🇸 Испания</td><td>Шенген, бизнес</td><td>25 июня 2026</td><td class="slot-cell">—</td>
-            <td class="spec-col spec-cell" style="font-size:13px;color:var(--muted);">—</td>
+            <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s3"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -473,7 +475,7 @@
           <tr data-status="processing" data-spec="Сергей Волков" data-name="Мария Смирнова" data-phone="+7 (926) 456-78-90" data-country="🇩🇪 Германия" data-visa="Шенген, учёба">
             <td><div class="client-cell"><div class="client-ava">МС</div><div><div style="font-weight:600;">Мария Смирнова</div><div style="font-size:12px;color:var(--muted);">+7 (926) 456-78-90</div></div></div></td>
             <td>🇩🇪 Германия</td><td>Шенген, учёба</td><td>24 июня 2026</td><td class="slot-cell">—</td>
-            <td class="spec-col spec-cell" style="font-size:13px;color:var(--text);font-weight:600;">Сергей Волков</td>
+            <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-4','Мария Смирнова')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button><span id="stat-cell-s4"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -481,7 +483,7 @@
           <tr data-status="processing" data-spec="Анна Петрова" data-name="Дмитрий Васильев" data-phone="+7 (985) 567-89-01" data-country="🇳🇱 Нидерланды" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">ДВ</div><div><div style="font-weight:600;">Дмитрий Васильев</div><div style="font-size:12px;color:var(--muted);">+7 (985) 567-89-01</div></div></div></td>
             <td>🇳🇱 Нидерланды</td><td>Шенген, туризм</td><td>23 июня 2026</td><td class="slot-cell">—</td>
-            <td class="spec-col spec-cell" style="font-size:13px;color:var(--text);font-weight:600;">Анна Петрова</td>
+            <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-5','Дмитрий Васильев')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button><span id="stat-cell-s5"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -3022,6 +3024,31 @@
     const time = card.querySelector('.slot-time').textContent;
     syncSlotToApp(name, date, time);
   });
+
+  // Заполнить селекты специалистов
+  function populateSpecSelects() {
+    document.querySelectorAll('.spec-select').forEach(sel => {
+      const cur = sel.value;
+      while (sel.options.length > 1) sel.remove(1);
+      managers.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.name;
+        opt.textContent = m.name;
+        sel.appendChild(opt);
+      });
+      const tr = sel.closest('tr');
+      const spec = tr ? tr.dataset.spec : '';
+      if (spec) sel.value = spec;
+      else sel.value = cur || '';
+    });
+  }
+  function assignSpec(sel) {
+    const tr = sel.closest('tr');
+    if (!tr) return;
+    tr.dataset.spec = sel.value;
+    renderMgrStats();
+  }
+  populateSpecSelects();
 
   // Мобильная навигация — регистрация после появления DOM
   document.querySelectorAll('.mob-nav-item[data-section]').forEach(item => {
