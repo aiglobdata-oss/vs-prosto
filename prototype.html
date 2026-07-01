@@ -892,43 +892,58 @@
     appId: "1:772730854431:web:3ebfe5d68ed91dc385892a"
   });
   const vsDb = firebase.database();
-  let _chatFbListener = null;
   let _chatFbRef = null;
+  let _chatFbCb = null;
+  const _chatSentKeys = new Set();
 
   function stopClientChatListener() {
-    if (_chatFbRef && _chatFbListener) {
-      _chatFbRef.off('child_added', _chatFbListener);
-    }
-    _chatFbListener = null;
+    if (_chatFbRef && _chatFbCb) _chatFbRef.off('child_added', _chatFbCb);
     _chatFbRef = null;
+    _chatFbCb = null;
   }
 
-  function startClientChatListener(reqId, restoreMode) {
-    if (_chatFbListener) stopClientChatListener();
-    const startTs = restoreMode ? 0 : Date.now();
+  function startClientChatListener(reqId) {
+    stopClientChatListener();
     sessionStorage.setItem('vs_chat_reqId', reqId);
-    const seenKeys = new Set();
     _chatFbRef = vsDb.ref('vs_chat/' + reqId);
-    _chatFbListener = _chatFbRef.on('child_added', snap => {
+    let initialLoadDone = false;
+    const pending = [];
+    _chatFbCb = _chatFbRef.on('child_added', snap => {
       const d = snap.val();
       if (!d) return;
-      const key = snap.key;
-      if (seenKeys.has(key)) return;
-      seenKeys.add(key);
-      if (!restoreMode && d._ts && d._ts < startTs - 5000) return;
-      if (d.type === 'specialist_joined') {
-        addBotMsg('🤝 Визовый специалист подключился и готов помочь!');
-        feedbackShown = false;
-        specialistConnected = true;
-        resetSilenceTimer();
-      }
-      if (d.type === 'manager_message') {
-        addSpecialistMsg(d.text);
-      }
-      if (d.type === 'manager_file') {
-        addSpecialistFile(d);
-      }
+      if (_chatSentKeys.has(snap.key)) return;
+      if (!initialLoadDone) { pending.push(d); return; }
+      handleIncoming(d);
     });
+    // Firebase fires child_added for all existing children synchronously,
+    // then any new ones asynchronously. Use once('value') to know when initial load is done.
+    _chatFbRef.once('value', () => {
+      initialLoadDone = true;
+      // Don't replay old messages — they were from a previous session.
+      // Only new messages arriving after this point will be shown.
+      pending.length = 0;
+    });
+  }
+
+  function handleIncoming(d) {
+    if (d.type === 'specialist_joined') {
+      addBotMsg('🤝 Визовый специалист подключился и готов помочь!');
+      feedbackShown = false;
+      specialistConnected = true;
+      resetSilenceTimer();
+    }
+    if (d.type === 'manager_message') {
+      addSpecialistMsg(d.text);
+    }
+    if (d.type === 'manager_file') {
+      addSpecialistFile(d);
+    }
+  }
+
+  function chatPush(data) {
+    if (!window._chatReqId) return;
+    const ref = vsDb.ref('vs_chat/' + window._chatReqId).push(data);
+    _chatSentKeys.add(ref.key);
   }
 
   // Восстановление чата после перезагрузки
@@ -937,7 +952,7 @@
     if (savedReqId) {
       window._chatReqId = savedReqId;
       window._chatClientName = sessionStorage.getItem('vs_chat_clientName') || 'Клиент';
-      startClientChatListener(savedReqId, true);
+      startClientChatListener(savedReqId);
     }
   })();
 
@@ -1950,16 +1965,14 @@
     addUserMsg(text);
     input.value = '';
     resetSilenceTimer(); // сброс таймера при каждом сообщении
-    if (window._chatReqId) {
-      vsDb.ref('vs_chat/' + window._chatReqId).push({
-        type: 'client_message',
-        text,
-        reqId: window._chatReqId,
-        clientName: window._chatClientName || 'Клиент',
-        time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
-        _ts: Date.now(),
-      });
-    }
+    chatPush({
+      type: 'client_message',
+      text,
+      reqId: window._chatReqId || '',
+      clientName: window._chatClientName || 'Клиент',
+      time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}),
+      _ts: Date.now(),
+    });
   }
 
   function addBotMsg(html) {
@@ -2097,12 +2110,10 @@
     }
     body.appendChild(div);
     body.scrollTop = body.scrollHeight;
-    if (window._chatReqId) {
-      vsDb.ref('vs_chat/' + window._chatReqId).push({
-        type: 'client_file', fileType: data.type, src: data.src || '', name: data.name || '', size: data.size || '',
-        time, reqId: window._chatReqId, clientName: window._chatClientName || '', _ts: Date.now(),
-      });
-    }
+    chatPush({
+      type: 'client_file', fileType: data.type, src: data.src || '', name: data.name || '', size: data.size || '',
+      time, reqId: window._chatReqId || '', clientName: window._chatClientName || '', _ts: Date.now(),
+    });
   }
 
   // Перехватываем кнопку отправки — если есть pendingFile, отправляем файл
