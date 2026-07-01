@@ -453,7 +453,7 @@
             <td>🇮🇹 Италия</td><td>Шенген, туризм</td><td>27 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s1"></span></div></td>
+            <td><div class="action-btns" id="actions-static-1"><button onclick="takeRequest('static-1')" class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s1"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
           <tr data-status="new" data-name="Анна Петрова" data-phone="+7 (916) 234-56-78" data-country="🇫🇷 Франция" data-visa="Шенген, туризм">
@@ -461,7 +461,7 @@
             <td>🇫🇷 Франция</td><td>Шенген, туризм</td><td>26 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s2"></span></div></td>
+            <td><div class="action-btns" id="actions-static-2"><button onclick="takeRequest('static-2')" class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s2"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
           <tr data-status="new" data-name="Сергей Козлов" data-phone="+7 (903) 345-67-89" data-country="🇪🇸 Испания" data-visa="Шенген, бизнес">
@@ -469,7 +469,7 @@
             <td>🇪🇸 Испания</td><td>Шенген, бизнес</td><td>25 июня 2026</td><td class="slot-cell">—</td>
             <td class="spec-col spec-cell"><select class="spec-select" onchange="assignSpec(this)"><option value="">— Не назначен</option></select></td>
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s3"></span></div></td>
+            <td><div class="action-btns" id="actions-static-3"><button onclick="takeRequest('static-3')" class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s3"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
           <tr data-status="processing" data-spec="Сергей Волков" data-name="Мария Смирнова" data-phone="+7 (926) 456-78-90" data-country="🇩🇪 Германия" data-visa="Шенген, учёба">
@@ -878,11 +878,6 @@
           <span style="font-size:20px;">📄</span>
           <div><div style="font-size:13px;font-weight:600;">${m.name}</div><div style="font-size:11px;opacity:0.7;">${m.size}</div></div>
         </div>`;
-      } else if (m.type === 'voice') {
-        content = `<div style="display:flex;align-items:center;gap:6px;">
-          <span style="font-size:16px;">🎤</span>
-          <audio src="${m.src}" controls style="height:32px;max-width:180px;"></audio>
-        </div>`;
       } else {
         content = `<div>${m.text}</div>`;
       }
@@ -1046,35 +1041,31 @@
       + '<div style="border-top:1px solid var(--line);margin:4px 0;"></div>';
   }
 
-  let _chatMicRecording = false;
-  let _chatMediaRec = null;
+  let _chatMicActive = null;
   function toggleChatMic() {
     const btn = document.getElementById('chat-mic-btn');
-    if (_chatMicRecording) {
-      if (_chatMediaRec) _chatMediaRec.stop();
-      _chatMicRecording = false;
+    const input = document.getElementById('chat-panel-input');
+    if (_chatMicActive) {
+      _chatMicActive.stop();
+      _chatMicActive = null;
       btn.style.background = 'var(--indigo-light)';
       btn.querySelector('svg').setAttribute('stroke', 'var(--indigo)');
       return;
     }
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-      _chatMicRecording = true;
-      btn.style.background = '#ef4444';
-      btn.querySelector('svg').setAttribute('stroke', '#fff');
-      const chunks = [];
-      _chatMediaRec = new MediaRecorder(stream);
-      _chatMediaRec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-      _chatMediaRec.onstop = () => {
-        stream.getTracks().forEach(t => t.stop());
-        const blob = new Blob(chunks, { type: 'audio/webm' });
-        const url = URL.createObjectURL(blob);
-        const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        if (!chatMessages[activeChatReqId]) chatMessages[activeChatReqId] = [];
-        chatMessages[activeChatReqId].push({ from: 'manager', type: 'voice', src: url, time });
-        renderChatMessages(activeChatReqId);
-      };
-      _chatMediaRec.start();
-    }).catch(() => { alert('Нет доступа к микрофону'); });
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('Голосовой ввод не поддерживается. Используйте Chrome или Edge.'); return; }
+    const r = new SR();
+    r.lang = 'ru-RU';
+    r.continuous = false;
+    r.interimResults = false;
+    r.maxAlternatives = 1;
+    _chatMicActive = r;
+    btn.style.background = '#ef4444';
+    btn.querySelector('svg').setAttribute('stroke', '#fff');
+    r.onresult = (e) => { input.value = e.results[0][0].transcript; input.focus(); };
+    r.onend = () => { _chatMicActive = null; btn.style.background = 'var(--indigo-light)'; btn.querySelector('svg').setAttribute('stroke', 'var(--indigo)'); };
+    r.onerror = (e) => { _chatMicActive = null; btn.style.background = 'var(--indigo-light)'; btn.querySelector('svg').setAttribute('stroke', 'var(--indigo)'); if (e.error === 'not-allowed') alert('Нет доступа к микрофону.'); };
+    try { r.start(); } catch(e) { _chatMicActive = null; btn.style.background = 'var(--indigo-light)'; btn.querySelector('svg').setAttribute('stroke', 'var(--indigo)'); }
   }
 
   // Logout
@@ -1587,18 +1578,25 @@
     if (!actionsDiv) return;
     const tr = actionsDiv.closest('tr');
     const mgr = currentMgrObj();
-    const mgrName = mgr ? mgr.name : (managers.length ? managers[0].name : 'Администратор');
+    let mgrName = '';
+    if (mgr) {
+      mgrName = mgr.name;
+    } else if (tr) {
+      const specSel = tr.querySelector('.spec-select');
+      if (specSel && specSel.value) mgrName = specSel.value;
+    }
     if (tr) {
       tr.dataset.spec = mgrName;
       tr.style.background = '';
       tr.dataset.status = 'active';
+      const specSel = tr.querySelector('.spec-select');
+      if (specSel && mgrName) { specSel.value = mgrName; }
       const specCell = tr.querySelector('.spec-cell');
-      if (specCell) { specCell.textContent = mgrName; specCell.style.color = 'var(--text)'; specCell.style.fontWeight = '600'; }
+      if (specCell && mgrName) { specCell.textContent = mgrName; specCell.style.color = 'var(--text)'; specCell.style.fontWeight = '600'; }
       const statusCell = tr.querySelector('.app-stat-pill');
       if (statusCell) { const s = appStatByKey('processing'); statusCell.dataset.key='processing'; statusCell.style.background=s.bg; statusCell.style.color=s.color; statusCell.childNodes[0].textContent=s.label; }
     }
     actionsDiv.innerHTML = `
-      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Специалист: <b style="color:var(--text);">${mgrName}</b></div>
       <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-primary" style="display:inline-flex;align-items:center;gap:4px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         Анкета
