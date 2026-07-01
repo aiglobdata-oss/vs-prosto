@@ -898,10 +898,14 @@
     if (_chatFbListener) return;
     const startTs = restoreMode ? 0 : Date.now();
     sessionStorage.setItem('vs_chat_reqId', reqId);
+    const seenKeys = new Set();
     _chatFbListener = vsDb.ref('vs_chat/' + reqId).on('child_added', snap => {
       const d = snap.val();
       if (!d) return;
-      if (!restoreMode && d._ts < startTs) return;
+      const key = snap.key;
+      if (seenKeys.has(key)) return;
+      seenKeys.add(key);
+      if (!restoreMode && d._ts && d._ts < startTs - 5000) return;
       if (d.type === 'specialist_joined') {
         addBotMsg('🤝 Визовый специалист подключился и готов помочь!');
         feedbackShown = false;

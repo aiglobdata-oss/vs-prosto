@@ -999,7 +999,7 @@
     vsDb.ref('vs_chat/' + activeChatReqId).push({
       type: 'manager_file', fileType: data.type, src: data.src || '', name: data.name, size: data.size || '',
       time, reqId: activeChatReqId, _ts: Date.now()
-    });
+    }).catch(e => { console.error('Firebase file send error:', e); alert('Не удалось отправить файл. Возможно, он слишком большой.'); });
   }
 
   function attachFile(input, type) {
