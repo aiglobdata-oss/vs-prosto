@@ -2280,7 +2280,6 @@
             <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">50 000 ₽/мес</span>
           </div>
           <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">10 записей в месяц</div>
-          <div class="sub-tier-done" style="display:none;margin-top:8px;padding:8px 0;text-align:center;font-size:13px;font-weight:600;color:#2e7d32;background:#e8f5e9;border-radius:8px;"></div>
         </div>
         <div class="sub-tier" data-tier="business" data-amount="225000" style="border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;position:relative;transition:all .15s;" onclick="selectSubscription('business',this)">
           <div style="position:absolute;top:-8px;right:12px;background:#1a73e8;color:#fff;font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px;">Рекомендуем</div>
@@ -2289,7 +2288,6 @@
             <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">225 000 ₽/мес</span>
           </div>
           <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">50 записей в месяц</div>
-          <div class="sub-tier-done" style="display:none;margin-top:8px;padding:8px 0;text-align:center;font-size:13px;font-weight:600;color:#2e7d32;background:#e8f5e9;border-radius:8px;"></div>
         </div>
         <div class="sub-tier" data-tier="premium" data-amount="400000" style="border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s;" onclick="selectSubscription('premium',this)">
           <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -2297,7 +2295,6 @@
             <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">400 000 ₽/мес</span>
           </div>
           <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">100 записей в месяц</div>
-          <div class="sub-tier-done" style="display:none;margin-top:8px;padding:8px 0;text-align:center;font-size:13px;font-weight:600;color:#2e7d32;background:#e8f5e9;border-radius:8px;"></div>
         </div>
       </div>
     </div>
@@ -2837,13 +2834,12 @@
     document.getElementById('buy-total').textContent = '5 000 ₽';
     _selectedTier = null;
     _selectedTierEl = null;
-    document.getElementById('btn-pay').textContent = 'Оплатить';
+    const btnPay = document.getElementById('btn-pay');
+    btnPay.textContent = 'Оплатить';
+    btnPay.style.pointerEvents = '';
     document.querySelectorAll('#sub-tiers .sub-tier').forEach(t => {
       t.style.borderColor = 'var(--border)';
       t.style.background = '';
-      t.style.cursor = 'pointer';
-      const done = t.querySelector('.sub-tier-done');
-      if (done) done.style.display = 'none';
     });
     const ov = document.getElementById('buy-slots-overlay');
     ov.style.display = 'flex';
@@ -2876,16 +2872,11 @@
       const amounts = { start: 50000, business: 225000, premium: 400000 };
       const names = { start: 'Старт', business: 'Бизнес', premium: 'Премиум' };
       updateBalance(amounts[_selectedTier] || 0);
-      const done = _selectedTierEl.querySelector('.sub-tier-done');
-      if (done) {
-        done.textContent = 'Подписка «' + names[_selectedTier] + '» оформлена!';
-        done.style.display = '';
-      }
-      _selectedTierEl.style.cursor = 'default';
-      _selectedTierEl.onclick = null;
+      const btn = document.getElementById('btn-pay');
+      btn.textContent = 'Подписка «' + names[_selectedTier] + '» оформлена!';
+      btn.style.pointerEvents = 'none';
       _selectedTier = null;
       _selectedTierEl = null;
-      document.getElementById('btn-pay').textContent = 'Оплатить';
     } else {
       updateBalance(_buyQty * 5000);
       closeBuySlots();
