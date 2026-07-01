@@ -288,20 +288,18 @@
     .app-table td:nth-child(5) { font-size: 15px; color: var(--muted); margin-bottom: 12px !important; }
     .app-table td:nth-child(5):before { content: "🕐 "; }
 
-    /* Специалист (col 6) + Чат (col 7): в одну строку одинаковой высоты */
-    .app-table td:nth-child(6) { display: inline-block !important; width: calc(55% - 4px); vertical-align: top; margin-bottom: 10px !important; }
-    .app-table td:nth-child(6) select, .app-table td:nth-child(6) .spec-select { width: 100%; box-sizing: border-box; height: 36px; }
-    .app-table td:nth-child(7) { display: inline-block !important; width: 44%; vertical-align: top; margin-bottom: 10px !important; padding-left: 6px !important; box-sizing: border-box; }
-    .app-table td:nth-child(7) .btn-xs { width: 100%; height: 36px; box-sizing: border-box; justify-content: center; }
+    /* Чат (col 6) */
+    .app-table td:nth-child(6) { display: inline-block !important; width: 100%; margin-bottom: 10px !important; }
+    .app-table td:nth-child(6) .btn-xs { width: 100%; height: 36px; box-sizing: border-box; justify-content: center; }
 
-    /* Действия + Статус (col 8) */
-    .app-table td:nth-child(8) { margin-bottom: 0 !important; }
-    .app-table td:nth-child(8) .action-btns { flex-wrap: wrap; gap: 8px; }
-    .app-table td:nth-child(8) .btn-xs { flex: 1; min-width: 80px; justify-content: center; padding: 8px 10px; font-size: 13px; }
+    /* Действия + Статус (col 7) */
+    .app-table td:nth-child(7) { margin-bottom: 0 !important; }
+    .app-table td:nth-child(7) .action-btns { flex-wrap: wrap; gap: 8px; }
+    .app-table td:nth-child(7) .btn-xs { flex: 1; min-width: 80px; justify-content: center; padding: 8px 10px; font-size: 13px; }
     .app-table td .app-stat-pill { width: 100%; box-sizing: border-box; justify-content: space-between; height: 36px; align-items: center; border-radius: 8px; flex: 1; min-width: 80px; }
 
-    /* Корзина (col 9): поверх справа */
-    .app-table td:nth-child(9) { display: inline-block !important; position: absolute; top: 14px; right: 14px; }
+    /* Корзина (col 8): поверх справа */
+    .app-table td:nth-child(8) { display: inline-block !important; position: absolute; top: 14px; right: 14px; }
 
     /* ── Слоты: 2 колонки ── */
     .slots-grid { grid-template-columns: 1fr 1fr; }
@@ -431,7 +429,6 @@
             <th>Тип визы</th>
             <th>Дата заявки</th>
             <th>Слот</th>
-            <th>Специалист</th>
             <th>Чат</th>
             <th>Действия / Статус</th>
             <th style="width:44px;"></th>
@@ -441,7 +438,7 @@
           <tr data-status="new" data-name="Иван Иванов" data-phone="+7 (999) 123-45-67" data-country="🇮🇹 Италия" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">ИИ</div><div><div style="font-weight:600;">Иван Иванов</div><div style="font-size:12px;color:var(--muted);">+7 (999) 123-45-67</div></div></div></td>
             <td>🇮🇹 Италия</td><td>Шенген, туризм</td><td>27 июня 2026</td><td class="slot-cell">—</td>
-            <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
+
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s1"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -449,7 +446,7 @@
           <tr data-status="new" data-name="Анна Петрова" data-phone="+7 (916) 234-56-78" data-country="🇫🇷 Франция" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">АП</div><div><div style="font-weight:600;">Анна Петрова</div><div style="font-size:12px;color:var(--muted);">+7 (916) 234-56-78</div></div></div></td>
             <td>🇫🇷 Франция</td><td>Шенген, туризм</td><td>26 июня 2026</td><td class="slot-cell">—</td>
-            <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
+
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s2"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -457,23 +454,23 @@
           <tr data-status="new" data-name="Сергей Козлов" data-phone="+7 (903) 345-67-89" data-country="🇪🇸 Испания" data-visa="Шенген, бизнес">
             <td><div class="client-cell"><div class="client-ava">СК</div><div><div style="font-weight:600;">Сергей Козлов</div><div style="font-size:12px;color:var(--muted);">+7 (903) 345-67-89</div></div></div></td>
             <td>🇪🇸 Испания</td><td>Шенген, бизнес</td><td>25 июня 2026</td><td class="slot-cell">—</td>
-            <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
+
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s3"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
-          <tr data-status="processing" data-name="Мария Смирнова" data-phone="+7 (926) 456-78-90" data-country="🇩🇪 Германия" data-visa="Шенген, учёба">
+          <tr data-status="processing" data-spec="Сергей Волков" data-name="Мария Смирнова" data-phone="+7 (926) 456-78-90" data-country="🇩🇪 Германия" data-visa="Шенген, учёба">
             <td><div class="client-cell"><div class="client-ava">МС</div><div><div style="font-weight:600;">Мария Смирнова</div><div style="font-size:12px;color:var(--muted);">+7 (926) 456-78-90</div></div></div></td>
             <td>🇩🇪 Германия</td><td>Шенген, учёба</td><td>24 июня 2026</td><td class="slot-cell">—</td>
-            <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
+
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-4','Мария Смирнова')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button><span id="stat-cell-s4"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
-          <tr data-status="processing" data-name="Дмитрий Васильев" data-phone="+7 (985) 567-89-01" data-country="🇳🇱 Нидерланды" data-visa="Шенген, туризм">
+          <tr data-status="processing" data-spec="Анна Петрова" data-name="Дмитрий Васильев" data-phone="+7 (985) 567-89-01" data-country="🇳🇱 Нидерланды" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">ДВ</div><div><div style="font-weight:600;">Дмитрий Васильев</div><div style="font-size:12px;color:var(--muted);">+7 (985) 567-89-01</div></div></div></td>
             <td>🇳🇱 Нидерланды</td><td>Шенген, туризм</td><td>23 июня 2026</td><td class="slot-cell">—</td>
-            <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
+
             <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-5','Дмитрий Васильев')">Чат</button></td>
             <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button><span id="stat-cell-s5"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -489,17 +486,21 @@
           <div class="section-title">Слоты</div>
           <div class="section-sub">Управление записями в консульства</div>
         </div>
-        <button class="btn-main" onclick="openAddSlot()">+ Добавить слот</button>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:14px;color:var(--text);font-weight:600;">Баланс: <span id="slot-balance" style="color:#1a73e8;">15 000 ₽</span></div>
+          <button class="btn-main" style="background:#f5a623;border-color:#f5a623;" onclick="openBuySlots()">Купить</button>
+          <button class="btn-main" onclick="openAddSlot()">+ Добавить слот</button>
+        </div>
       </div>
       <div class="slots-grid" id="slots-grid">
-        <div class="slot-card" data-slot-id="s1"><div class="slot-date">Пн, 7 июля</div><div class="slot-time">09:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-fr" style="width:18px;height:12px;border-radius:2px;"></span> Франция</div><div class="slot-status slot-free" id="ss1">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s1','Пн, 7 июля · 09:00')">Назначить клиента</button></div>
-        <div class="slot-card" data-slot-id="s2" data-client-name="Иван Иванов"><div class="slot-date">Пн, 7 июля</div><div class="slot-time">10:30</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-it" style="width:18px;height:12px;border-radius:2px;"></span> Италия</div><div class="slot-status slot-taken" id="ss2">● Занят · Иван Иванов</div><button class="btn-slot" onclick="releaseSlot('s2',this.closest('.slot-card'))">Снять резерв</button></div>
-        <div class="slot-card" data-slot-id="s3" data-client-name="Дмитрий Васильев"><div class="slot-date">Вт, 8 июля</div><div class="slot-time">10:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-it" style="width:18px;height:12px;border-radius:2px;"></span> Италия</div><div class="slot-status slot-taken" id="ss3">● Занят · Дмитрий Васильев</div><button class="btn-slot" onclick="releaseSlot('s3',this.closest('.slot-card'))">Снять резерв</button></div>
-        <div class="slot-card" data-slot-id="s4"><div class="slot-date">Вт, 8 июля</div><div class="slot-time">14:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-es" style="width:18px;height:12px;border-radius:2px;"></span> Испания</div><div class="slot-status slot-free" id="ss4">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s4','Вт, 8 июля · 14:00')">Назначить клиента</button></div>
-        <div class="slot-card" data-slot-id="s5"><div class="slot-date">Ср, 9 июля</div><div class="slot-time">11:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-fr" style="width:18px;height:12px;border-radius:2px;"></span> Франция</div><div class="slot-status slot-free" id="ss5">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s5','Ср, 9 июля · 11:00')">Назначить клиента</button></div>
-        <div class="slot-card" data-slot-id="s6" data-client-name="Мария Смирнова"><div class="slot-date">Чт, 10 июля</div><div class="slot-time">14:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-bg" style="width:18px;height:12px;border-radius:2px;"></span> Болгария</div><div class="slot-status slot-taken" id="ss6">● Занят · Мария Смирнова</div><button class="btn-slot" onclick="releaseSlot('s6',this.closest('.slot-card'))">Снять резерв</button></div>
-        <div class="slot-card" data-slot-id="s7"><div class="slot-date">Чт, 10 июля</div><div class="slot-time">16:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-fr" style="width:18px;height:12px;border-radius:2px;"></span> Франция</div><div class="slot-status slot-free" id="ss7">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s7','Чт, 10 июля · 16:00')">Назначить клиента</button></div>
-        <div class="slot-card" data-slot-id="s8"><div class="slot-date">Пт, 11 июля</div><div class="slot-time">09:30</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-es" style="width:18px;height:12px;border-radius:2px;"></span> Испания</div><div class="slot-status slot-free" id="ss8">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s8','Пт, 11 июля · 09:30')">Назначить клиента</button></div>
+        <div class="slot-card" data-slot-id="s1"><div class="slot-date">Пн, 7 июля</div><div class="slot-time">09:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-fr" style="width:18px;height:12px;border-radius:2px;"></span> Франция</div><div style="font-size:11px;color:var(--muted);line-height:1.3;">Визовый центр Москва<br>Ул. Садовая-Кудринская, 3</div><div class="slot-status slot-free" id="ss1">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s1','Пн, 7 июля · 09:00')">Назначить клиента</button></div>
+        <div class="slot-card" data-slot-id="s2" data-client-name="Иван Иванов"><div class="slot-date">Пн, 7 июля</div><div class="slot-time">10:30</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-it" style="width:18px;height:12px;border-radius:2px;"></span> Италия</div><div style="font-size:11px;color:var(--muted);line-height:1.3;">Визовый центр Москва<br>Ул. Калужская, 3/5</div><div class="slot-status slot-taken" id="ss2">● Занят · Иван Иванов</div><button class="btn-slot" onclick="releaseSlot('s2',this.closest('.slot-card'))">Снять резерв</button></div>
+        <div class="slot-card" data-slot-id="s3" data-client-name="Дмитрий Васильев"><div class="slot-date">Вт, 8 июля</div><div class="slot-time">10:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-it" style="width:18px;height:12px;border-radius:2px;"></span> Италия</div><div style="font-size:11px;color:var(--muted);line-height:1.3;">Визовый центр Москва<br>Ул. Калужская, 3/5</div><div class="slot-status slot-taken" id="ss3">● Занят · Дмитрий Васильев</div><button class="btn-slot" onclick="releaseSlot('s3',this.closest('.slot-card'))">Снять резерв</button></div>
+        <div class="slot-card" data-slot-id="s4"><div class="slot-date">Вт, 8 июля</div><div class="slot-time">14:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-es" style="width:18px;height:12px;border-radius:2px;"></span> Испания</div><div style="font-size:11px;color:var(--muted);line-height:1.3;">Визовый центр Москва<br>Ул. Сущёвский Вал, 31, стр. 2</div><div class="slot-status slot-free" id="ss4">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s4','Вт, 8 июля · 14:00')">Назначить клиента</button></div>
+        <div class="slot-card" data-slot-id="s5"><div class="slot-date">Ср, 9 июля</div><div class="slot-time">11:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-fr" style="width:18px;height:12px;border-radius:2px;"></span> Франция</div><div style="font-size:11px;color:var(--muted);line-height:1.3;">Визовый центр Москва<br>Ул. Садовая-Кудринская, 3</div><div class="slot-status slot-free" id="ss5">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s5','Ср, 9 июля · 11:00')">Назначить клиента</button></div>
+        <div class="slot-card" data-slot-id="s6" data-client-name="Мария Смирнова"><div class="slot-date">Чт, 10 июля</div><div class="slot-time">14:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-bg" style="width:18px;height:12px;border-radius:2px;"></span> Болгария</div><div style="font-size:11px;color:var(--muted);line-height:1.3;">Визовый центр Москва<br>Ул. Большая Молчановка, 21, стр. 1</div><div class="slot-status slot-taken" id="ss6">● Занят · Мария Смирнова</div><button class="btn-slot" onclick="releaseSlot('s6',this.closest('.slot-card'))">Снять резерв</button></div>
+        <div class="slot-card" data-slot-id="s7"><div class="slot-date">Чт, 10 июля</div><div class="slot-time">16:00</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-fr" style="width:18px;height:12px;border-radius:2px;"></span> Франция</div><div style="font-size:11px;color:var(--muted);line-height:1.3;">Визовый центр Москва<br>Ул. Садовая-Кудринская, 3</div><div class="slot-status slot-free" id="ss7">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s7','Чт, 10 июля · 16:00')">Назначить клиента</button></div>
+        <div class="slot-card" data-slot-id="s8"><div class="slot-date">Пт, 11 июля</div><div class="slot-time">09:30</div><div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-es" style="width:18px;height:12px;border-radius:2px;"></span> Испания</div><div style="font-size:11px;color:var(--muted);line-height:1.3;">Визовый центр Москва<br>Ул. Сущёвский Вал, 31, стр. 2</div><div class="slot-status slot-free" id="ss8">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s8','Пт, 11 июля · 09:30')">Назначить клиента</button></div>
       </div>
     </div>
 
@@ -1348,9 +1349,7 @@
       ? tr.cells[0].querySelector('strong,b').textContent.trim()
       : tr.cells[0].textContent.trim().split('\n')[0].trim();
     const country = tr.cells[1] ? tr.cells[1].textContent.trim() : '—';
-    const specSel = tr.querySelector('.spec-select');
-    const specTxt = tr.querySelector('td:nth-child(6) span');
-    const manager = specSel ? specSel.value : (specTxt ? specTxt.textContent.trim() : '—');
+    const manager = tr.dataset.spec || '—';
     // Дата сегодня
     const today = new Date();
     const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -1513,7 +1512,18 @@
   function takeRequest(reqId) {
     const actionsDiv = document.getElementById('actions-' + reqId);
     if (!actionsDiv) return;
+    const tr = actionsDiv.closest('tr');
+    const mgr = currentMgrObj();
+    const mgrName = mgr ? mgr.name : (managers.length ? managers[0].name : 'Администратор');
+    if (tr) {
+      tr.dataset.spec = mgrName;
+      tr.style.background = '';
+      tr.dataset.status = 'active';
+      const statusCell = tr.querySelector('.app-stat-pill');
+      if (statusCell) { const s = appStatByKey('processing'); statusCell.dataset.key='processing'; statusCell.style.background=s.bg; statusCell.style.color=s.color; statusCell.childNodes[0].textContent=s.label; }
+    }
     actionsDiv.innerHTML = `
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Специалист: <b style="color:var(--text);">${mgrName}</b></div>
       <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-primary" style="display:inline-flex;align-items:center;gap:4px;">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         Анкета
@@ -1523,14 +1533,7 @@
         Чат
       </button>
     `;
-    // Обновляем статус строки и data-status для фильтра
-    const tr = actionsDiv.closest('tr');
-    if (tr) {
-      tr.style.background = '';
-      tr.dataset.status = 'active';
-      const statusCell = tr.querySelector('.app-stat-pill');
-      if (statusCell) { const s = appStatByKey('processing'); statusCell.dataset.key='processing'; statusCell.style.background=s.bg; statusCell.style.color=s.color; statusCell.childNodes[0].textContent=s.label; }
-    }
+    renderMgrStats();
   }
 
   function openQaModal(reqId) {
@@ -1612,7 +1615,6 @@
       <td>${data.purpose || 'Визовый специалист'}</td>
       <td>${data.time || new Date().toLocaleDateString('ru-RU')}</td>
       <td class="slot-cell">—</td>
-      <td><select class="spec-select" onchange="assignSpec(this)">${buildSpecOptions('')}</select></td>
       <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${data.client || 'Клиент'}')">Чат</button></td>
       <td>
         <div class="action-btns" id="actions-${reqId}">
@@ -1894,7 +1896,6 @@
       <td>${visa || '—'}</td>
       <td>${dateStr}</td>
       <td class="slot-cell">—</td>
-      <td>${specCell}</td>
       <td>${chatBtn}</td>
       <td><div class="action-btns" id="actions-${reqId}">${actionBtns}${appStatPillHTML(status === 'active' ? 'processing' : status === 'done' ? 'visa_done' : 'new')}</div></td>
       <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -2225,6 +2226,74 @@
   </div>
 </div>
 
+<!-- ── КУПИТЬ СЛОТЫ ── -->
+<div id="buy-slots-overlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(15,23,41,.7);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:18px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto;padding:28px 24px;position:relative;">
+    <button onclick="closeBuySlots()" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);">✕</button>
+    <p style="font-size:20px;font-weight:700;margin:0 0 4px;">Купить слоты</p>
+    <p style="font-size:13px;color:var(--muted);margin:0 0 18px;">Стоимость: 5 000 ₽ за 1 слот</p>
+
+    <div id="buy-step-qty" style="margin-bottom:18px;">
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Количество слотов</label>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button onclick="changeBuyQty(-1)" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:#f7f8fa;font-size:18px;cursor:pointer;">−</button>
+        <span id="buy-qty" style="font-size:22px;font-weight:700;min-width:30px;text-align:center;">1</span>
+        <button onclick="changeBuyQty(1)" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:#f7f8fa;font-size:18px;cursor:pointer;">+</button>
+        <span style="font-size:14px;color:var(--muted);margin-left:8px;">= <b id="buy-total" style="color:var(--text);">5 000 ₽</b></span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:18px;">
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">Способ оплаты</label>
+      <div style="display:flex;flex-direction:column;gap:8px;" id="pay-methods">
+        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s;" onclick="selectPayMethod(this)">
+          <input type="radio" name="pay-method" value="card" checked style="accent-color:#1a73e8;">
+          <span style="font-size:14px;">💳 Банковская карта</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s;" onclick="selectPayMethod(this)">
+          <input type="radio" name="pay-method" value="sbp" style="accent-color:#1a73e8;">
+          <span style="font-size:14px;">🏦 СБП (Система быстрых платежей)</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s;" onclick="selectPayMethod(this)">
+          <input type="radio" name="pay-method" value="wallet" style="accent-color:#1a73e8;">
+          <span style="font-size:14px;">📱 SberPay / T-Pay / YooMoney</span>
+        </label>
+      </div>
+    </div>
+
+    <button onclick="processBuySlots()" style="width:100%;padding:14px;border-radius:12px;border:none;background:#1a73e8;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:20px;">Оплатить</button>
+
+    <div style="border-top:1px solid var(--border);padding-top:18px;">
+      <p style="font-size:16px;font-weight:700;margin:0 0 4px;">Подписка на слоты</p>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 14px;">Автоматическое пополнение каждый месяц</p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .15s;" onclick="selectSubscription('start')">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:14px;font-weight:600;">Старт</span>
+            <span style="font-size:14px;font-weight:700;color:#1a73e8;">50 000 ₽/мес</span>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">10 записей в месяц</div>
+        </div>
+        <div style="border:1.5px solid #1a73e8;border-radius:12px;padding:14px 16px;cursor:pointer;position:relative;background:#f0f6ff;" onclick="selectSubscription('business')">
+          <div style="position:absolute;top:-8px;right:12px;background:#1a73e8;color:#fff;font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px;">Рекомендуем</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:14px;font-weight:600;">Бизнес</span>
+            <span style="font-size:14px;font-weight:700;color:#1a73e8;">225 000 ₽/мес</span>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">50 записей в месяц</div>
+        </div>
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .15s;" onclick="selectSubscription('premium')">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:14px;font-weight:600;">Премиум</span>
+            <span style="font-size:14px;font-weight:700;color:#1a73e8;">400 000 ₽/мес</span>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;">100 записей в месяц</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── ДОБАВИТЬ СЛОТ: iframe-модал с прототипом ── -->
 <div id="add-slot-overlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(15,23,41,.7);align-items:center;justify-content:center;">
   <div style="position:relative;width:100%;max-width:420px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.3);padding:32px 24px 28px;">
@@ -2282,7 +2351,8 @@
           <span style="font-size:12px;color:var(--muted);">·</span>
           <span style="font-size:12px;color:var(--muted);" id="slot-found-sys">VFS Global</span>
         </div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:2px;">Визовый центр Москва</div>
+        <div style="font-size:13px;font-weight:600;color:#1e293b;" id="slot-found-city">Визовый центр Москва</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:2px;" id="slot-found-addr">Ул. Садовая-Кудринская, 3</div>
         <div style="display:flex;gap:24px;margin-top:10px;">
           <div>
             <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Дата</div>
@@ -2543,10 +2613,7 @@
 
     const stats = managers.map(mgr => {
       const mgrRows = rows.filter(tr => {
-        const specSel = tr.querySelector('.spec-select');
-        const specTxt = tr.querySelector('td:nth-child(6) span');
-        const val = specSel ? specSel.value : (specTxt ? specTxt.textContent.trim() : '');
-        return val === mgr.name;
+        return (tr.dataset.spec || '') === mgr.name;
       });
       const total   = mgrRows.length;
       const success = mgrRows.filter(r => { const p = r.querySelector('.app-stat-pill'); return p && (p.dataset.key === 'paid' || p.dataset.key === 'visa_done'); }).length;
@@ -2680,9 +2747,7 @@
     const cntrVal = (document.getElementById('filter-country')  || {}).value || '';
     const activeFilter = (document.querySelector('.filter-btn.active') || {}).dataset?.filter || 'all';
     document.querySelectorAll('.app-table tbody tr').forEach(tr => {
-      const specSel = tr.querySelector('.spec-select');
-      const specTxt = tr.querySelector('td:nth-child(6) span');
-      const mgr = specSel ? specSel.value : (specTxt ? specTxt.textContent.trim() : '');
+      const mgr = tr.dataset.spec || '';
       const cntr = tr.cells[1] ? tr.cells[1].textContent.trim() : '';
       const matchMgr  = !mgrVal  || mgr.includes(mgrVal);
       const matchCntr = !cntrVal || cntr.includes(cntrVal);
@@ -2745,9 +2810,49 @@
   }
 
   // ── СЛОТЫ: купить слот через прототип ──
-  let _slotCountry = { code:'', name:'', sys:'' };
+  let _slotCountry = { code:'', name:'', sys:'', city:'', addr:'' };
   let _slotSearchTimer = null;
   const COUNTRY_ACC = { 'Франция':'во Францию', 'Италия':'в Италию', 'Испания':'в Испанию', 'Болгария':'в Болгарию' };
+  const CONSULATE_DATA = {
+    fr: { city: 'Визовый центр Москва', addr: 'Ул. Садовая-Кудринская, 3' },
+    it: { city: 'Визовый центр Москва', addr: 'Ул. Калужская, 3/5' },
+    es: { city: 'Визовый центр Москва', addr: 'Ул. Сущёвский Вал, 31, стр. 2' },
+    bg: { city: 'Визовый центр Москва', addr: 'Ул. Большая Молчановка, 21, стр. 1' },
+  };
+
+  let _buyQty = 1;
+  function openBuySlots() {
+    _buyQty = 1;
+    document.getElementById('buy-qty').textContent = '1';
+    document.getElementById('buy-total').textContent = '5 000 ₽';
+    const ov = document.getElementById('buy-slots-overlay');
+    ov.style.display = 'flex';
+    ov.onclick = function(e) { if (e.target === ov) closeBuySlots(); };
+  }
+  function closeBuySlots() {
+    document.getElementById('buy-slots-overlay').style.display = 'none';
+  }
+  function changeBuyQty(d) {
+    _buyQty = Math.max(1, _buyQty + d);
+    document.getElementById('buy-qty').textContent = _buyQty;
+    document.getElementById('buy-total').textContent = (_buyQty * 5000).toLocaleString('ru-RU') + ' ₽';
+  }
+  function selectPayMethod(label) {
+    document.querySelectorAll('#pay-methods label').forEach(l => l.style.borderColor = 'var(--border)');
+    label.style.borderColor = '#1a73e8';
+  }
+  function processBuySlots() {
+    const bal = document.getElementById('slot-balance');
+    const cur = parseInt((bal.textContent || '0').replace(/\D/g, ''), 10) || 0;
+    const add = _buyQty * 5000;
+    bal.textContent = (cur + add).toLocaleString('ru-RU') + ' ₽';
+    closeBuySlots();
+  }
+  function selectSubscription(tier) {
+    const names = { start: 'Старт', business: 'Бизнес', premium: 'Премиум' };
+    alert('Подписка «' + names[tier] + '» оформлена (демо)');
+    closeBuySlots();
+  }
 
   function openAddSlot() {
     document.getElementById('slot-step-country').style.display = '';
@@ -2760,7 +2865,8 @@
     if (_slotSearchTimer) { clearTimeout(_slotSearchTimer); _slotSearchTimer = null; }
   }
   function selectSlotCountry(code, name, sys) {
-    _slotCountry = { code, name, sys };
+    const cd = CONSULATE_DATA[code] || { city: 'Визовый центр Москва', addr: '' };
+    _slotCountry = { code, name, sys, city: cd.city, addr: cd.addr };
     document.getElementById('slot-step-country').style.display = 'none';
     document.getElementById('slot-step-search').style.display = '';
     document.getElementById('slot-search-main').innerHTML = 'Ищем свободные слоты<br>' + (COUNTRY_ACC[name] || ('в ' + name));
@@ -2777,6 +2883,8 @@
     ff.style.width = '22px'; ff.style.height = '15px'; ff.style.borderRadius = '3px';
     document.getElementById('slot-found-country').textContent = _slotCountry.name;
     document.getElementById('slot-found-sys').textContent = _slotCountry.sys;
+    document.getElementById('slot-found-city').textContent = _slotCountry.city;
+    document.getElementById('slot-found-addr').textContent = _slotCountry.addr;
     const now = new Date();
     const rndDays = 7 + Math.floor(Math.random() * 14);
     const slotDate = new Date(now.getTime() + rndDays * 86400000);
@@ -2807,7 +2915,8 @@
     card.innerHTML = `
       <div class="slot-date">${dayLabel}</div>
       <div class="slot-time">${timeText}</div>
-      <div style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-${_slotCountry.code}" style="width:18px;height:12px;border-radius:2px;"></span> ${_slotCountry.name}</div>
+      <div class="slot-country" style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin:2px 0;"><span class="flag flag-${_slotCountry.code}" style="width:18px;height:12px;border-radius:2px;"></span> ${_slotCountry.name}</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.3;">${_slotCountry.city}<br>${_slotCountry.addr}</div>
       <div class="slot-status slot-free">● Свободен</div>
       <button class="btn-slot" onclick="openSlotAssign('${slotId}','${dayLabel} · ${timeText}')">Назначить клиента</button>
     `;
