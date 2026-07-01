@@ -481,11 +481,11 @@
       </div>
       <div class="slots-grid" id="slots-grid">
         <div class="slot-card" data-slot-id="s1"><div class="slot-date">Пн, 7 июля</div><div class="slot-time">09:00</div><div class="slot-status slot-free" id="ss1">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s1','Пн, 7 июля · 09:00')">Назначить клиента</button></div>
-        <div class="slot-card" data-slot-id="s2"><div class="slot-date">Пн, 7 июля</div><div class="slot-time">10:30</div><div class="slot-status slot-taken" id="ss2">● Занят · Иванов И.</div><button class="btn-slot" style="opacity:.5;cursor:default;" disabled>Занят</button></div>
-        <div class="slot-card" data-slot-id="s3"><div class="slot-date">Вт, 8 июля</div><div class="slot-time">10:00</div><div class="slot-status slot-taken" id="ss3">● Занят · Васильев Д.</div><button class="btn-slot" style="opacity:.5;cursor:default;" disabled>Занят</button></div>
+        <div class="slot-card" data-slot-id="s2"><div class="slot-date">Пн, 7 июля</div><div class="slot-time">10:30</div><div class="slot-status slot-taken" id="ss2">● Занят · Иванов И.</div><button class="btn-slot" onclick="releaseSlot('s2',this.closest('.slot-card'))">Снять резерв</button></div>
+        <div class="slot-card" data-slot-id="s3"><div class="slot-date">Вт, 8 июля</div><div class="slot-time">10:00</div><div class="slot-status slot-taken" id="ss3">● Занят · Васильев Д.</div><button class="btn-slot" onclick="releaseSlot('s3',this.closest('.slot-card'))">Снять резерв</button></div>
         <div class="slot-card" data-slot-id="s4"><div class="slot-date">Вт, 8 июля</div><div class="slot-time">14:00</div><div class="slot-status slot-free" id="ss4">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s4','Вт, 8 июля · 14:00')">Назначить клиента</button></div>
         <div class="slot-card" data-slot-id="s5"><div class="slot-date">Ср, 9 июля</div><div class="slot-time">11:00</div><div class="slot-status slot-free" id="ss5">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s5','Ср, 9 июля · 11:00')">Назначить клиента</button></div>
-        <div class="slot-card" data-slot-id="s6"><div class="slot-date">Чт, 10 июля</div><div class="slot-time">14:00</div><div class="slot-status slot-taken" id="ss6">● Занят · Смирнова М.</div><button class="btn-slot" style="opacity:.5;cursor:default;" disabled>Занят</button></div>
+        <div class="slot-card" data-slot-id="s6"><div class="slot-date">Чт, 10 июля</div><div class="slot-time">14:00</div><div class="slot-status slot-taken" id="ss6">● Занят · Смирнова М.</div><button class="btn-slot" onclick="releaseSlot('s6',this.closest('.slot-card'))">Снять резерв</button></div>
         <div class="slot-card" data-slot-id="s7"><div class="slot-date">Чт, 10 июля</div><div class="slot-time">16:00</div><div class="slot-status slot-free" id="ss7">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s7','Чт, 10 июля · 16:00')">Назначить клиента</button></div>
         <div class="slot-card" data-slot-id="s8"><div class="slot-date">Пт, 11 июля</div><div class="slot-time">09:30</div><div class="slot-status slot-free" id="ss8">● Свободен</div><button class="btn-slot" onclick="openSlotAssign('s8','Пт, 11 июля · 09:30')">Назначить клиента</button></div>
       </div>
@@ -1948,14 +1948,36 @@
     const c = clients[idx];
     const parts = c.name.split(/\s+/);
     const short = parts[0] + (parts[1] ? ' ' + parts[1][0] + '.' : '');
-    const card = document.querySelector(`.slot-card[data-slot-id="${activeSlotId}"]`);
+    const slotId = activeSlotId;
+    const card = document.querySelector(`.slot-card[data-slot-id="${slotId}"]`);
     if (card) {
       const statusEl = card.querySelector('.slot-status');
       const btn = card.querySelector('.btn-slot');
       if (statusEl) { statusEl.className = 'slot-status slot-taken'; statusEl.textContent = '● Занят · ' + short; }
-      if (btn) { btn.textContent = 'Занят'; btn.style.opacity = '.5'; btn.style.cursor = 'default'; btn.disabled = true; btn.onclick = null; }
+      if (btn) {
+        btn.textContent = 'Снять резерв';
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        btn.disabled = false;
+        btn.onclick = () => releaseSlot(slotId, card);
+      }
     }
     closeSlotAssign();
+  }
+
+  function releaseSlot(slotId, card) {
+    if (!confirm('Снять клиента со слота?')) return;
+    const statusEl = card.querySelector('.slot-status');
+    const btn = card.querySelector('.btn-slot');
+    const label = card.querySelector('.slot-date').textContent + ' · ' + card.querySelector('.slot-time').textContent;
+    if (statusEl) { statusEl.className = 'slot-status slot-free'; statusEl.textContent = '● Свободен'; }
+    if (btn) {
+      btn.textContent = 'Назначить клиента';
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+      btn.disabled = false;
+      btn.onclick = () => openSlotAssign(slotId, label);
+    }
   }
 
   function closeSlotAssign() {
