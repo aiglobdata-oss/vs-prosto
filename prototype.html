@@ -905,6 +905,7 @@
   function startClientChatListener(reqId) {
     stopClientChatListener();
     sessionStorage.setItem('vs_chat_reqId', reqId);
+    localStorage.setItem('vs_last_reqId', reqId); // для личного кабинета (cabinet.html)
     _chatFbRef = vsDb.ref('vs_chat/' + reqId);
     let initialLoadDone = false;
     const pending = [];
