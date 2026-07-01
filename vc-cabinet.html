@@ -276,16 +276,17 @@
     .app-table td:nth-child(5) { font-size: 13px; color: var(--muted); margin-bottom: 12px !important; }
     .app-table td:nth-child(5):before { content: "🕐 "; }
 
-    /* Специалист (col 6) + Статус (col 7): в одну строку одинаковой высоты */
+    /* Специалист (col 6) + Чат (col 7): в одну строку одинаковой высоты */
     .app-table td:nth-child(6) { display: inline-block !important; width: calc(55% - 4px); vertical-align: top; margin-bottom: 10px !important; }
     .app-table td:nth-child(6) select, .app-table td:nth-child(6) .spec-select { width: 100%; box-sizing: border-box; height: 36px; }
     .app-table td:nth-child(7) { display: inline-block !important; width: 44%; vertical-align: top; margin-bottom: 10px !important; padding-left: 6px !important; box-sizing: border-box; }
-    .app-table td:nth-child(7) .app-stat-pill { width: 100%; box-sizing: border-box; justify-content: space-between; height: 36px; align-items: center; border-radius: 8px; }
+    .app-table td:nth-child(7) .btn-xs { width: 100%; height: 36px; box-sizing: border-box; justify-content: center; }
 
-    /* Действия (col 8) */
+    /* Действия + Статус (col 8) */
     .app-table td:nth-child(8) { margin-bottom: 0 !important; }
     .app-table td:nth-child(8) .action-btns { flex-wrap: wrap; gap: 8px; }
     .app-table td:nth-child(8) .btn-xs { flex: 1; min-width: 80px; justify-content: center; padding: 8px 10px; font-size: 13px; }
+    .app-table td .app-stat-pill { width: 100%; box-sizing: border-box; justify-content: space-between; height: 36px; align-items: center; border-radius: 8px; flex: 1; min-width: 80px; }
 
     /* Корзина (col 9): поверх справа */
     .app-table td:nth-child(9) { display: inline-block !important; position: absolute; top: 14px; right: 14px; }
@@ -311,8 +312,12 @@
 
     /* ── Статистика: карточки в 2 колонки ── */
     .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-    #mgr-stats-table { overflow-x: auto; }
-    #mgr-stats-table table { min-width: 480px; }
+    #mgr-stats-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #mgr-stats-table table { min-width: 0 !important; width: 100%; }
+    #mgr-stats-table th, #mgr-stats-table td { padding: 8px 6px !important; font-size: 12px !important; }
+    #mgr-stats-table th:first-child, #mgr-stats-table td:first-child { min-width: 80px; }
+    #mgr-stats-table th:nth-child(5), #mgr-stats-table td:nth-child(5),
+    #mgr-stats-table th:nth-child(6), #mgr-stats-table td:nth-child(6) { white-space: nowrap; }
 
     /* ── Настройки: поля на всю ширину ── */
     #section-settings .form-row { flex-direction: column; }
@@ -415,8 +420,8 @@
             <th>Дата заявки</th>
             <th>Слот</th>
             <th>Специалист</th>
-            <th>Статус</th>
-            <th>Действия</th>
+            <th>Чат</th>
+            <th>Действия / Статус</th>
             <th style="width:44px;"></th>
           </tr>
         </thead>
@@ -425,40 +430,40 @@
             <td><div class="client-cell"><div class="client-ava">ИИ</div><div><div style="font-weight:600;">Иван Иванов</div><div style="font-size:12px;color:var(--muted);">+7 (999) 123-45-67</div></div></div></td>
             <td>🇮🇹 Италия</td><td>Шенген, туризм</td><td>27 июня 2026</td><td>14 июля, 10:30</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
-            <td id="stat-cell-s1"></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></div></td>
+            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-1','Иван Иванов')">Чат</button></td>
+            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s1"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
           <tr data-status="new" data-name="Анна Петрова" data-phone="+7 (916) 234-56-78" data-country="🇫🇷 Франция" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">АП</div><div><div style="font-weight:600;">Анна Петрова</div><div style="font-size:12px;color:var(--muted);">+7 (916) 234-56-78</div></div></div></td>
             <td>🇫🇷 Франция</td><td>Шенген, туризм</td><td>26 июня 2026</td><td>18 июля, 09:00</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
-            <td id="stat-cell-s2"></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></div></td>
+            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-2','Анна Петрова')">Чат</button></td>
+            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s2"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
           <tr data-status="new" data-name="Сергей Козлов" data-phone="+7 (903) 345-67-89" data-country="🇪🇸 Испания" data-visa="Шенген, бизнес">
             <td><div class="client-cell"><div class="client-ava">СК</div><div><div style="font-weight:600;">Сергей Козлов</div><div style="font-size:12px;color:var(--muted);">+7 (903) 345-67-89</div></div></div></td>
             <td>🇪🇸 Испания</td><td>Шенген, бизнес</td><td>25 июня 2026</td><td>21 июля, 11:00</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
-            <td id="stat-cell-s3"></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></div></td>
+            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-3','Сергей Козлов')">Чат</button></td>
+            <td><div class="action-btns"><button class="btn-xs btn-xs-primary">Взять</button><span id="stat-cell-s3"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
           <tr data-status="processing" data-name="Мария Смирнова" data-phone="+7 (926) 456-78-90" data-country="🇩🇪 Германия" data-visa="Шенген, учёба">
             <td><div class="client-cell"><div class="client-ava">МС</div><div><div style="font-weight:600;">Мария Смирнова</div><div style="font-size:12px;color:var(--muted);">+7 (926) 456-78-90</div></div></div></td>
             <td>🇩🇪 Германия</td><td>Шенген, учёба</td><td>24 июня 2026</td><td>10 июля, 14:00</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
-            <td id="stat-cell-s4"></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-4','Мария Смирнова')">Чат</button><button class="btn-xs btn-xs-outline">Документы</button></div></td>
+            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-4','Мария Смирнова')">Чат</button></td>
+            <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button><span id="stat-cell-s4"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
           <tr data-status="processing" data-name="Дмитрий Васильев" data-phone="+7 (985) 567-89-01" data-country="🇳🇱 Нидерланды" data-visa="Шенген, туризм">
             <td><div class="client-cell"><div class="client-ava">ДВ</div><div><div style="font-weight:600;">Дмитрий Васильев</div><div style="font-size:12px;color:var(--muted);">+7 (985) 567-89-01</div></div></div></td>
             <td>🇳🇱 Нидерланды</td><td>Шенген, туризм</td><td>23 июня 2026</td><td>8 июля, 10:00</td>
             <td><select class="spec-select" onchange="assignSpec(this)"><option value="">— не назначен —</option></select></td>
-            <td id="stat-cell-s5"></td>
-            <td><div class="action-btns"><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-5','Дмитрий Васильев')">Чат</button><button class="btn-xs btn-xs-outline">Документы</button></div></td>
+            <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('static-5','Дмитрий Васильев')">Чат</button></td>
+            <td><div class="action-btns"><button class="btn-xs btn-xs-outline">Документы</button><span id="stat-cell-s5"></span></div></td>
             <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
           </tr>
         </tbody>
@@ -1577,7 +1582,7 @@
       <td>${data.time || new Date().toLocaleDateString('ru-RU')}</td>
       <td>${data.slotMode ? '<span style="display:inline-flex;align-items:center;gap:4px;background:#ede9fe;color:#6d28d9;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;">🎫 Слот куплен</span>' : '—'}</td>
       <td><select class="spec-select" onchange="assignSpec(this)">${buildSpecOptions('')}</select></td>
-      <td>${appStatPillHTML('new')}</td>
+      <td><button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${data.client || 'Клиент'}')">Чат</button></td>
       <td>
         <div class="action-btns" id="actions-${reqId}">
           <button onclick="takeRequest('${reqId}')" class="btn-xs btn-xs-primary">Взять</button>
@@ -1585,6 +1590,7 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             Анкета
           </button>
+          ${appStatPillHTML('new')}
         </div>
       </td>
       <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
@@ -1827,13 +1833,15 @@
                       : status === 'active' ? '<span class="badge badge-active">В работе</span>'
                       : '<span class="badge badge-done">Завершена</span>';
 
+    const chatBtn = status === 'done'
+      ? ''
+      : `<button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${name}')">Чат</button>`;
+
     const actionBtns = status === 'new'
       ? `<button onclick="takeRequest('${reqId}')" class="btn-xs btn-xs-primary">Взять</button>
-         <button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${name}')">Чат</button>
          <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline">Анкета</button>`
       : status === 'active'
-      ? `<button class="btn-xs btn-xs-outline" onclick="openChatPanel('${reqId}','${name}')">Чат</button>
-         <button class="btn-xs btn-xs-outline">Документы</button>
+      ? `<button class="btn-xs btn-xs-outline">Документы</button>
          <button onclick="openQaModal('${reqId}')" class="btn-xs btn-xs-outline">Анкета</button>`
       : `<button class="btn-xs btn-xs-outline">История</button>`;
 
@@ -1857,8 +1865,8 @@
       <td>${dateStr}</td>
       <td>${slotDate}</td>
       <td>${specCell}</td>
-      <td>${appStatPillHTML(status === 'active' ? 'processing' : status === 'done' ? 'visa_done' : 'new')}</td>
-      <td><div class="action-btns" id="actions-${reqId}">${actionBtns}</div></td>
+      <td>${chatBtn}</td>
+      <td><div class="action-btns" id="actions-${reqId}">${actionBtns}${appStatPillHTML(status === 'active' ? 'processing' : status === 'done' ? 'visa_done' : 'new')}</div></td>
       <td><button class="trash-btn" onclick="confirmDelete(this)">🗑</button></td>
     `;
     tbody.prepend(tr);
@@ -2423,36 +2431,74 @@
       return { name: mgr.name, total, success, visas, incMo, incYr };
     });
 
-    tbl.innerHTML = `
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;">
-          <thead>
-            <tr style="border-bottom:1px solid var(--line);">
-              <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Менеджер</th>
-              <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Заявок</th>
-              <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Успешных</th>
-              <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Виз получено</th>
-              <th style="text-align:right;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">
-                <button id="mgr-month-btn" onclick="openMgrMonthDrop(event)" style="display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:var(--indigo);border:none;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;text-transform:uppercase;">
-                  ${_mgrMonthLabel}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-              </th>
-              <th style="text-align:right;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Доход (год)</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${stats.map(s => `
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      tbl.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:10px;">
+          <button id="mgr-month-btn" onclick="openMgrMonthDrop(event)" style="display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:var(--indigo);border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">
+            ${_mgrMonthLabel}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        ${stats.map(s => `
+        <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;">
+          <div style="font-weight:700;font-size:15px;margin-bottom:10px;">${s.name}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+            <div style="text-align:center;">
+              <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:3px;">Заявок</div>
+              <div style="font-size:16px;font-weight:700;">${s.total}</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:3px;">Успешных</div>
+              <div><span style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-size:14px;font-weight:600;">${s.success}</span></div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:3px;">Виз</div>
+              <div><span style="background:#064e3b;color:#fff;border-radius:20px;padding:2px 10px;font-size:14px;font-weight:600;">${s.visas}</span></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;">
+            <div>
+              <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:2px;">${_mgrMonthLabel}</div>
+              <div style="font-size:15px;font-weight:600;color:var(--indigo);">${s.incMo ? s.incMo.toLocaleString('ru-RU') + ' ₽' : '—'}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:2px;">Доход (год)</div>
+              <div style="font-size:15px;font-weight:700;">${s.incYr ? s.incYr.toLocaleString('ru-RU') + ' ₽' : '—'}</div>
+            </div>
+          </div>
+        </div>`).join('')}`;
+    } else {
+      tbl.innerHTML = `
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
               <tr style="border-bottom:1px solid var(--line);">
-                <td style="padding:12px;font-weight:600;">${s.name}</td>
-                <td style="text-align:center;padding:12px;">${s.total}</td>
-                <td style="text-align:center;padding:12px;"><span style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-weight:600;">${s.success}</span></td>
-                <td style="text-align:center;padding:12px;"><span style="background:#064e3b;color:#fff;border-radius:20px;padding:2px 10px;font-weight:600;">${s.visas}</span></td>
-                <td style="text-align:right;padding:12px;font-weight:600;color:var(--indigo);">${s.incMo ? s.incMo.toLocaleString('ru-RU') + ' ₽' : '—'}</td>
-                <td style="text-align:right;padding:12px;font-weight:700;">${s.incYr ? s.incYr.toLocaleString('ru-RU') + ' ₽' : '—'}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>`;
+                <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Менеджер</th>
+                <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Заявок</th>
+                <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Успешных</th>
+                <th style="text-align:center;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Виз получено</th>
+                <th style="text-align:right;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">
+                  <button id="mgr-month-btn" onclick="openMgrMonthDrop(event)" style="display:inline-flex;align-items:center;gap:4px;background:#eef2ff;color:var(--indigo);border:none;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;text-transform:uppercase;">
+                    ${_mgrMonthLabel}<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                </th>
+                <th style="text-align:right;padding:8px 12px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Доход (год)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${stats.map(s => `
+                <tr style="border-bottom:1px solid var(--line);">
+                  <td style="padding:12px;font-weight:600;">${s.name}</td>
+                  <td style="text-align:center;padding:12px;">${s.total}</td>
+                  <td style="text-align:center;padding:12px;"><span style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-weight:600;">${s.success}</span></td>
+                  <td style="text-align:center;padding:12px;"><span style="background:#064e3b;color:#fff;border-radius:20px;padding:2px 10px;font-weight:600;">${s.visas}</span></td>
+                  <td style="text-align:right;padding:12px;font-weight:600;color:var(--indigo);">${s.incMo ? s.incMo.toLocaleString('ru-RU') + ' ₽' : '—'}</td>
+                  <td style="text-align:right;padding:12px;font-weight:700;">${s.incYr ? s.incYr.toLocaleString('ru-RU') + ' ₽' : '—'}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`;
+    }
   }
 
   // ── ФИЛЬТРЫ В ЗАЯВКАХ: по менеджеру и стране ──
@@ -2686,7 +2732,15 @@
         hdrAva.textContent = mgr.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
       }
     } else if (hdrAva && admin) {
-      hdrAva.style.backgroundImage = '';
+      const vcLogo = localStorage.getItem('vs_vc_logo');
+      if (vcLogo) {
+        hdrAva.textContent = '';
+        hdrAva.style.backgroundImage = `url(${vcLogo})`;
+        hdrAva.style.backgroundSize = 'cover';
+        hdrAva.style.backgroundPosition = 'center';
+      } else {
+        hdrAva.style.backgroundImage = '';
+      }
       hdrAva.title = '';
     }
 
