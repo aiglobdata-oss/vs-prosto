@@ -2245,7 +2245,8 @@
   <div style="background:#fff;border-radius:18px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto;padding:28px 24px;position:relative;">
     <button onclick="closeBuySlots()" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);">✕</button>
     <p style="font-size:20px;font-weight:700;margin:0 0 4px;">Купить слоты</p>
-    <p style="font-size:13px;color:var(--muted);margin:0 0 18px;">Стоимость: 5 000 ₽ за 1 слот</p>
+    <p style="font-size:13px;color:var(--muted);margin:0 0 6px;">Стоимость: <span id="buy-slot-price">5 000 ₽</span> за 1 слот</p>
+    <p id="active-sub-badge" style="display:none;font-size:12px;color:#1b5e20;background:#e8f5e9;padding:4px 10px;border-radius:8px;margin:0 0 14px;font-weight:600;"></p>
 
     <div id="buy-step-qty" style="margin-bottom:18px;">
       <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Количество слотов</label>
@@ -2278,30 +2279,30 @@
     <button id="btn-pay" onclick="processBuySlots()" style="width:100%;padding:14px;border-radius:12px;border:none;background:#1a73e8;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:20px;">Оплатить</button>
 
     <div style="border-top:1px solid var(--border);padding-top:18px;">
-      <p style="font-size:16px;font-weight:700;margin:0 0 4px;">Подписка на слоты</p>
-      <p style="font-size:12px;color:var(--muted);margin:0 0 14px;">Автоматическое пополнение каждый месяц</p>
+      <p style="font-size:16px;font-weight:700;margin:0 0 4px;">Подписка</p>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 14px;">Пакет слотов + поток клиентов из агрегатора</p>
       <div id="sub-tiers" style="display:flex;flex-direction:column;gap:10px;">
         <div class="sub-tier" data-tier="start" data-amount="50000" style="border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s;" onclick="selectSubscription('start',this)">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:14px;font-weight:600;">Старт</span>
-            <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">50 000 ₽/мес</span>
+            <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">50 000 ₽</span>
           </div>
-          <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">10 записей в месяц</div>
+          <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">10 слотов × 5 000 ₽ · Поток клиентов</div>
         </div>
         <div class="sub-tier" data-tier="business" data-amount="225000" style="border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;position:relative;transition:all .15s;" onclick="selectSubscription('business',this)">
           <div style="position:absolute;top:-8px;right:12px;background:#1a73e8;color:#fff;font-size:10px;font-weight:600;padding:2px 8px;border-radius:6px;">Рекомендуем</div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:14px;font-weight:600;">Бизнес</span>
-            <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">225 000 ₽/мес</span>
+            <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">225 000 ₽</span>
           </div>
-          <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">50 записей в месяц</div>
+          <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">50 слотов × 4 500 ₽ · Поток клиентов</div>
         </div>
         <div class="sub-tier" data-tier="premium" data-amount="400000" style="border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s;" onclick="selectSubscription('premium',this)">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:14px;font-weight:600;">Премиум</span>
-            <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">400 000 ₽/мес</span>
+            <span class="sub-tier-price" style="font-size:14px;font-weight:700;color:#1a73e8;">400 000 ₽</span>
           </div>
-          <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">100 записей в месяц</div>
+          <div class="sub-tier-desc" style="font-size:12px;color:var(--muted);margin-top:4px;">100 слотов × 4 000 ₽ · Поток клиентов</div>
         </div>
       </div>
     </div>
@@ -2378,7 +2379,7 @@
           </div>
         </div>
       </div>
-      <button onclick="addFoundSlot()" style="width:100%;padding:13px;background:var(--indigo);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;">Добавить в расписание</button>
+      <button id="btn-add-slot" onclick="addFoundSlot()" style="width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;">Получить запись — 5 000 ₽</button>
       <button onclick="closeAddSlot()" style="width:100%;padding:10px;background:none;color:var(--muted);border:none;font-size:13px;cursor:pointer;margin-top:6px;font-family:inherit;">Отмена</button>
     </div>
   </div>
@@ -2835,10 +2836,40 @@
   };
 
   let _buyQty = 1;
+  let _selectedTier = null;
+  let _selectedTierEl = null;
+  let _activeSub = null;
+  let _subSlotsLeft = 0;
+  const SUB_CONFIG = {
+    start:   { price: 50000,  slots: 10,  slotPrice: 5000 },
+    business:{ price: 225000, slots: 50,  slotPrice: 4500 },
+    premium: { price: 400000, slots: 100, slotPrice: 4000 }
+  };
+
+  function getSlotPrice() {
+    return (_activeSub && _subSlotsLeft > 0) ? SUB_CONFIG[_activeSub].slotPrice : 5000;
+  }
+
+  function refreshPriceUI() {
+    const p = getSlotPrice();
+    const label = document.getElementById('buy-slot-price');
+    if (label) label.textContent = p.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('buy-total').textContent = (_buyQty * p).toLocaleString('ru-RU') + ' ₽';
+    const badge = document.getElementById('active-sub-badge');
+    if (badge) {
+      if (_activeSub && _subSlotsLeft > 0) {
+        const n = { start: 'Старт', business: 'Бизнес', premium: 'Премиум' };
+        badge.style.display = '';
+        badge.textContent = '🎫 ' + n[_activeSub] + ': слот ' + p.toLocaleString('ru-RU') + ' ₽ · осталось ' + _subSlotsLeft + ' шт.';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  }
+
   function openBuySlots() {
     _buyQty = 1;
     document.getElementById('buy-qty').textContent = '1';
-    document.getElementById('buy-total').textContent = '5 000 ₽';
     _selectedTier = null;
     _selectedTierEl = null;
     const btnPay = document.getElementById('btn-pay');
@@ -2849,8 +2880,8 @@
       t.style.borderColor = 'var(--border)';
       t.style.background = '';
     });
-    const ov = document.getElementById('buy-slots-overlay');
-    ov.style.display = 'flex';
+    refreshPriceUI();
+    document.getElementById('buy-slots-overlay').style.display = 'flex';
   }
   function closeBuySlots() {
     document.getElementById('buy-slots-overlay').style.display = 'none';
@@ -2858,7 +2889,7 @@
   function changeBuyQty(d) {
     _buyQty = Math.max(1, _buyQty + d);
     document.getElementById('buy-qty').textContent = _buyQty;
-    document.getElementById('buy-total').textContent = (_buyQty * 5000).toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('buy-total').textContent = (_buyQty * getSlotPrice()).toLocaleString('ru-RU') + ' ₽';
     if (_selectedTier) {
       _selectedTier = null;
       _selectedTierEl = null;
@@ -2873,21 +2904,28 @@
     document.querySelectorAll('#pay-methods label').forEach(l => l.style.borderColor = 'var(--border)');
     label.style.borderColor = '#1a73e8';
   }
-  let _selectedTier = null;
-  let _selectedTierEl = null;
+
   function processBuySlots() {
     if (_selectedTier) {
-      const amounts = { start: 50000, business: 225000, premium: 400000 };
+      const cfg = SUB_CONFIG[_selectedTier];
       const names = { start: 'Старт', business: 'Бизнес', premium: 'Премиум' };
-      updateBalance(amounts[_selectedTier] || 0);
+      _activeSub = _selectedTier;
+      _subSlotsLeft = cfg.slots;
+      updateBalance(cfg.price);
       const btn = document.getElementById('btn-pay');
       btn.textContent = 'Подписка «' + names[_selectedTier] + '» оформлена!';
       btn.style.background = '#1b5e20';
       btn.style.pointerEvents = 'none';
+      refreshPriceUI();
       _selectedTier = null;
       _selectedTierEl = null;
     } else {
-      updateBalance(_buyQty * 5000);
+      const price = getSlotPrice();
+      const total = _buyQty * price;
+      if (_activeSub && _subSlotsLeft > 0) {
+        _subSlotsLeft = Math.max(0, _subSlotsLeft - _buyQty);
+      }
+      updateBalance(total);
       closeBuySlots();
     }
   }
@@ -2953,8 +2991,19 @@
     const h = hours[Math.floor(Math.random()*hours.length)];
     const m = Math.random() > 0.5 ? '30' : '00';
     document.getElementById('slot-found-time').textContent = String(h).padStart(2,'0') + ':' + m;
+    const slotBtn = document.getElementById('btn-add-slot');
+    const sp = getSlotPrice();
+    slotBtn.textContent = 'Получить запись — ' + sp.toLocaleString('ru-RU') + ' ₽';
   }
   function addFoundSlot() {
+    const bal = document.getElementById('slot-balance');
+    const curBal = parseInt((bal.textContent || '0').replace(/\D/g, ''), 10) || 0;
+    const price = getSlotPrice();
+    if (curBal < price) {
+      closeAddSlot();
+      openBuySlots();
+      return;
+    }
     const dateText = document.getElementById('slot-found-date').textContent;
     const timeText = document.getElementById('slot-found-time').textContent;
     const DAYS = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
@@ -2980,7 +3029,8 @@
       <button class="btn-slot btn-slot-free" onclick="openSlotAssign('${slotId}','${dayLabel} · ${timeText}')">Назначить клиента</button>
     `;
     grid.appendChild(card);
-    updateBalance(-5000);
+    updateBalance(-getSlotPrice());
+    if (_activeSub && _subSlotsLeft > 0) _subSlotsLeft--;
     closeAddSlot();
   }
 
