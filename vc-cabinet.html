@@ -260,20 +260,24 @@
     .app-table tr:last-child td { border: none !important; border-bottom: none !important; background: transparent !important; }
     .app-table tr:hover td { background: transparent !important; }
 
-    /* Клиент (col 1) */
-    .app-table td:nth-child(1) { margin-bottom: 12px !important; font-size: 15px; padding-right: 44px !important; }
+    /* Клиент (col 1): аватар + имя + телефон */
+    .app-table td:nth-child(1) { margin-bottom: 14px !important; font-size: 16px; padding-right: 44px !important; }
+    .app-table .client-ava { width: 42px; height: 42px; font-size: 15px; }
+    .app-table .client-cell { gap: 12px; }
+    .app-table .client-cell div[style*="font-weight:600"] { font-size: 17px !important; }
+    .app-table .client-cell div[style*="font-size:12px"] { font-size: 14px !important; }
 
     /* Страна (col 2) + Тип визы (col 3): в одну строку */
-    .app-table td:nth-child(2) { display: inline !important; font-size: 14px; font-weight: 600; color: var(--ink); }
-    .app-table td:nth-child(3) { display: inline !important; font-size: 14px; color: var(--muted); margin-left: 6px; }
-    .app-table td:nth-child(3):after { content: ""; display: block; margin-bottom: 8px; }
+    .app-table td:nth-child(2) { display: inline !important; font-size: 16px; font-weight: 600; color: var(--ink); }
+    .app-table td:nth-child(3) { display: inline !important; font-size: 15px; color: var(--muted); margin-left: 6px; }
+    .app-table td:nth-child(3):after { content: ""; display: block; margin-bottom: 10px; }
 
     /* Дата (col 4) */
-    .app-table td:nth-child(4) { font-size: 13px; color: var(--muted); margin-bottom: 4px !important; }
+    .app-table td:nth-child(4) { font-size: 15px; color: var(--muted); margin-bottom: 4px !important; }
     .app-table td:nth-child(4):before { content: "📅 "; }
 
     /* Слот (col 5) */
-    .app-table td:nth-child(5) { font-size: 13px; color: var(--muted); margin-bottom: 12px !important; }
+    .app-table td:nth-child(5) { font-size: 15px; color: var(--muted); margin-bottom: 12px !important; }
     .app-table td:nth-child(5):before { content: "🕐 "; }
 
     /* Специалист (col 6) + Чат (col 7): в одну строку одинаковой высоты */
