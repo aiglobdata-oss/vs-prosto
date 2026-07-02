@@ -303,6 +303,39 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .bottom-nav-item svg { width: 22px; height: 22px; }
 .bottom-nav-badge { position: absolute; top: 4px; right: calc(50% - 18px); background: var(--red); color: #fff; font-size: 9px; font-weight: 800; border-radius: 8px; padding: 0 4px; min-width: 14px; text-align: center; }
 
+/* ─────────── МОДАЛКА ПОПОЛНЕНИЯ ─────────── */
+.topup-overlay { display: none; position: fixed; inset: 0; background: rgba(17,24,39,0.55); z-index: 300; align-items: center; justify-content: center; padding: 16px; }
+.topup-overlay.open { display: flex; }
+.topup-modal { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; max-width: 440px; padding: 28px; animation: topupIn .2s ease; }
+@keyframes topupIn { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+.topup-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.topup-title { font-size: 20px; font-weight: 800; }
+.topup-close { border: none; background: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); padding: 4px; }
+.topup-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 10px; }
+.topup-amounts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+.topup-amount { border: 2px solid var(--line); border-radius: var(--radius); padding: 10px 4px; text-align: center; font-size: 14px; font-weight: 700; cursor: pointer; transition: all .12s; background: var(--white); }
+.topup-amount:hover { border-color: #d1d5db; }
+.topup-amount.active { border-color: var(--indigo-mid); background: var(--indigo-light); color: var(--indigo-mid); }
+.topup-custom { width: 100%; border: 2px solid var(--line); border-radius: var(--radius); padding: 12px 14px; font-size: 15px; font-weight: 600; outline: none; margin-bottom: 20px; transition: border-color .12s; }
+.topup-custom:focus { border-color: var(--indigo-mid); }
+.topup-methods { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+.topup-method { display: flex; align-items: center; gap: 12px; border: 2px solid var(--line); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; transition: all .12s; }
+.topup-method:hover { border-color: #d1d5db; }
+.topup-method.active { border-color: var(--indigo-mid); background: var(--indigo-light); }
+.topup-method-icon { font-size: 20px; }
+.topup-method-name { font-size: 14px; font-weight: 700; }
+.topup-method-sub { font-size: 12px; color: var(--muted); }
+.topup-method-check { margin-left: auto; color: var(--indigo-mid); font-weight: 800; opacity: 0; }
+.topup-method.active .topup-method-check { opacity: 1; }
+.btn-topup-confirm { width: 100%; border: none; background: var(--indigo-btn); color: #fff; font-size: 15px; font-weight: 800; padding: 15px; border-radius: var(--radius); cursor: pointer; transition: background .15s, opacity .15s; }
+.btn-topup-confirm:hover { background: var(--indigo-dark); }
+.btn-topup-confirm:disabled { opacity: .6; cursor: default; }
+.topup-demo-note { text-align: center; font-size: 11.5px; color: var(--muted); margin-top: 12px; }
+.topup-success { text-align: center; padding: 18px 0 6px; display: none; }
+.topup-success-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--green-light); color: var(--green); font-size: 30px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.topup-success-title { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+.topup-success-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+
 @media (max-width: 768px) {
   .cab-sidebar { display: none; }
   .bottom-nav { display: block; }
@@ -318,6 +351,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   .btn-topup-big { margin-left: 0; }
   .cab-balance-chip { display: none; }
   .dash-welcome-stats { gap: 16px; }
+  .topup-amounts { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 480px) {
   .dash-grid { grid-template-columns: 1fr; }
@@ -505,10 +539,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="section active" id="section-dashboard">
         <div class="dash-welcome">
           <div class="dash-welcome-hi">Добро пожаловать 👋</div>
-          <div class="dash-welcome-name" id="dash-name">Иван Иванов</div>
+          <div class="dash-welcome-name" id="dash-name">Пользователь</div>
           <div class="dash-welcome-stats">
             <div class="dash-stat"><div class="dash-stat-val">3</div><div class="dash-stat-label">Активные заявки</div></div>
-            <div class="dash-stat"><div class="dash-stat-val">5 000 ₽</div><div class="dash-stat-label">Баланс</div></div>
+            <div class="dash-stat"><div class="dash-stat-val" id="dash-balance">5 000 ₽</div><div class="dash-stat-label">Баланс</div></div>
             <div class="dash-stat"><div class="dash-stat-val">14 июля</div><div class="dash-stat-label">Слот в консульство</div></div>
           </div>
         </div>
@@ -846,10 +880,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="payments-balance-card">
           <div>
             <div class="pay-bal-label">Текущий баланс</div>
-            <div class="pay-bal-val">5 000 ₽</div>
+            <div class="pay-bal-val" id="pay-balance">5 000 ₽</div>
           </div>
-          <button class="btn-topup-big" onclick="showToast('Откроется форма пополнения')">+ Пополнить баланс</button>
+          <button class="btn-topup-big" onclick="openTopup()">+ Пополнить баланс</button>
         </div>
+
+        <div id="payments-history"></div>
 
         <div class="payment-item">
           <div class="pay-icon out">💸</div>
@@ -1083,6 +1119,67 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 </div>
 
 <!-- Toast -->
+<!-- ── МОДАЛКА ПОПОЛНЕНИЯ БАЛАНСА ── -->
+<div class="topup-overlay" id="topup-overlay" onclick="if(event.target===this)closeTopup()">
+  <div class="topup-modal">
+
+    <div id="topup-form">
+      <div class="topup-head">
+        <div class="topup-title">Пополнение баланса</div>
+        <button class="topup-close" onclick="closeTopup()">×</button>
+      </div>
+
+      <div class="topup-label">Сумма</div>
+      <div class="topup-amounts" id="topup-amounts">
+        <div class="topup-amount" data-amt="3000" onclick="pickAmount(this)">3 000 ₽</div>
+        <div class="topup-amount active" data-amt="5000" onclick="pickAmount(this)">5 000 ₽</div>
+        <div class="topup-amount" data-amt="10000" onclick="pickAmount(this)">10 000 ₽</div>
+        <div class="topup-amount" data-amt="20000" onclick="pickAmount(this)">20 000 ₽</div>
+      </div>
+      <input type="text" class="topup-custom" id="topup-custom" placeholder="Или своя сумма, ₽" inputmode="numeric">
+
+      <div class="topup-label">Способ оплаты</div>
+      <div class="topup-methods">
+        <div class="topup-method active" data-method="Банковская карта ···4242" onclick="pickMethod(this)">
+          <div class="topup-method-icon">💳</div>
+          <div>
+            <div class="topup-method-name">Карта ···4242</div>
+            <div class="topup-method-sub">Visa · привязана к аккаунту</div>
+          </div>
+          <div class="topup-method-check">✓</div>
+        </div>
+        <div class="topup-method" data-method="СБП" onclick="pickMethod(this)">
+          <div class="topup-method-icon">⚡</div>
+          <div>
+            <div class="topup-method-name">СБП</div>
+            <div class="topup-method-sub">Оплата через приложение банка</div>
+          </div>
+          <div class="topup-method-check">✓</div>
+        </div>
+        <div class="topup-method" data-method="Новая карта" onclick="pickMethod(this)">
+          <div class="topup-method-icon">➕</div>
+          <div>
+            <div class="topup-method-name">Новая карта</div>
+            <div class="topup-method-sub">Добавить другую карту</div>
+          </div>
+          <div class="topup-method-check">✓</div>
+        </div>
+      </div>
+
+      <button class="btn-topup-confirm" id="topup-confirm-btn" onclick="confirmTopup()">Пополнить на 5 000 ₽</button>
+      <div class="topup-demo-note">Демо-режим: деньги не списываются, оплата будет подключена позже</div>
+    </div>
+
+    <div class="topup-success" id="topup-success">
+      <div class="topup-success-icon">✓</div>
+      <div class="topup-success-title">Баланс пополнен</div>
+      <div class="topup-success-sub" id="topup-success-sub">Новый баланс: 10 000 ₽</div>
+      <button class="btn-topup-confirm" onclick="closeTopup()">Отлично</button>
+    </div>
+
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1255,14 +1352,26 @@ document.getElementById('btn-reg-google').addEventListener('click', () => enterC
 
 // ─── ENTER CABINET ───
 function enterCabinet(initials, name, phone, photo, persist = true) {
-  // сохраняем город/дату рождения из прошлой сессии, если есть
+  // восстанавливаем город/дату рождения/баланс/историю/тариф из прошлых сессий
   let extra = {};
+  const stored = findUser(phone);
+  if (stored) {
+    ['city', 'bday', 'balance', 'txns', 'plan'].forEach(k => { if (stored[k] !== undefined) extra[k] = stored[k]; });
+  }
   try {
     const saved = JSON.parse(localStorage.getItem('vs_current_user') || 'null');
-    if (saved && saved.phone === phone) extra = { city: saved.city || '', bday: saved.bday || '' };
+    if (saved && saved.phone === phone) {
+      ['city', 'bday', 'balance', 'txns', 'plan'].forEach(k => { if (saved[k] !== undefined) extra[k] = saved[k]; });
+    }
   } catch {}
   currentUser = { name: name || '', initials: initials || '', phone: phone || '', photo: photo || '', ...extra };
+  if (typeof currentUser.balance !== 'number') currentUser.balance = DEFAULT_BALANCE;
+  if (!Array.isArray(currentUser.txns)) currentUser.txns = [];
   if (persist) saveCurrentUser(currentUser);
+
+  // Кошелёк: баланс в шапке/на главной/в платежах + история + сохранённый тариф
+  renderWallet();
+  applyPlanUI(currentUser.plan || 'base');
 
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('cabinet-screen').classList.add('visible');
@@ -1688,23 +1797,164 @@ function openCardQuiz() {
 }
 
 // ─── ПЕРЕКЛЮЧЕНИЕ ТАРИФА ───
-function switchPlan(plan) {
+// applyPlanUI — только отрисовка карточек (без confirm), используется и при загрузке сессии
+function applyPlanUI(plan) {
   const base = document.getElementById('plan-base');
   const family = document.getElementById('plan-family');
-  if (plan === 'family' && !family.classList.contains('current')) {
-    if (!confirm('Перейти на Семейный тариф?\n\n20 000 ₽ — 4 слота (2 взрослых + 2 ребёнка) по 5 000 ₽ вместо 6 000 ₽.')) return;
+  if (plan === 'family') {
     family.classList.add('current');
     base.classList.remove('current');
     document.getElementById('plan-family-label').textContent = '✓ Текущий план';
     document.getElementById('plan-base-label').textContent = 'Стандартный';
-    showToast('Семейный тариф подключён ✓ 4 слота доступны');
-  } else if (plan === 'base' && !base.classList.contains('current')) {
+  } else {
     base.classList.add('current');
     family.classList.remove('current');
     document.getElementById('plan-base-label').textContent = '✓ Текущий план';
     document.getElementById('plan-family-label').textContent = 'Выгодно для семьи';
-    showToast('Вы на Базовом тарифе');
   }
+}
+
+function switchPlan(plan) {
+  const family = document.getElementById('plan-family');
+  const base = document.getElementById('plan-base');
+  if (plan === 'family' && !family.classList.contains('current')) {
+    if (!confirm('Перейти на Семейный тариф?\n\n20 000 ₽ — 4 слота (2 взрослых + 2 ребёнка) по 5 000 ₽ вместо 6 000 ₽.')) return;
+    applyPlanUI('family');
+    showToast('Семейный тариф подключён ✓ 4 слота доступны');
+  } else if (plan === 'base' && !base.classList.contains('current')) {
+    applyPlanUI('base');
+    showToast('Вы на Базовом тарифе');
+  } else {
+    return;
+  }
+  // запоминаем выбранный тариф между сессиями
+  currentUser.plan = plan;
+  saveWallet();
+}
+
+// ─── КОШЕЛЁК: БАЛАНС, ПОПОЛНЕНИЕ, ИСТОРИЯ ───
+const DEFAULT_BALANCE = 5000;
+
+function fmtRub(n) { return n.toLocaleString('ru-RU') + ' ₽'; }
+
+// Обновляет баланс в шапке, на главной и в «Платежах» + перерисовывает историю пополнений
+function renderWallet() {
+  const b = (typeof currentUser.balance === 'number') ? currentUser.balance : DEFAULT_BALANCE;
+  ['header-balance', 'dash-balance', 'pay-balance'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = fmtRub(b);
+  });
+  const box = document.getElementById('payments-history');
+  if (box) {
+    box.innerHTML = '';
+    (currentUser.txns || []).slice().reverse().forEach(tx => box.appendChild(buildTxnEl(tx)));
+  }
+}
+
+function buildTxnEl(tx) {
+  const el = document.createElement('div');
+  el.className = 'payment-item';
+  el.innerHTML = '<div class="pay-icon in">💰</div><div class="pay-info"><p>Пополнение баланса</p><p></p></div><div class="pay-amount pay-in"></div>';
+  el.querySelectorAll('.pay-info p')[1].textContent = tx.date + ' · ' + tx.method;
+  el.querySelector('.pay-amount').textContent = '+' + fmtRub(tx.amount);
+  return el;
+}
+
+// Сохраняет баланс/историю/тариф в текущую сессию и в список пользователей
+function saveWallet() {
+  saveCurrentUser(currentUser);
+  const users = getUsers();
+  const idx = users.findIndex(u => u.phone === currentUser.phone);
+  if (idx >= 0) {
+    users[idx].balance = currentUser.balance;
+    users[idx].txns = currentUser.txns;
+    users[idx].plan = currentUser.plan;
+    saveUsers(users);
+  }
+}
+
+// ─── МОДАЛКА ПОПОЛНЕНИЯ ───
+let _topupAmt = 5000;
+let _topupMethod = 'Банковская карта ···4242';
+
+function openTopup() {
+  // сброс к состоянию по умолчанию
+  document.getElementById('topup-form').style.display = 'block';
+  document.getElementById('topup-success').style.display = 'none';
+  document.getElementById('topup-custom').value = '';
+  document.querySelectorAll('.topup-amount').forEach(a => a.classList.toggle('active', a.dataset.amt === '5000'));
+  document.querySelectorAll('.topup-method').forEach((m, i) => m.classList.toggle('active', i === 0));
+  _topupAmt = 5000;
+  _topupMethod = 'Банковская карта ···4242';
+  const btn = document.getElementById('topup-confirm-btn');
+  btn.disabled = false;
+  updateTopupBtn();
+  document.getElementById('topup-overlay').classList.add('open');
+}
+
+function closeTopup() {
+  document.getElementById('topup-overlay').classList.remove('open');
+}
+
+function pickAmount(el) {
+  document.querySelectorAll('.topup-amount').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('topup-custom').value = '';
+  _topupAmt = +el.dataset.amt;
+  updateTopupBtn();
+}
+
+function pickMethod(el) {
+  document.querySelectorAll('.topup-method').forEach(m => m.classList.remove('active'));
+  el.classList.add('active');
+  _topupMethod = el.dataset.method;
+}
+
+function updateTopupBtn() {
+  const btn = document.getElementById('topup-confirm-btn');
+  if (_topupAmt >= 100 && _topupAmt <= 500000) {
+    btn.textContent = 'Пополнить на ' + fmtRub(_topupAmt);
+    btn.disabled = false;
+  } else {
+    btn.textContent = _topupAmt > 500000 ? 'Максимум 500 000 ₽ за раз' : 'Введите сумму от 100 ₽';
+    btn.disabled = true;
+  }
+}
+
+// Своя сумма: только цифры, при вводе снимаем выделение с пресетов
+(function initTopupCustom() {
+  const input = document.getElementById('topup-custom');
+  input.addEventListener('input', () => {
+    const digits = input.value.replace(/\D/g, '').slice(0, 6);
+    const n = digits ? +digits : 0;
+    input.value = digits ? n.toLocaleString('ru-RU') : '';
+    document.querySelectorAll('.topup-amount').forEach(a => a.classList.remove('active'));
+    _topupAmt = n;
+    updateTopupBtn();
+  });
+})();
+
+function confirmTopup() {
+  if (_topupAmt < 100 || _topupAmt > 500000) return;
+  const btn = document.getElementById('topup-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = 'Обработка платежа…';
+  // Демо: имитация обработки, реальная оплата (ЮKassa) будет подключена позже
+  setTimeout(() => {
+    currentUser.balance = ((typeof currentUser.balance === 'number') ? currentUser.balance : DEFAULT_BALANCE) + _topupAmt;
+    currentUser.txns = currentUser.txns || [];
+    currentUser.txns.push({
+      amount: _topupAmt,
+      method: _topupMethod,
+      date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
+    });
+    saveWallet();
+    renderWallet();
+    document.getElementById('topup-form').style.display = 'none';
+    document.getElementById('topup-success-sub').textContent = 'Новый баланс: ' + fmtRub(currentUser.balance);
+    document.getElementById('topup-success').style.display = 'block';
+    showToast('Баланс пополнен на ' + fmtRub(_topupAmt) + ' ✓');
+  }, 1300);
 }
 
 // ─── DOWNLOAD QUESTIONNAIRE ───
